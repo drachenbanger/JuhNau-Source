@@ -1,0 +1,127 @@
+
+<!-- <div class="intro-video-overlay" ng-if="vm.swf.bootingFlash && vm.broadcast.async === false">
+	<intro-video></intro-video>
+</div> -->
+<div class="transition-overlay" ng-if="vm.swf.loadingBroadcasterState">
+	<!-- dissapate dead broadcast -->
+	<div ng-if="vm.swf.loadingBroadcasterState === 'PREV' && !vm.swf.settingUpBroadcast " class="thumbnail-pulse">
+		<div class="thumb circle-thumb" ng-style="{ background: 'url({{::vm.thumb}}' + vm.broadcast.broadcaster.userId + ') no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"></div>
+	</div>
+	<!-- buffering new broadcast -->
+	<div ng-if="(vm.swf.playState === 'BUFFERING' || vm.swf.loadingBroadcasterState === 'NEXT') && !vm.swf.settingUpBroadcast" class="thumbnail-pulse" style="background: url({{::vm.pulseAnimation}}) no-repeat; background-position: center;">
+		<div class="thumb circle-thumb" ng-style="{ background: 'url({{::vm.thumb}}' + vm.broadcast.broadcaster.userId + ') no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"></div>
+	</div>
+	<!-- reconnect screen -->
+	<div ng-if="vm.swf.playState === 'RECONNECT' && !vm.swf.settingUpBroadcast" class="thumbnail-pulse" style="background: url({{::vm.pulseAnimation}}) no-repeat; background-position: center;">
+		<div class="thumb circle-thumb" ng-style="{ background: 'url({{::vm.thumb}}' + vm.broadcast.broadcaster.userId + ') no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"></div>
+	</div>
+	<!-- buffering your own broadcast -->
+	<div ng-if="vm.swf.settingUpBroadcast" class="thumbnail-pulse" style="background: url({{::vm.pulseAnimation}}) no-repeat; background-position: center;">
+		<div class="thumb circle-thumb" ng-style="{ background: 'url({{::vm.thumb}}' + vm.session.user.userId + ') no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"></div>
+	</div>
+	<div class="user-info" ng-if="vm.swf.settingUpBroadcast"><i class="ynicon ynicon-level"></i>{{::vm.session.user.level}} {{::vm.session.user.profile}}</div>
+	<div class="user-info" ng-if="!vm.swf.settingUpBroadcast"><i class="ynicon ynicon-level"></i>{{vm.Math.floor(vm.broadcast.broadcaster.userlevel)}} {{vm.broadcast.broadcaster.profile}}</div>
+	<div class="transition-text" ng-if="vm.swf.loadingBroadcasterState === 'NEXT' || vm.swf.loadingBroadcasterState === 'WAITING'" translate="player_buffering"></div>
+	<div class="transition-text" ng-if="vm.swf.loadingBroadcasterState === 'RECONNECT'" translate="player_reconnecting"></div>
+</div>
+<div class="message-overlay" ng-if="vm.swf.settingUpBroadcast">
+	<!-- canceling the setup -->
+	<button class="cancel btn btn-important active" ng-click="vm.cancelBroadcast()" translate="_cancel"></button>
+</div>
+<!-- dropping state -->
+<div ng-if="vm.swf.broadcast.userId === vm.session.user.userId && !vm.swf.settingUpBroadcast && !vm.swf.eob">
+	<!-- broadcaster -->
+	<div ng-if="vm.guestService.overlayStates.guest != 'connected' && vm.guestService.overlayStates.guest != 'dropping' && vm.guestService.overlayStates.guest != 'swapping'">
+		<div class="live-text active" translate="player_youarelive"></div>
+		<button class="btn btn-important active" ng-click="vm.dropBroadcast(true)" translate="_end"></button>
+		<div class="drop-broadcast-confirmation" ng-class="{active: vm.dropBroadcastActive}">
+			<div translate="player_areyousure"></div>
+			<button class="btn btn-transparent" ng-click="vm.dropBroadcast()" translate="_yes"></button>
+			<button class="btn btn-transparent" ng-click="vm.dropBroadcast(false)" translate="_no"></button>
+		</div>
+	</div>
+
+	<!-- guest -->
+	<div ng-if="vm.guestService.overlayStates.guest == 'connected' && vm.guestService.overlayStates.guest != 'dropping' && vm.guestService.overlayStates.guest != 'swapping'">
+		<div class="live-text-guest active short-text">{{vm.guestService.guest.name}}</div>
+		<div class="guest-actions active">
+			<button class="btn btn-primary" ng-click="vm.randomGuest()" ng-if="vm.guestService.guestListCount >= 5">
+				<span translate="_random"></span>
+				<i class="ynicon ynicon-bc-call"></i>
+			</button>
+			<button class="btn btn-important" ng-click="vm.dropGuestAsBroadcaster()" translate="_drop"></button>
+		</div>
+	</div>
+</div>
+
+<!-- guest dropping state -->
+<div ng-if="vm.guestService.guest.userId == vm.session.user.userId && !vm.swf.fullscreenActive">
+	<div class="live-text-guest active" translate="player_youarelive"></div>
+	<button class="drop-guest btn btn-important active" ng-click="vm.dropBroadcastActive = true" translate="_end"></button>
+	<div class="guest drop-broadcast-confirmation" ng-class="{active: vm.dropBroadcastActive}">
+		<div translate="player_areyousure"></div>
+		<button class="btn btn-transparent" ng-click="vm.dropGuestAsGuest()" translate="_yes"></button>
+		<button class="btn btn-transparent" ng-click="vm.dropGuestAsGuestCancel()" translate="_no"></button>
+	</div>
+</div>
+
+<!-- top -->
+<div class="system-message" collapse="!vm.systemMessage.hasMessage || vm.systemMessage.dismissed" ng-if="!vm.swf.settingUpBroadcast">
+	<span class="sys-message" ng-bind-html="vm.systemMessage.message.trustedMessage"></span>
+	<a ng-if="vm.systemMessage.message.webButton.action" ng-href="{{vm.systemMessage.message.webButton.action}}" target="_blank" class="cta-button">{{vm.systemMessage.message.webButton.caption}}</a>
+	<div class="close-button" ng-click="vm.dismissSystemMessage()"><i class="ynicon ynicon-close"></i></div>
+</div>
+
+
+<!-- gifts -->
+<div class="premium-overlay" ng-click="vm.openProfile()" ng-class="{'overlay-fade': vm.gift == false || vm.swf.settingUpBroadcast || vm.suppressGiftOverlays(), 'overlay-fade-in': vm.gift !== false && !vm.swf.settingUpBroadcast && !vm.suppressGiftOverlays(), 'premium-small': vm.swf.sharePanelOpen}">
+	<div class="gift-overlay" ng-class="{ 'subscription-gift-overlay' : vm.gift.info.itemGameType=='SUBSCRIPTION', 'tipbig' : (vm.gift.info.itemGameType=='TIP' && (vm.gift.value>1000)) }">
+
+		<!-- subscription -->
+		<div class="subscription-gift" ng-if="vm.gift.info.itemGameType=='SUBSCRIPTION'">
+			<span
+			class="gbroadcaster thumb"
+			ng-style="{ background: 'url({{::vm.thumb}}' + vm.swf.broadcast.userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }">
+				<span class="ynbadge">
+					<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.swf.broadcast.userId}}/1/badge@2x.png" />
+				</span>
+			</span>
+			<span class="gspace thumb" ng-class="{ 'animateSubs ' : vm.gift.animateSubs }"></span>
+			<span
+			class="guser thumb"
+			ng-style="{ background: 'url({{::vm.thumb}}' + vm.gift.userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }">
+			</span>
+		</div>
+		<!-- animation -->
+		<div class="premium-gift animation-gift" ng-if="vm.gift.info.itemGameType=='ANIMATION'">
+			<div class="thumb" ng-style="{ background: 'url({{::vm.thumb}}' + vm.gift.userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"></div>
+			<span class="gift-message">{{vm.gift.comment}}</span>
+			<img ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.swf.giftSkus[vm.gift.giftId]}}/web_animation.gif">
+		</div>
+		<!-- tip-big -->
+		<div class="premium-gift" ng-if="vm.gift.info.itemGameType=='TIP' && vm.gift.value>1000">
+			<img ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.swf.giftSkus[vm.gift.giftId]}}/web_animation{{vm.gift.globalSpenderRank>0 ? '_vip' : ''}}.gif" style="width: auto;height: 230px;margin-left: -77px;margin-top: -94px;margin-bottom: -70px;">
+		</div>
+		<!-- tip -->
+		<div class="premium-gift" ng-if="vm.gift.info.itemGameType=='TIP' && vm.gift.value<=1000">
+			<img ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.swf.giftSkus[vm.gift.giftId]}}/web_overlay{{vm.gift.globalSpenderRank>0 ? '_vip' : ''}}.png">
+			<div
+			class="thumb"
+			ng-class="{ 'visibilityhidden' : !vm.isProposalGift(vm.gift.giftId) }"
+			ng-style="{ background: 'url({{::vm.thumb}}' + vm.giftUserId_lastingValue + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }">
+			</div>
+		</div>
+		<!-- image == NOT subscription, animation, tip -->
+		<div class="premium-gift" ng-if="!(vm.gift.info.itemGameType=='SUBSCRIPTION') && !(vm.gift.info.itemGameType=='ANIMATION') && !(vm.gift.info.itemGameType=='TIP')">
+			<img ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.swf.giftSkus[vm.gift.giftId]}}/web_overlay.png">
+			<div
+			class="thumb"
+			ng-class="{ 'visibilityhidden' : !vm.isProposalGift(vm.gift.giftId) }"
+			ng-style="{ background: 'url({{::vm.thumb}}' + vm.giftUserId_lastingValue + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }">
+			</div>
+		</div>
+
+		<!-- message -->
+		<span class="gift-message" ng-if="vm.gift.info.itemGameType!='ANIMATION'">{{vm.gift.comment}}</span>
+	</div>
+</div>

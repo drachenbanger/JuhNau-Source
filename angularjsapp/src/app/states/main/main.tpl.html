@@ -1,0 +1,30 @@
+	<div data-header></div>
+
+	<div class="notification normal type_{{$root.notifications.normal.type}}" ng-class="{active: $root.notifications.normal.active}">
+		<alert type="{{$root.notifications.normal.type}}" ng-bind-html="$root.notifications.normal.message"></alert>
+		<button class="close" ng-click="closeNotification( $root.notifications.normal.group )" type="button">
+			<i class="ynicon ynicon-close"></i>
+		</button>
+	</div>
+	<div class="notification sticky type_{{$root.notifications.normal.type}}" ng-class="{active: $root.notifications.sticky.active}">
+		<alert type="{{$root.notifications.sticky.type}}" ng-bind-html="$root.notifications.sticky.message"></alert>
+		<button class="close" ng-click="closeNotification( $root.notifications.sticky.group )" type="button">
+			<i class="ynicon ynicon-close"></i>
+		</button>
+	</div>
+
+	<div class="notification sticky banner type_{{$root.banners.sticky.type}}" ng-class="{active: $root.banners.sticky.active}">
+		<alert type="{{$root.banners.sticky.type}}">
+			<span ng-if="$root.banners.sticky.active" dynamic-alert="$parent.$root.banners.sticky.message"></span>
+		</alert>
+		<button class="close" ng-click="closeBanner( $root.banners.sticky.group )" type="button">
+			<i class="ynicon ynicon-close"></i>
+		</button>
+	</div>
+
+	<div class="container" id="main" ng-class="{banned: session.user.banId !== 0, 'sticky-active': $root.notifications.sticky.active, 'banner-active':  $root.banners.sticky.active}">
+		<div class="main-left" data-leftsidebar></div>
+		<div class="main-content" data-ui-view></div>
+	</div>
+
+	<div data-footer ng-hide="$root.hideFooter"></div>

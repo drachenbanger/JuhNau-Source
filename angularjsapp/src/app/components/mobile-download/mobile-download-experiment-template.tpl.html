@@ -1,0 +1,33 @@
+<section class="mobile-download-container">
+	<div class="top-content">
+		<h1>HELLO</h1>
+	</div>
+	<div class="inner-container">
+
+		<div class="download-image pull-left">
+			<img class="mobile-phone" ng-src="{{::vm.baseCDN}}/angularjsapp/src/assets/images/home/home_phone_2x.png" alt="Download YouNow app" />
+		</div>
+
+		<div class="download-description pull-right">
+			<h2 translate="app_default_headline"></h2>
+			<p translate="app_default_body"></p>
+				<div class="tel-input-wrapper" ng-class="{'active': !twilioSuccess}">
+					<input type="tel" id="{{::vm.telInputId}}"
+						intl-tel-input
+						class="form-control"
+						autocomplete="off"
+						placeholder="(201) 555-5555"
+						tooltip="{{errorMsg}}"
+						tooltip-trigger="show"
+						tooltip-append-to-body="true"
+						tooltip-placement="top error">
+			     	<button class="btn btn-primary" translate="app_default_cta"></button>
+		     	</div>
+		     	<div class="success-message" ng-class="{'active': twilioSuccess}" translate="app_ios_headline">
+		     	</div>
+			<span translate="app_default_clause"></span>
+		</div>
+
+		<div class="clear"></div>
+	</div>
+</section>

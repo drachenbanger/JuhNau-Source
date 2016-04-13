@@ -1,0 +1,70 @@
+<h4 class="heading">1. {{ 'golive_tag_title' | translate }}</h4>
+<div class="text-muted sub-title" translate="golive_tag_text" style="padding:0;"></div>
+<div class="typeahead-container" ng-class="{open: !panel.typeaheadClosed}">
+	<form name="panel.tagForm" novalidate>
+		<label class="hash-label" ng-class="{active: panel.tagSelected.length > 0}">
+			#
+		</label>
+		<input type="text"
+			id="typeaheadInput"
+			class="tag-input form-control"
+			placeholder="{{ 'golive_tag_input' | translate }}"
+			ng-model="panel.tagSelected"
+			tabindex="1"
+		 	maxlength="20"
+		 	ng-required
+			ng-maxlength="20"
+			typeahead="tag for tag in panel.loadTags($viewValue)"
+			ng-change="panel.validateTag(panel.tagSelected)"
+			ng-blur="panel.typeaheadClosed = true"
+			typeahead-on-select="panel.selectTag($item, $model, $label)"
+			typeahead-template-url="angularjsapp/src/app/components/settingup-panel/tag-selection.tpl.html">
+	</form>
+	<i class="ynicon ynicon-icon-check" ng-class="{active: panel.tagValid}"></i>
+	<div class="typeahead-defaults pull-left mini-scroll" ng-class="{active: panel.typeaheadClosed}" only-scroll>
+		<div class="pull-left tag" ng-repeat="tag in ::panel.popularTags track by $index" ng-click="panel.selectTag(tag)" ng-if="tag.tag !== false" ng-class="::{'ep-tag': tag.isEp, 'tag': !tag.isEp}">
+			<i ng-if="::tag.isEp"class="ynicon ynicon-level"></i>
+			{{::tag.tag}}
+		</div>
+	</div>
+</div>
+<h4 class="heading">2. {{ '_share' | translate }}</h4>
+<div class="text-muted sub-title" translate="golive_share_text"></div>
+<div class="snapshot pull-left">
+	<img ng-if="panel.snapshot" ng-src="data:image/jpeg;base64,{{panel.snapshot}}">
+	<button class="btn btn-transparent" ng-disabled="!panel.initResponse" ng-click="panel.takeSnapshot()">
+		<i class="ynicon ynicon-camera"></i>
+	</button>
+</div>
+<div class="snapshot-description pull-left">
+	<input  class="form-control"
+			yn-enter="panel.startBroadcast()"
+			id="share-input"
+			tabindex="2"
+			placeholder="{{ 'golive_share_input' | translate }}"
+			ng-model="panel.shareCopy"
+			ng-maxlength="60"
+			maxlength="60">
+	<button class="btn btn-transparent" ng-disabled="!panel.initResponse" ng-click="panel.toggleShare('twitter')">
+		<i class="ynicon" ng-class="{'ynicon-icon-share-tw': !panel.networks.twitter, 'ynicon-icon-share-tw-on': panel.networks.twitter}"></i>
+	</button>
+	<button class="btn btn-transparent" ng-disabled="!panel.initResponse" ng-click="panel.toggleShare('facebook')">
+		<i class="ynicon" ng-class="{'ynicon-icon-share-fb': !panel.networks.facebook && !panel.networks.facebookShare, 'ynicon-icon-share-fb-on': panel.networks.facebook || panel.networks.facebookShare}"></i>
+	</button>	
+	<button class="btn btn-transparent" ng-disabled="!panel.initResponse" ng-click="panel.toggleShare('youtube')" ng-if="panel.showYoutube" tooltip="{{'settings_connect_youtube_simulcast' | translate }}" tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip-append-to-body="true">
+		<i class="ynicon" ng-class="{'ynicon-icon-share-yt': !panel.networks.youtube, 'ynicon-icon-share-yt-on': panel.networks.youtube}"></i>
+	</button>
+	<button class="btn btn-transparent" ng-disabled="!panel.initResponse" ng-click="panel.toggleShare('tumblr')">
+		<i class="ynicon" ng-class="{'ynicon-social-tm': !panel.networks.tumblr, 'ynicon-icon-share-tm-on': panel.networks.tumblr}"></i>
+	</button>
+</div>
+<div class="golive_buttons">
+	<button class="btn btn-primary" ng-if="!panel.externalStreaming.active" id="start-broadcast-btn" ng-disabled="panel.startingBroadcast || !panel.initResponse" ng-click="panel.startBroadcast()">
+		<span ng-if="!panel.startingBroadcast" translate="_golive"></span>
+	    <div ng-if="panel.startingBroadcast" class="loader-light"></div>
+	</button>
+	<button class="btn btn-primary" ng-if="panel.externalStreaming.active" id="start-broadcast-btn" ng-disabled="panel.startingBroadcast || !panel.initResponse" ng-click="panel.prepareBroadcast()">
+		<span ng-if="!panel.startingBroadcast">Prepare Broadcast</span>
+	    <div ng-if="panel.startingBroadcast" class="loader-light"></div>
+	</button>
+</div>

@@ -1,0 +1,100 @@
+<div class="comment-container" ng-if="post.id" ng-attr-id="post_{{::post.id}}">
+		<div class="line-spacing row"></div>
+		<a
+		class="circle-thumb crop-thumb pull-left"
+		ng-href="/{{post.user.profileUrlString}}" prevent-default
+		ng-click="showProfileSummary(post.user.userId)"
+		ng-style="::{ 'background': 'url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}">
+			<div class="thumb-image">
+				<div class="thumb-image-wide">
+					<img class="thumb-image-img" ng-src="{{::cdn.thumb+post.user.userId}}" alt="{{::post.user.profile}}" />
+				</div>
+			</div>
+		</a>
+		<div class="admin-controls pull-right" ng-show="canEdit(post)" dropdown>
+			<button class="btn btn-transparent" dropdown-toggle href="javascript:void(0)">
+				<img ng-src="{{::cdn.base}}/images/groups/icon_pro_arrow.png">
+			</button>
+			<ul class="dropdown-menu">
+				<i class="ynicon ynicon-carrot-up"></i>
+				<li ng-if="::post.downloadUrl !== undefined">
+					<a class="download" target="_self" ng-href="{{::post.downloadUrl}}" rel="nofollow" translate="_delete"></a>
+				</li>
+				<li ng-if="canPin(post)" ng-click="togglePin(post)">
+					<a href="javascript:void(0)">
+						{{post.isPinned ? 'Unpin' : 'Pin'}}
+					</a>
+				</li>
+				<li>
+					<a class="delete-comment" data-confirm-message="post_are_you_sure_delete" confirm="delete" confirm-data="post" href="javascript:void(0)"><span translate="_delete"></span></a>
+				</li>
+			</ul>
+		</div>
+		<div class="description">
+			<img ng-if="post.isPinned" class="pin pull-left"  ng-src="{{::cdn.base}}/images/groups/icon_post_pin.png">
+			<a
+			class="name"
+			ng-href="/{{post.user.profileUrlString}}" prevent-default
+			ng-click="showProfileSummary(post.user.userId)">
+				{{::post.user.firstName}} {{::post.user.lastName}}
+			</a>
+			<div class="minutes-ago text-muted" ng-if="::post.timeAgo !== '0 second ago'">{{::post.timeAgo}}</div>
+			<div class="minutes-ago text-muted" ng-if="::post.timeAgo == '0 second ago'" translate="post_just_now"></div>
+		</div>
+		<div class="body clear">
+			<div class="comment-text">
+				<div ng-bind-html="::post.post"></div>
+			</div>
+			<div class="comment-media-reply" ng-if="::post.hasOwnProperty('embed')">
+				<div ng-include src="'angularjsapp/src/app/components/post/embed/'+post.embed+'.tpl.html'"></div>
+			</div>
+			<div class="comment-media-reply" ng-if="::(post.media!==undefined && post.media.type!==undefined && !post.hasOwnProperty('embed'))">
+
+				<img ng-if="::(post.media.type=='1'||post.media.type=='2')" ng-src="{{::cdn.media}}{{::broadcasterService.broadcaster.userId}}/id={{::post.id}}/ext={{::post.media.ext}}">
+
+				<iframe ng-if="::post.media.type=='4'" frameborder="0" height="325" seamless="" ng-src="{{::trustedSrc(cdn.base+'/player.php?channelId='+broadcasterService.broadcaster.userId+'&amp;id='+post.id)}}" width="433"></iframe>
+
+				<ul ng-if="::post.media.type=='5'" class="broadcasts" ng-attr-id="post_{{::post.media.broadcast.broadcastId}}">
+					<li class="broadcast">
+						<div class="left-col pull-left">
+							<a
+							ng-href="/{{post.media.broadcast.profile || post.media.broadcast.profileUrlString}}" prevent-default
+							ng-click="showMedia(post.media.broadcast.broadcastId, {}, post.media.broadcast)"
+							class="thumb"
+							style="background:url( {{::cdn.broadcast+post.media.broadcast.broadcastId}} );background-size:cover;">
+								<img class="play-button" ng-src="{{::cdn.base}}/images/profile/new/icon_play.png">
+								<span class="length">{{::post.media.broadcast.broadcastLengthMin}}</span>
+							</a>
+						</div>
+						<div class="right-col pull-left">
+							<span class="title not-too-long">{{::post.media.broadcast.ddateAired}}</span>
+							<div class="row">
+								<span></span>
+							</div>
+							<div class="rating-viewers">
+								<span class="viewers">{{::post.media.broadcast.totalViewers | number}} views / #{{::post.media.broadcast.tags}}</span>
+							</div>
+							<ul class="gifts">
+								<div ng-repeat="gift in post.media.broadcast.gifts" class="gift pull-left">
+									<img alt="gift.giftSKU" class="gift-thumb pull-left" ng-src="{{::cdn.base}}/images/profile/new/gifts/{{::gift.giftSKU}}_pro.png">
+									<span class="count">{{::gift.total}}</span>
+								</div>
+							</ul>
+						</div>
+					</li>
+				</ul>
+
+				<img ng-if="::post.media.type=='6'" ng-src="{{::cdn.snapshot}}{{::post.media.snapshot.snapshotId}}" ng-attr-id="post_{{::post.media.snapshot.snapshotId}}">
+
+			</div>
+		</div>
+		<div class="actions">
+			<div class="like" ng-click="toggleLike(post)">
+				<i class="ynicon ynicon-thumb" ng-class="{'not-liked': !post.liked, liked: post.liked}"></i>
+				<span ng-class="{liked: post.liked}">{{post.liked ? 'Liked' : 'Like'}}</span>
+				<span ng-show="post.likesCount">&#8211; {{post.likeText}}</span>
+			</div>
+		</div>
+		<div class="options pull-right hidden"></div>
+		<div class="options-screen pull-left hidden"></div>
+</div>

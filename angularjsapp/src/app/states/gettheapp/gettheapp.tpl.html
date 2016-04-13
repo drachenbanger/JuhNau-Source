@@ -1,0 +1,12 @@
+<div data-header></div>
+<div id="gettheapp">
+
+<div class="content" ng-include="'angularjsapp/src/app/components/mobile-download/mobile-download.tpl.html'">
+</div>
+
+<style ng-if="vm.device">
+#gettheapp .inner-container .download-image { background-image:url('/angularjsapp/src/assets/images/home/home_{{vm.device}}_2x.jpg'); }
+</style>
+
+</div>
+<div data-footer ng-hide="$root.hideFooter"></div>

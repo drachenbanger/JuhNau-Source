@@ -1,0 +1,24 @@
+<div class="selfie-chat-view" ng-class="{'active-view': vm.selectedSelfie.sfb !== undefined && !closing && opening, 'active-creation': vm.creatingSelfie && !closing && opening}">
+  <div class="selfie-view">
+    <img ng-src="{{::vm.config.settings.SelfieBaseUrl}}{{vm.selectedSelfie.sfb}}"/>
+    <div class="selfie-name">{{vm.selectedSelfie.name}}</div>
+    <div class="fan-button-placeholder" track-source="PROFILE">
+      <div fan-button channel="vm.selectedSelfie"></div>
+    </div>
+  </div>
+  <div class="selfie-creation">
+    <h2 translate="selfies_header"></h2>
+    <div class="selfie-image-container">
+      <div class="selfie-progress {{animationProgress}}">
+        <div class="semi-prog semi-prog-1"></div>
+        <div class="semi-prog semi-prog-2"></div>
+        <div class="semi-prog semi-prog-3"></div>
+      </div>
+      <div class="selfie-preview">
+        <img class="preview-image" ng-src="{{selfies.localSelfieSrc.preview}}">
+        <video id="preview-selfie" ng-class="{'snapshot': flickerMode}" width="322" height="276" camera-valid on-valid="vm.cameraValid()"></video>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" ng-click="vm.closeSelfieView()"></div>
+</div>

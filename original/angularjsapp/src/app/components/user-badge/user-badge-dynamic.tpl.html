@@ -1,0 +1,57 @@
+<span class="crowns-container">
+    <span class="user-crowns ynbadge" ng-if="(subscriptionType != '0' && subscriptionType != undefined)">
+        <img ng-src="{{::config.settings.BadgeBaseUrl}}/{{broadcast.broadcaster.userId}}/{{(subscriptionType || 1)}}/badge@2x.png" />
+    </span>
+    <span class="user-crowns" ng-if="( !subscriptionType && level && (!role || role==3) )">
+        <i class="ynicon ynicon-level"></i>
+    </span>
+    <span class="user-crowns" ng-if="( role == 2 )">
+        <i class="ynicon ynicon-ambass"></i>
+    </span>
+    <span class="user-crowns" ng-if="::( (role == 4 || role == 5 || role == 6) && level)">
+        <span ng-if="(role == 4)">
+            <i class="ynicon ynicon-icon-whale"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+        <span ng-if="(role == 5)">
+            <i class="ynicon ynicon-icon-whale"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+        <span ng-if="(role == 6)">
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+    </span>
+    <span class="user-crowns" ng-if="( (role == 7 || role == 8 || role == 9) && level)">
+        <span ng-if="(role == 7)">
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-vip"></i>
+        </span>
+        <span ng-if="(role == 8)">
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-vip"></i>
+        </span>
+        <span ng-if="(role == 9)">
+            <i class="ynicon ynicon-icon-vip"></i>
+        </span>
+    </span>
+    <span class="user-crowns" ng-if="( (role == 10 || role == 11 || role == 12) && level)">
+        <span ng-if="(role == 10)">
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+        <span ng-if="(role == 11)">
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+        <span ng-if="(role == 12)">
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-vip"></i>
+            <i class="ynicon ynicon-icon-whale"></i>
+        </span>
+    </span>
+
+    <span ng-if="(role != 1 && level > 1)" class="chat-name level"><b>{{level}}</b></span>
+</span>

@@ -1,0 +1,42 @@
+<div class="modal-body">
+    <button aria-hidden="true" class="pull-right close" ng-click="$dismiss()" type="button">
+        <i class="ynicon ynicon-close"></i>
+    </button>
+    <div class="panel-one">
+        <div class="ep-thumb">
+            <div class="circle-thumb" ng-style="::{'background': 'url('+modal.thumb+') no-repeat, url('+modal.nothumb+') no-repeat', 'background-size': 'cover'}"></div>
+            <div class="ep-badge pull-left">
+                <i class="ynicon ynicon-level"></i> Editor's Choice
+            </div>
+        </div>
+        <h4 class="ep-tag">#{{::modal.session.user.editorsPick.tag}}</h4>
+        <h3 class="title">Congratulations!</h3>
+        <p class="ep-desc">
+            Because of your talent and broadcast quality, you have been selected as Editor's Choice for <b>#{{::modal.session.user.editorsPick.tag}}</b>!
+        </p>
+        <div class="bottom">
+            <button class="btn btn-confirm btn-wide" ng-click="modal.continue()">Continue</button>
+        </div>
+    </div>
+    <div class="panel-two" ng-class="{'active': modal.state === 'description'}">
+        <h3 class="title">What does Editor's Choice Mean?</h3>
+        <div class="sub-title">As Editor's choice for <b>#{{::modal.session.user.editorsPick.tag}}</b>, this means:</div>
+        <ul class="ep-list">
+            <li>
+                Your profile will display the "Editor's Choice" badge, letting others know you have been handpicked by YouNow staff
+                <div class="ep-badge">
+                    <i class="ynicon ynicon-level"></i> Editor's Choice
+                </div>
+            </li>
+            <li>
+                When you broadcast on <b>#{{::modal.session.user.editorsPick.tag}}</b>, you will receive a boost to give your broadcast more visibility
+            </li>
+            <li>
+                You will gain more fans, who are specifically interested in <b>#{{::modal.session.user.editorsPick.tag}}</b> content
+            </li>
+        </ul>
+        <div class="bottom">
+            <button class="btn btn-confirm btn-wide" ng-click="modal.continue()">Sounds Good!</button>
+        </div>
+    </div>
+</div>

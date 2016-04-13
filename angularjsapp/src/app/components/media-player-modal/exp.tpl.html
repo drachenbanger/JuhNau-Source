@@ -1,0 +1,54 @@
+<div class="modal-body">
+	
+	<button class="close" ng-click="$dismiss()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+
+	<div class="modal-heading">
+		Watch {{ vm.channel.profile }}s latest broadcast on YouNow
+	</div>
+
+	<div id="media-player-modal-player-expplayer">
+		Loading video player...
+	</div>
+
+	<div class="modal-info clearfix">
+		<span><i class="ynicon ynicon-viewers"></i> {{ vm.broadcast.totalViewers | number }} </span>
+		<span><i class="ynicon ynicon-thumb"></i> {{ vm.broadcast.totalLikes | number }} </span>
+		<span><i class="ynicon ynicon-btn-bc-share-android"></i> {{ vm.broadcast.shares | number }} </span>
+		<div class="pull-right">
+			{{ vm.channel.profile }}: {{::vm.broadcast.broadcastTitle}}
+		</div>
+	</div>
+
+	<div class="modal-share">
+		<input type="checkbox" ng-model="vm.seekOn" ng-change="vm.seekCheck()" /> 
+		<div class="share-at" ng-class="{selected:vm.seekOn}">
+			Share at: 
+			<input 
+			type="text" 
+			class="share-input" 			
+			ng-model="vm.seekValue" 
+			ng-focus="vm.seekFocus()" 
+			ng-blur="vm.seekBlur()" 
+			ng-change="vm.seekChange()" 
+			style="margin-top:-1px;"
+			/> 
+		</div>
+		<input 
+		type="text" 
+		class="share-output"
+		value="{{vm.broadcast.href}}" 
+		copy-on-click 
+		tooltip="copied to clipboard"
+		tooltip-append-to-body="true"
+	      tooltip-trigger="hrefCopied"
+		/>
+		<div class="share-buttons">
+			<img src="/images/profile/new/fb_share_100.png" ng-click="vm.shareFacebook();" /> 
+			<img src="/images/profile/new/icon_pro_tw.png" ng-click="vm.shareTwitter();" />
+		</div>
+	</div>
+
+</div>
+<!-- ng-value="  vm.shareValue ? vm.shareValue : ( vm.broadcast.shareTo ? vm.broadcast.shareTo : vm.shareTo )   "  -->

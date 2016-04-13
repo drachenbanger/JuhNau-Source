@@ -1,0 +1,154 @@
+<div class="modal-body show-{{vm.spanel}}">
+
+	<button aria-hidden="true" class="pull-right close" ng-click="$dismiss()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+
+	<!-- 1 -->
+	<div class="spanel spanel-initial">
+
+		<div class="modal-top">
+			<div class="portrait thumb" ng-style="{'background-image': 'url('+vm.template.channelThumb+'), url('+vm.template.noThumb+')'}">
+			</div>
+			<h2 class="heading" translate="subscribe_to" translate-values="{value:(vm.channel.profile || vm.channel.profileUrlString)}">
+			</h2>
+		</div>
+		<div class="modal-middle">
+			<div class="title" translate="subscribe_to" translate-values="{value:(vm.channel.profile || vm.channel.profileUrlString)}">
+			</div>
+			<div class="text list">
+				<p><span translate="subscribe_benefits_badge"></span> <span class="ynbadge"><img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{vm.channel.userId}}/1/badge@2x.png" /></span></p>
+				<p translate="subscribe_benefits_chat_text"></p>
+				<p translate="subscribe_benefits_chat_priority"></p>
+				<p translate="subscribe_benefits_sub_only"></p>
+				<p translate="subscribe_benefits_support" translate-values="{value:(vm.channel.profile || vm.channel.profileUrlString)}"></p>
+			</div>
+		</div>
+		<div class="modal-bottom">
+			<button class="btn btn-confirm" type="button" ng-click="vm.submitInitial()"><i class="ynicon ynicon-icon-subscribe"></i> {{ '_subscribe' | translate }}</button>
+		</div>
+		<div class="modal-below">
+			<div class="price" translate="subscribe_monthly" translate-values="{value:'${{::vm.sub.price}}'}"></div>
+		</div>
+
+	</div>
+
+	<!-- 2 -->
+	<div class="spanel spanel-email">
+	<form name="subscriptionsEmail" ng-submit="vm.submitEmail(subscriptionsEmail)" novalidate>
+
+		<div class="modal-top">
+			<div class="portrait thumb" ng-style="::{'background-image': 'url('+vm.template.channelThumb+'), url('+vm.template.noThumb+')'}">
+				<span class="ynbadge">
+					<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.channel.userId}}/1/badge@2x.png" />
+				</span>
+			</div>
+			<h2 class="heading" translate="subscribe_purchase_subscription">
+			</h2>
+		</div>
+		<div class="modal-middle">
+			<div class="text" translate="subscribe_purchase_email">
+			</div>
+			<div class="form">
+				<input placeholder="Email address"
+					name="email"
+					class="form-control"
+					type="email"
+					ng-validate
+					required
+					ng-model="vm.session.user.email"
+					ng-pattern="emailRegex"
+					tooltip="Please enter valid email"
+					tooltip-trigger="show"
+					tooltip-append-to-body="true"
+					tooltip-placement="bottom error"
+					subscribe-validate />
+			</div>
+		</div>
+		<div class="modal-bottom">
+			<button class="btn btn-confirm" type="submit" {{ (subscriptionsEmail.$touched && subscriptionsEmail.$valid) ? '' : 'disabled' }}>
+				{{ '_continue' | translate }}
+			</button>
+		</div>
+
+	</form>
+	</div>
+
+	<!-- 3 -->
+	<div class="spanel spanel-payment">
+
+		<div class="modal-top">
+			<h2 class="heading" translate="subscribe_confirm_header" translate-values="{value:'${{::vm.sub.price}}'}">
+			</h2>
+		</div>
+		<div class="modal-middle">
+			<div class="title">
+				<span class="ynbadge"><img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.channel.userId}}/1/badge@2x.png" /></span>
+				<span translate="subscribe_confirm_and_enjoy" translate-values="{value:(vm.channel.profile || vm.channel.profileUrlString)}"></span>
+			</div>
+			<div class="text" translate="subscribe_confirm_instructions_edit" ng-if="vm.subscription.subscriptionId"></div>
+			<div class="text" translate="subscribe_confirm_instructions_enter" ng-if="!vm.subscription.subscriptionId"></div>
+			<iframe id="braintree-iframe"
+				ng-if="config.buybarsiframe"
+				ng-src="{{::Api.trustedSrc(config.settings.ServerSecureLocalBaseUrl + '/checkout.php' )}}">
+			</iframe>
+			<form id="braintree-form" ng-if="!config.buybarsiframe">
+				<div id="braintree-dropin"></div>
+				<button type="submit" ng-disabled="vm.submitting || vm.braintreeLoading" class="btn btn-confirm">
+					<span translate="_submitting" ng-if="vm.submitting"></span>
+					<span translate="_submit" ng-if="!vm.submitting"></span>
+					<div class="spinning-container" ng-if="(vm.submitting || vm.braintreeLoading)">
+						<span class="spinning-loader"></span>
+					</div>
+				</button>
+			</form>
+
+		</div>
+	</div>
+
+	<!-- 4 -->
+	<div class="spanel spanel-thankyou">
+		<div class="modal-top">
+			<div class="portrait thumb" ng-style="::{'background-image': 'url('+vm.template.channelThumb+'), url('+vm.template.noThumb+')'}">
+				<span class="ynbadge">
+					<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.channel.userId}}/1/badge@2x.png" />
+				</span>
+			</div>
+			<div class="portrait thumb" ng-style="::{'background-image': 'url('+vm.template.userThumb+'), url('+vm.template.noThumb+')'}">
+			</div>
+			<h2 class="heading" translate="subscribe_congrats"></h2>
+		</div>
+		<div class="modal-middle">
+			<div class="text">
+				<p translate="subscribe_congrats_benefits_tip" translate-values="(vm.channel.profile || vm.channel.profileUrlString)"></p>
+				<p translate="subscribe_congrats_managing_tip"></p>
+			</div>
+		</div>
+		<div class="modal-bottom">
+			<button class="btn btn-confirm" type="button" ng-click="vm.closeThankyou();">{{ '_awesome' | translate }}!</button>
+		</div>
+	</div>
+
+	<!-- 5 -->
+	<div class="spanel spanel-cancel">
+		<div class="modal-top">
+			<div class="portrait thumb" ng-style="{'background-image': 'url('+vm.template.channelThumb+'), url('+vm.template.noThumb+')'}">
+				<span class="ynbadge">
+					<img ng-src="{{vm.config.settings.BadgeBaseUrl}}/{{vm.channel.userId}}/1/badge@2x.png" />
+				</span>
+			</div>
+			<h2 class="heading" translate="subscribe_cancel_confirm">
+			</h2>
+		</div>
+		<div class="modal-middle">
+			<div class="text">
+				<p translate="subscribe_cancel_last_day" translate-values="{broadcaster:(vm.channel.profile || vm.channel.profileUrlString), date:vm.subscription.paidThroughDate}"></p>
+			</div>
+		</div>
+		<div class="modal-bottom">
+			<button class="btn btn-confirmed-custom" type="button" ng-click="$dismiss()" translate="subscribe_cancel_stay_subscribed"></button>
+			<button class="btn" type="button" ng-click="vm.cancelSubscription()" ng-disabled="vm.cancelling">{{(vm.cancelling ? 'subscribe_cancel_cancelling' : 'subscribe_cancel_confirm') | translate}}</button>
+		</div>
+	</div>
+
+</div>

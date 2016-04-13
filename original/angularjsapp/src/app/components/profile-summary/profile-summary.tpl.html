@@ -1,0 +1,240 @@
+<div ng-class="modal.state" class="profile-summary fade in" tabindex="-1" aria-hidden="false">
+	<button aria-hidden="true" class="pull-right close" ng-click="$dismiss()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+	<div class="modal-header"> <div class="cover-image yn-modal-draggable" ng-style="::{'background': 'url('+cover+') no-repeat', 'background-size': 'cover'}"></div></div>
+	<div class="modal-body" ng-class="{banned: session.user.banId !== 0}">
+		<div class="profile-description">
+			<div class="circle-thumb pull-left clickable" ng-click="goToProfile(user.profile)" ng-style="::{'background': 'url('+thumb+') no-repeat, url('+nothumb+') no-repeat', 'background-size': 'cover'}">
+				<span class="ynbadge" ng-if="user.isSubscribable">
+					<img ng-src="{{::config.settings.BadgeBaseUrl}}/{{::user.userId}}/1/badge@2x.png" />
+				</span>
+			</div>
+			<!-- normal state -->
+			<div class="user-info pull-left" ng-if="modal.state===''">
+				<div class="name name-with-badges" ng-class="::{'special-role pull-left': session.moderator && user.isPartner}">
+
+					<b class="short-text" ng-click="goToProfile(user.profile)">
+						<span class="crowns-container">
+							<span class="user-crowns">
+								<span ng-if="user.globalSpenderRank==1">
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="user.globalSpenderRank==2">
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="user.globalSpenderRank==3">
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="!user.globalSpenderRank">
+									<i class="ynicon ynicon-level"></i>
+								</span>
+							</span>
+						</span>
+						{{::user.level}} 
+						{{::user.fullName}}
+					</b>
+					
+					<span class="ynbadges" ng-if="user.subscriptions">
+						<span class="ynbadge" ng-repeat="(key,sub) in user.subscriptions">
+							<img
+								ng-src="{{::config.settings.BadgeBaseUrl}}/{{::sub.userId}}/{{::sub.subscriptionType}}/badge@2x.png"
+								ng-click="showProfileSummary(sub.userId)"
+								tooltip="{{::sub.profileUrlString}}"
+								tooltip-trigger="mouseenter"
+								tooltip-placement="top"
+								tooltip-append-to-body="true" />
+						</span>
+						<span class="ynbadge ynbadge-ellipsis" ng-if="user.subscriptions_extras && user.subscriptions_extras.length>0">
+							<i class="ynicon ynicon-icon-ellipsis"></i>
+							<div class="dropup">
+								<div class="dropdown-menu" role="menu">
+									<i class="ynicon ynicon-carrot-dwn"></i>
+									<ul class="" only-scroll>
+										<li ng-repeat="(k,s) in user.subscriptions_extras">
+											<a 
+											class="ynbadge" 
+											ng-click="showProfileSummary(s.userId)"
+											ng-href="/{{::s.userId}}/channel"
+											prevent-default>
+												<img 
+												ng-src="{{::config.settings.BadgeBaseUrl}}/{{::s.userId}}/{{::s.subscriptionType}}/badge@2x.png"
+												tooltip="{{::(s.lastName ? s.firstName+' '+s.lastName : s.profileUrlString)}}"
+												tooltip-trigger="mouseenter"
+												tooltip-placement="left"
+												tooltip-append-to-body="true" />
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</span>
+					</span>
+
+				</div>
+
+			</div>
+			<!-- to follow -->
+			<div class="user-info social-action pull-left transline" ng-if="modal.state=='following' && !modal.following.followed">
+				<span ng-if="canFollow(modal.following.network)">{{sn_verb[ modal.following.network ] | translate}} </span>
+				<a class="name short-text" href ng-click="openUrl('https://twitter.com/'+user.twitterHandle, 'link')" ng-if="modal.following.network=='twitter'">@{{::user.twitterHandle}}</a>
+				<a class="name short-text" href ng-click="openUrl(user.facebookLink, 'link')" ng-if="modal.following.network=='facebook'">{{::user.firstName}} {{::user.lastName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://youtube.com/channel/'+user.youTubeChannelId, 'link')" ng-if="modal.following.network=='youtube'">{{::user.friendlyName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://plus.google.com/'+user.googleId, 'link')" ng-if="modal.following.network=='google'">{{::user.firstName}} {{::user.lastName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://instagram.com/'+user.instagramHandle, 'link')" ng-if="modal.following.network=='instagram'">{{::user.instagramHandle}}</a>
+				<span class="name short-text"> {{ '_on' | translate }} {{sn_titles[ modal.following.network ]}} </span>
+			</div>
+			<!-- already followed -->
+			<div class="user-info social-action pull-left transline" ng-if="modal.state=='following' && modal.following.followed">
+				<span><i class="ynicon ynicon-icon-check"></i>{{sn_verbed[ modal.following.network ] | translate}} </span>
+				<a class="name short-text" href ng-click="openUrl('https://twitter.com/'+user.twitterHandle, 'link')" ng-if="modal.following.network=='twitter'">@{{::user.twitterHandle}}</a>
+				<a class="name short-text" href ng-click="openUrl(user.facebookLink, 'link')" ng-if="modal.following.network=='facebook'">{{::user.firstName}} {{::user.lastName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://youtube.com/channel/'+user.youTubeChannelId, 'link')" ng-if="modal.following.network=='youtube'">{{::user.friendlyName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://plus.google.com/'+user.googleId, 'link')" ng-if="modal.following.network=='google'">{{::user.firstName}} {{::user.lastName}}</a>
+				<a class="name short-text" href ng-click="openUrl('https://instagram.com/'+user.instagramHandle, 'link')" ng-if="modal.following.network=='instagram'">{{::user.instagramHandle}}</a>
+			</div>
+
+			<!-- default -->
+			<div class="user-bio line-clamp" ng-if="modal.state==''">
+				
+				<div class="more-info">
+					<span ng-if="::(session.moderator && user.isPartner)"><b translate="_partner"></b> <span class="bullet">&#8226;</span> </span>
+					<span ng-if="::session.moderator"><b>{{user.userId}}</b> <span class="bullet">&#8226;</span> </span>
+					<span translate="profile_fans" translate-values="{value:user.totalFans}"></span> 
+					<span ng-if="user.isSubscribable && user.totalSubscribers"><span class="bullet">&#8226;</span> <span translate="profile_subscribers" translate-values="{value:user.totalSubscribers}"></span></span>
+					<div class="join-date" translate="profile_younower_since" translate-values="{date:user.dateString}"></div>
+				</div>
+
+				<span class="location" ng-if="user.location.length > 0">{{::user.location}} <span class="bullet">&#8226;</span></span>
+				<span class="summary" ng-bind-html="user.description"></span>
+			</div>
+
+			<div class="social-actions pull-left" ng-if="modal.state=='' && session.user.userId !== user.userId">
+		   		<button class="btn btn-transparent social-google" ng-if="::user.googleId" ng-click="setupFollowing('google',{backToSummary:true})">
+					<i class="ynicon ynicon-social-gp"></i>
+				</button>
+		   		<button class="btn btn-transparent" ng-if="::user.facebookId" ng-click="setupFollowing('facebook',{backToSummary:true})">
+					<i class="ynicon ynicon-social-fb"></i>
+				</button>
+				<button class="btn btn-transparent" ng-if="::user.youTubeChannelId" ng-click="setupFollowing('youtube',{backToSummary:true})">
+					<i class="ynicon ynicon-icon-social-yt"></i>
+				</button>
+ 				<button class="btn btn-transparent" ng-if="::user.instagramHandle" ng-click="setupFollowing('instagram',{backToSummary:true})">
+					<i class="ynicon ynicon-social-insta"></i>
+				</button>
+				<button class="btn btn-transparent" ng-if="::user.twitterHandle" ng-click="setupFollowing('twitter',{backToSummary:true})">
+					<i class="ynicon ynicon-social-tw"></i>
+				</button>
+			</div>
+			<!-- user-info flagging/suspending -->
+			<div class="user-info pull-left" ng-if="modal.state=='flagging'">
+				<div class="name" translate="profile_reason_for_flagging"></div>
+				<div class="more-info text-muted" translate="profile_false_flagging_result"></div>
+			</div>
+			<div class="user-info pull-left" ng-if="modal.state=='suspending'">
+				<div class="action-message ban-state" ng-if="modal.action.actionName.replace('Suspend', '')=='Ban'">
+					{{'_ban' | translate }} <span ng-click="goToProfile(user.profile)" class="name short-text">{{::user.profile}}</span>
+				</div>
+				<div class="action-message" ng-if="modal.action.actionName.replace('Suspend', '') !== 'Ban'">
+					{{'_suspend' | translate }} <span ng-click="goToProfile(user.profile)" class="name short-text">{{::user.profile}}</span> {{'_for' | translate }} {{modal.action.actionName.replace('Suspend', '')}}
+				</div>
+			</div>
+			<!-- reason for flagging/suspending -->
+			<div class="pull-left flagging-reasons" ng-if="modal.state=='flagging' && !modal.notifying">
+				<div ng-repeat="flag in flags">
+					<div ng-click="modal.flag = flag.id">
+						<input ng-model="modal.flag" ng-value="flag.id" type="radio">
+						<span>{{flag.desc}}</span>
+					</div>
+				</div>
+			</div>
+			<div ng-if="modal.state=='suspending' && !modal.notifying">
+				<form name="modal.reasonForm" novalidate>
+					<select class="form-control suspending-options" ng-model="modal.reasonOption" required ng-required>
+						<option value="" default selected translate="profile_please_choose"></option>
+						<option value="{{option.id}}" ng-repeat="option in modal.actionOptions">
+							{{option.desc}}
+						</option>
+					</select>
+					<textarea class="suspending-reasons" ng-model="modal.reason" placeholder="Please provide a reason..." ng-maxlength="245" required></textarea>
+				</form>
+			</div>
+			<div ng-if="modal.notifying" class="action-notifications pull-left">
+				<span ng-class="modal.notificationType"><i class="ynicon ynicon-icon-mod pull-left"></i> {{modal.notificationMessage}}</span>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+
+	<!-- normal -->
+	<div class="actions" ng-if="modal.state==''" track-source="MINI_PROFILE" track-context="{{::openedFrom}}">
+		<div class="pull-left btn-small" fan-button channel="user"></div>
+		<div class="pull-left btn-small" subscribe-button channel="user" source="MINI_PROFILE"></div>
+		<div class="pull-left btn-small" guest-button channel="user" on-invite="closeOnInvite()"></div>
+		<a ng-href="{{user.profile}}/channel" ng-if="!session.isBroadcasting" class="full-profile pull-left" ng-click="goToProfile(user.profile, $event)" translate="profile_full_profile"></a>
+
+		<div class="pull-right flagging-menu" ng-if="session.user && session.user.userId!==user.userId && session.user.banId === 0" dropdown is-open="modal.flagging">
+			<i ng-click="toggleDropdown($event)" class="ynicon ynicon-flag"></i>
+			<div class="dropdown-menu" role="menu">
+				<i class="ynicon ynicon-carrot-up"></i>
+				<ul class="mini-scroll" only-scroll>
+					<li ng-repeat="action in actions">
+						<a href ng-click="doAction(action)">{{action.actionName}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- flagging -->
+	<div class="actions center" ng-if="modal.state=='flagging'">
+		<button class="btn btn-important"
+			ng-class="{error: modal.notifying || modal.flag === undefined}"
+			ng-click="submitAction()"
+			id="flagging-tooltip"
+			tooltip="Provide a Reason"
+			tooltip-trigger="show"
+			tooltip-append-to-body="true"
+			tooltip-placement="top error"
+			translate="profile_report_user"></button>
+		<button class="btn btn-cancel" ng-click="modal.resetProfileSummary()" translate="_cancel"></button>
+	</div>
+
+	<!-- suspending -->
+	<div class="actions center" ng-if="modal.state === 'suspending'">
+		<span
+			id="reason-form-tooltip"
+			tooltip="Provide a Reason"
+			tooltip-trigger="show"
+			tooltip-placement="top error"
+			tooltip-append-to-body="true">
+			<button class="btn btn-important" ng-class="{error: modal.notifying || !modal.reasonOption}" ng-if="!modal.notifying && modal.action.actionName.replace('Suspend', '') !== 'Ban'" ng-click="submitAction()" translate="_suspend"></button>
+			<button class="btn btn-important" ng-class="{error: modal.notifying || !modal.reasonOption}" ng-if="!modal.notifying && modal.action.actionName.replace('Suspend', '') === 'Ban'" ng-click="submitAction()" translate="_ban"></button>
+		</span>
+		<button class="btn btn-cancel" ng-if="!modal.notifying" ng-click="modal.resetProfileSummary()" translate="_cancel"></button>
+		<button class="btn btn-cancel" ng-if="modal.notifying" ng-click="modal.resetProfileSummary()" translate="_ok"></button>
+	</div>
+
+	<!-- following -->
+	<div class="actions center" ng-if="modal.state=='following'">
+
+		<button class="btn btn-{{modal.following.network}}" ng-click="startFollowing(modal.following.network)" ng-if="canFollow(modal.following.network) && !modal.following.followed">
+			<i class="ynicon {{modal.following.icon}}"></i>
+			<span ng-if="modal.following.network === 'twitter'" translate="_follow"></span>
+			<span ng-if="modal.following.network === 'youtube'" translate="_subscribe"></span>
+		</button>
+
+		<button class="btn btn-twitter" ng-click="openUrl('https://twitter.com/'+user.twitterHandle, 'button')" ng-if="modal.following.network=='twitter' && modal.following.followed"><i class="ynicon ynicon-social-tw"></i> <span translate="profile_view"></span> </button>
+		<button class="btn btn-youtube" ng-click="openUrl('https://youtube.com/channel/'+user.youTubeChannelId, 'button')" ng-if="modal.following.network=='youtube' && modal.following.followed"><i class="ynicon ynicon-icon-social-yt"></i> <span translate="profile_view"></span> </button>
+		<button class="btn btn-google" ng-click="openUrl('https://plus.google.com/'+user.googleId, 'button')" ng-if="modal.following.network=='google'"><i class="ynicon ynicon-social-gp"></i> <span translate="profile_view"></span> </button>
+		<button class="btn btn-facebook" ng-click="openUrl(user.facebookLink, 'button')" ng-if="modal.following.network=='facebook'"><i class="ynicon ynicon-social-fb"></i> <span translate="profile_view"></span> </button>
+		<button class="btn btn-instagram" ng-click="openUrl('https://instagram.com/'+user.instagramHandle, 'button')" ng-if="modal.following.network=='instagram'"><i class="ynicon ynicon-icon-share-insta"></i> <span translate="profile_view"></span> </button>
+
+
+		<button class="btn btn-cancel" ng-click="modal.resetProfileSummary()" translate="_back"></button>
+	</div>
+
+</div>

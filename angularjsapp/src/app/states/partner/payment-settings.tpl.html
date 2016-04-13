@@ -1,0 +1,41 @@
+<div data-header></div>
+<div class="notification" ng-class="{active: $root.notificationActive, fixed: $root.notificationFixed}">
+	<alert type="{{$root.notificationType}}" ng-bind-html="$root.notificationMessage"></alert>
+	<button class="close" ng-click="closeNotification()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>
+
+<!-- Desktop View Start -->
+<div ng-if="::!vm.mobile" id="partnersEarnings" class="partnersContent">
+
+	<div class="userearnings">
+		<div class="userearningsowenothumb">
+			<div class="userearningstitle" translate="tipalti_title"></div>
+			<p class="caption" translate="tipalti_caption" translate-values="{a_open:'<a href=\'mailto:PartnerPayments@YouNow.com?Subject=Partner%Payments\' target=\'_blank\'>',a_close:'</a>'}"></p>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="iframe-container">
+		<tipalti-iframe class="tipalti-iframe"> </tipalti-iframe>
+	</div>
+
+</div>
+<!-- Desktop View End -->
+
+<!-- Mobile View Start -->
+<div ng-if="::vm.mobile" id="partnersEarnings" class="partnersContent">
+
+	<div class="userearnings">
+		<div class="userearningsowenothumb" ng-init="">
+			<div class="userearningstitle" translate="tipalti_title_mobile"></div>
+			<p class="caption" translate="tipalti_caption_mobile"></p>
+		</div>
+	</div>
+
+</div>
+<!-- Mobile View End -->
+
+<div data-footer ng-hide="$root.hideFooter"></div>

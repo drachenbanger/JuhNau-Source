@@ -1,0 +1,15 @@
+<div class="modal-body">
+	<h5 class="title" translate="recommend_this_broadcast"></h5>
+	<div class="share-message" ng-if="!modal.type" translate="share_invite_your_fans" translate-values="{ value: '{{modal.session.user.totalFans}}' }"></div>
+	<div class="share-message" ng-if="modal.type == 'guest'">We need something to post on your profile.</div>
+	<form name="modal.form" novalidate>
+		<input class="form-control" ng-model="modal.recommendMessage" ng-maxlength="60" maxlength="60" ng-required="true">
+	</form>
+	<div class="actions">
+		<button class="btn btn-cancel" ng-click="modal.closeModal()" translate="_cancel"></button>
+		<button class="btn btn-confirm" ng-click="modal.invite()" ng-disabled="modal.form.$invalid" translate="_invite"></button>
+	</div>
+ 	<button aria-hidden="true" class="close btn-reset" ng-click="modal.closeModal()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>

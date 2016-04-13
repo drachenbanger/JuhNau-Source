@@ -1,0 +1,24 @@
+<div class="modal-body verification-result">
+	<button aria-hidden="true" class="close" ng-click="cancel()" type="button">
+	    <i class="ynicon ynicon-close"></i>
+	</button>
+    <div class="heading">
+        <div class="title">
+        	<span class="is-verified">You're Verified!</span>
+        	<div class="is-not-verified">
+                We could not match the amounts to verify your credit card.
+            </div>
+            <span class="is-not-verified text-muted">
+                Please contact support and we will verify you another way quickly.
+            </span>
+        </div>
+    </div>
+    <div class="verified-result-icon is-verified"><i class="ynicon ynicon-icon-verify"></i></div>
+    <div class="verified-result-icon is-not-verified"><i class="ynicon ynicon-icon-verify-reject"></i></div>
+	<button class="btn btn-confirm is-verified" ng-click="continue()">
+		<span>Ok, Great!</span>
+	</button>
+    <button class="btn btn-confirm is-not-verified" ng-click="contactSupport()">
+        <span>Contact Support</span>
+    </button>
+</div>

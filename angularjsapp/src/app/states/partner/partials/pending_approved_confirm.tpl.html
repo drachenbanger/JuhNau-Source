@@ -1,0 +1,31 @@
+<div class="container">
+
+	<h9 class="title">Congrats {{vm.getUsername()}}!</h9>
+	<p>Our standard for signing up partners is high, so it is a testament to your talent that you are one of the very few in our selective program.</p>
+	<p>As a Partner you must agree to the following:</p>
+
+	<ul>
+		<li>Treat all YouNow viewers/users with respect.</li>
+		<li>To receive payment, you are legally required to sign a W9 tax form or its international equivalent.</li>
+		<li>You will receive payment at the beginning of the month following your broadcasts, provided you have earned at least $100 that month. If you've earned less, money will be rolled over into the following month - assuming there is a minimum of $100.</li>
+		<li>We reserve the right to review your broadcasts and revoke earnings if they violate our <a href="/partner/agreement.php" target="_blank">Partner Agreement</a> or <a href="/partner/guidelines.html" target="_blank">Partner Guidelines</a>.</li>
+	</ul>
+
+	<span class="message error" ng-if="vm.agreeFormInvalid">Please check the box below to confirm the Partner Agreement.</span>
+	<p>
+	<form id="aggreeForm">
+		<input type="checkbox" name="agree" value="agree" style="margin-right:10px;" ng-model="vm.agreeFormChecked">
+		I agree to the <a href="/partner/agreement.php" target="_blank">Partner Agreement</a> and <a href="/terms.php" target="_blank">Terms and Conditions</a>.
+	</form>
+	</p>
+	<span class="message error" ng-if="vm.agreeFormError">Sorry. Something went wrong. Please refresh the page.</span>
+
+</div>
+
+<div class="apply">
+	<p>
+		<button href="#" class="btn btn-partner" ng-click="vm.submitAgreeForm()" ng-disabled="vm.agreeFormProcessing">
+			{{ vm.agreeFormProcessing ? 'Sending...' : 'Yes, I agree' }}
+		</button>
+	</p>
+</div>

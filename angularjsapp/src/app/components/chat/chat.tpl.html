@@ -1,0 +1,552 @@
+<div ng-click="vm.hidePlayerFullscreen();" class="fullscreen-close">
+	<i class="ynicon ynicon-close"></i>
+</div>
+<div class="fullscreen-gradient-top"></div>
+<div class="fullscreen-gradient-left"></div>
+
+<div class="player-chat" ng-class="{'collapsed': vm.chatCollapsed}">
+	<div id="sidebar-container" class="pull-left" ng-class="{'loading-bc': vm.swf.eob !== undefined && !vm.swf.settingUpBroadcast}">
+		<div class="sidebar-header">
+			<div ng-click="vm.changeTab('Chat')" class="tab-icon" ng-class="{selected: (vm.swf.activeChatTab === 'Chat' || vm.swf.activeChatTab === 'SnapShot') && !vm.swf.settingUpBroadcast}">
+				<span ng-if="vm.swf.fanMailRequestQueue && vm.swf.fanMailRequestQueue.length > 0"><img ng-class="{'active-notification': vm.fanmailAnimState === vm.fanMailAnimation}" class="fanmail-notification" ng-src="{{vm.fanmailAnimState}}"></span>
+				<i class="ynicon ynicon-chat"></i>
+				<span translate="_chat_noun"></span>
+			</div>
+			<div ng-click="vm.changeTab('Audience')" class="tab-icon" ng-class="{selected: vm.swf.activeChatTab === 'Audience' && !vm.swf.settingUpBroadcast}">
+				<i  class="ynicon ynicon-audience"></i>
+				<span translate="_audience"></span>
+			</div>
+			<div class="tab-icon" ng-if="vm.swf.broadcast.allowGuestCallers == '1'" ng-click="vm.changeTab('Guest')" ng-class="{selected: vm.swf.activeChatTab === 'Guest' && !vm.swf.settingUpBroadcast}">
+				<i class="ynicon ynicon-bc-call" ng-if="!vm.guestService.userGuestObj && !vm.guestService.countUpdated"></i>
+				<img ng-if="vm.guestService.userGuestObj || vm.guestService.countUpdated" class="guest-gif" ng-src="{{::vm.config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/guest_ready_tabtrans2_2x.gif"/>
+				<span class="short-text guest-tab ellipsify" ng-bind-html="vm.guestService.guestListCountFormatted"></span>
+			</div>
+			<div class="tab-icon" ng-click="vm.changeTab('Info')" ng-class="{selected: vm.swf.activeChatTab === 'Info' && !vm.swf.settingUpBroadcast}">
+				<i class="ynicon ynicon-broadcast"></i>
+				<span translate="_info"></span>
+			</div>
+		</div>
+		<div
+		class="sidebar-tab chatcomments-mediumlarge"
+		ng-if="vm.swf.activeChatTab === 'Chat' && !vm.swf.settingUpBroadcast"
+		ng-class="{'chatcomments-small': vm.swf.broadcast && !vm.collapsedGiftTray && vm.swf.broadcast.tfl.length !== 0 && vm.session.user.userId !== 0, 'chatcomments-large': !vm.swf.broadcast &&  vm.collapsedGiftTray || vm.swf.broadcast.tfl.length === 0 || !vm.swf.broadcast.tfl && vm.collapsedGiftTray, 'chatcomments-medium': (!vm.swf.broadcast && !vm.collapsedGiftTray || vm.swf.broadcast.tfl.length === 0 && !vm.collapsedGiftTray) && vm.session.user.userId !== 0}"
+		>
+			<selfie-view ng-if="vm.selectedSelfie.sfb || vm.creatingSelfie"></selfie-view>
+			<button class="prev-fan" id="prevfan" ng-click="vm.changeTopFan(-1)" ng-if="vm.swf.broadcast.tfl.length && vm.topFanPosition!=='start'">
+				<img ng-src="{{::vm.baseImageUrlv3}}/chat_topfan_arrow_prev.png">
+			</button>
+			<div id="topfan-slider" ng-class="{'no-top-fans': vm.swf.broadcast.tfl.length < 1 || !vm.swf.broadcast.tfl}">
+
+				<div class="top-fan" ng-repeat="fan in vm.swf.broadcast.tfl track by $index">
+					<a
+					class="thumb circle-thumb clickable"
+					ng-style="{background: 'url({{::vm.thumb}}' + fan.uId + ') no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover'}"
+					ng-href="/{{fan.n}}" prevent-default
+					ng-click="vm.openProfile(fan.uId, undefined, 'TOP_FAN')">
+					</a>
+					<div class="fan-details">
+						<div>
+							#{{$index + 1}} <span translate="_fan_noun"></span> <i class="ynbar ynicon ynicon-icon-bar"></i> {{fan.b}}
+						</div>
+						<a
+						class="clickable fan-name"
+						ng-href="/{{fan.n}}" prevent-default
+						ng-click="vm.openProfile(fan.uId, undefined, 'TOP_FAN')">
+							<i class="ynicon ynicon-level"></i> {{fan.l}} {{fan.n}}
+						</a>
+					</div>
+				</div>
+
+				<div class="top-fan" ng-if="(vm.session.user && vm.session.user.userId) && !vm.swf.isTopFan && (vm.swf.broadcast.userId !== vm.session.user.userId)">
+					<a
+					class="thumb circle-thumb clickable"
+					ng-style="{ background: 'url(' + vm.thumb + vm.session.user.userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"
+					ng-href="/{{vm.session.user.profile}}" prevent-default
+					ng-click="vm.openProfile(vm.session.user.userId)">
+					</a>
+					<div class="see-text">
+						<span translate="livebroadcast_become_topfan" translate-values="{value:vm.swf.broadcast.username}"></span>
+					</div>
+					<button class="btn btn-small btn-confirm" ng-click="vm.openGiftTray();" translate="chat_see_gifts"></button>
+				</div>
+
+			</div>
+			<div class="topfan-slider-divider" ng-if="vm.swf.broadcast.tfl.length > 0"></div>
+			<!-- fanmail view -->
+			<div class="fan-mail-widget" ng-class="{'fan-mail-available': vm.swf.fanMailQueue[0].isShowing}">
+				<a
+				class="thumb circle-thumb pull-left"
+				ng-style="{background: 'url({{::vm.thumb}}' + vm.swf.fanMailQueue[0].userId +'), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover'}"
+				ng-href="/{{vm.swf.fanMailRequestQueue[0].profile}}" prevent-default
+				ng-click="vm.openProfile(vm.swf.fanMailQueue[0].userId)">
+					<img class="fan-mail-icon" ng-src="{{::vm.config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/yn_anim_fanmail_132x132bc.gif">
+				</a>
+				<div class="actions">
+					<button ng-click="vm.dismissFanMail()" class="close btn-reset"><i class="ynicon ynicon-close"></i></button>
+				</div>
+				<div class="fan-mail-sender">
+					<a
+					ng-href="/{{vm.swf.fanMailQueue[0].profile}}" prevent-default
+					ng-click="vm.openProfile(vm.swf.fanMailQueue[0].userId)"
+					class="short-text">
+						<user-badge-dynamic role="vm.swf.fanMailQueue[0].role" level="vm.swf.fanMailQueue[0].userLevelFloor" subscription-type="vm.swf.fanMailQueue[0].subscriptionType" channelId="vm.swf.fanMailQueue[0].channelId"></user-badge-dynamic>
+						{{vm.swf.fanMailQueue[0].name}}
+					</a>
+				</div>
+				<div class="fan-mail-message msg-long">
+					{{vm.swf.fanMailQueue[0].comment}}
+				</div>
+			</div>
+			<!-- fanmail req -->
+			<div class="fan-mail-widget" ng-class="{'fan-mail-available': vm.swf.fanMailRequestQueue[0].isShowing}">
+				<a
+				class="thumb circle-thumb pull-left"
+				ng-style="{ background: 'url({{::vm.thumb}}' + vm.swf.fanMailRequestQueue[0].userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"ng-href="/{{vm.swf.fanMailRequestQueue[0].profile}}" prevent-default
+				ng-click="vm.openProfile(vm.swf.fanMailRequestQueue[0].userId)">
+					<img class="fan-mail-icon" ng-src="{{::vm.config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/yn_anim_fanmail_132x132bc.gif">
+				</a>
+				<div class="actions">
+					<button ng-click="vm.respondToFanMail(vm.swf.fanMailRequestQueue[0], 'DELIVERED')" class="accept btn-primary" translate="_accept"></button>
+					<button ng-click="vm.respondToFanMail(vm.swf.fanMailRequestQueue[0], 'CANCELLED')" class="decline btn-cancel" translate="_decline"></button>
+				</div>
+				<div class="fan-mail-sender">
+					<a
+					ng-href="/{{vm.swf.fanMailRequestQueue[0].profile}}" prevent-default
+					ng-click="vm.openProfile(vm.swf.fanMailRequestQueue[0].userId)"
+					class="short-text">
+						<span class="ynbadge" ng-if="vm.swf.fanMailRequestQueue[0].subscriptionType">
+							<img
+							ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.broadcast.broadcaster.userId}}/{{::vm.swf.fanMailRequestQueue[0].subscriptionType}}/badge@2x.png"
+							/>
+						</span>
+
+						<span class="comment-crowns-container"></i>
+							<span class="comment-crowns" ng-if="::( !vm.swf.fanMailRequestQueue[0].subscriptionType && vm.swf.fanMailRequestQueue[0].userLevelFloor && (!vm.swf.fanMailRequestQueue[0].role || vm.swf.fanMailRequestQueue[0].role==3) )">
+								<i class="ynicon ynicon-level"></i>
+							</span>
+							<span class="comment-crowns" ng-if="::( vm.swf.fanMailRequestQueue[0].role === 2 )">
+								<i class="ynicon ynicon-ambass"></i>
+							</span>
+
+						</span>
+
+						{{vm.swf.fanMailRequestQueue[0].level}} {{vm.swf.fanMailRequestQueue[0].name}}
+					</a>
+				</div>
+				<div class="fan-mail-message">
+					{{vm.swf.fanMailRequestQueue[0].copy}}
+				</div>
+			</div>
+			<button class="next-fan" id="nextfan" ng-click="vm.changeTopFan(1)" ng-if="vm.swf.broadcast.tfl.length && vm.topFanPosition!=='end'">
+				<img ng-src="{{::vm.baseImageUrlv3}}/chat_topfan_arrow_next.png">
+			</button>
+			<div id="chatcomments"
+				class="chatcomments {{'chatMode'+vm.swf.broadcast.chatMode+' '}} mini-scroll"
+				only-scroll
+				>
+				<div class="chatcomment" ng-repeat="comment in vm.swf.broadcast.comments" ng-class="::{'chat-mention': comment.mention || comment.p2pComment || comment.isFriend, 'subscriber': comment.subscriptionType, 'not-subscriber': !comment.subscriptionType}">
+					<div ng-if="::(comment.p2pComment && vm.swf.broadcast.disableSelfie == '1')">
+						<img class="circle-thumb circle-thumb-sm" ng-src="{{::vm.thumb + comment.userId}}"/>
+						<a ng-click="vm.openProfile(comment.userId, comment, 'CHAT', $event);" class="chat-name">
+							@{{::comment.name}}
+						</a>
+						<span ng-bind-html="::(comment.hashedComment)"></span>
+						<i class="ynicon ynicon-icon-reply"></i>
+					</div>
+					<div ng-if="::(comment.p2pComment && vm.swf.broadcast.disableSelfie == '0')">
+						<img class="circle-thumb" ng-src="{{::vm.thumb + comment.userId}}"/>
+						<div class="comment-content">
+							<div>
+								<a ng-click="vm.openProfile(comment.userId, comment, 'CHAT', $event)" class="chat-name">
+									@{{::comment.name}}
+								</a>
+							</div>
+							<div>
+								<span ng-bind-html="::(comment.hashedComment)"></span>
+								<i class="ynicon ynicon-icon-reply"></i>
+							</div>
+						</div>
+					</div>
+					<div ng-if="::!comment.p2pComment">
+						<div ng-if="::(vm.swf.broadcast.disableSelfie == '0')">
+							<div class="selfie-container" ng-click="vm.selectSelfie(comment, vm.swf.broadcast.userId)">
+								<img class="circle-thumb" ng-src="{{::comment.sf}}"/>
+								<i class="ynicon ynicon-icon-selfie"></i>
+							</div>
+							<div class="comment-content">
+								<div>
+									<user-badge role="{{::comment.role}}" level="{{::comment.userLevelFloor}}" subscription-type="{{::comment.subscriptionType}}" channelId="{{::comment.userId}}"></user-badge>
+									<a
+									ng-click="vm.openProfile(comment.userId, comment, 'CHAT', $event)"
+									class="chat-name"
+									ng-if="::(comment.role !== 1)">
+										{{::comment.name}}
+									</a>
+									<span class="chat-name moderator" ng-if="::(comment.role === 1)">MODERATOR</span>
+								</div>
+								<div>
+									<i ng-if="::comment.sent" class="ynicon ynicon-icon-check"></i>
+									<span ng-if="::(!comment.giftId)" ng-class="::{'special-chat': comment.role === 2 || comment.isBroadcaster, moderator:  comment.role === 1}" ng-bind-html="::comment.hashedComment"></span>
+									<img ng-if="::(comment.giftId !== false)" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{::vm.swf.giftSkus[comment.giftId]}}/web_chat.png">
+									<span class="gift-quantity" ng-if="::(comment.giftId !== false && comment.quantity > 1)">{{::comment.quantity}}x</span>
+								</div>
+							</div>
+						</div>
+						<div ng-if="::(vm.swf.broadcast.disableSelfie == '1')">
+					        <user-badge role="{{::comment.role}}" level="{{::comment.userLevelFloor}}" subscription-type="{{::comment.subscriptionType}}" channelId="{{::comment.userId}}"></user-badge>
+					        <a
+					        ng-click="vm.openProfile(comment.userId, comment, 'CHAT', $event)"
+					        class="chat-name"
+					        ng-if="::(comment.role !== 1)">
+					            {{::comment.name}}
+					        </a>
+					        <span class="chat-name moderator" ng-if="::(comment.role === 1)">MODERATOR</span>
+					        <span ng-if="::(!comment.giftId)" ng-class="::{'special-chat': comment.role === 2 || comment.isBroadcaster, moderator:  comment.role === 1}" ng-bind-html="::comment.hashedComment"></span>
+					        <img ng-if="::(comment.giftId !== false)" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{::vm.swf.giftSkus[comment.giftId]}}/web_chat.png">
+					        <span class="gift-quantity" ng-if="::(comment.giftId !== false && comment.quantity > 1)">{{::comment.quantity}}x</span>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div ng-click="vm.pauseChat = !vm.pauseChat"
+					ng-class="{active: vm.pauseChat}"
+					class="pull-right scroll-toggle ynicon-icon-mod-container"
+					tooltip="Pause the chat."
+					tooltip-trigger="mouseenter"
+					tooltip-placement="top"
+					tooltip-append-to-body="true">
+				<i class="ynicon ynicon-icon-mod"></i>
+			</div>
+			<div id="chatinput">
+				<div class="chat-alert-toolbar" ng-class="{'chat-alert-open': vm.alert.length > 0}">
+					{{vm.alert}}
+					<progressbar ng-if="vm.spamTimer" value="vm.spamTimeLeft" animate="true" max="60"></progressbar>
+				</div>
+				<form class="chat_input_row" name="vm.commentForm" novalidate>
+					<div>
+						<div class="selfie-container" ng-click="vm.createSelfie()">
+							<img class="circle-thumb" ng-src="{{vm.selfies.localSelfieSrc.sf}}">
+							<i class="ynicon ynicon-icon-selfie"></i>
+						</div>
+						<input
+							ng-model="vm.newComment"
+							mentio=""
+							mentio-require-leading-space="true"
+							placeholder="{{vm.chatInputPlaceholder}}"
+							name="commentInput"
+							type="text"
+							yn-enter="vm.postComment()"
+							ng-maxlength="150"
+							ng-trim="false"
+							ng-click="vm.trackChat()"
+							autocomplete="off"
+							id="commentInput"
+							required>
+						<mentio-menu
+							mentio-for="'commentInput'"
+							mentio-trigger-char="'@'"
+							mentio-items="vm.chatters"
+							mentio-template-url="angularjsapp/src/app/components/mention/mention-dropup.tpl.html"
+							mentio-search="vm.searchChatters(term)"
+							mentio-select="vm.selectChatter(item)"
+							></mentio-menu>
+					</div>
+					<div ng-if="vm.newComment.length < 150" class="characterCount">{{150 - vm.newComment.length}}</div>
+					<div ng-if="!vm.newComment && vm.commentForm.commentInput.$viewValue.length > 150" class="characterCount invalid" >0</div>
+					<div>
+						<button class="btn pull-right ellipsify" ng-class="{'dim': !vm.collapsedGiftTray, 'btn-confirm': vm.collapsedGiftTray }" ng-click="vm.postComment()" translate="_chat_verb"></button>
+					</div>
+				</form>
+			</div>
+			<!-- test -->
+			<div id="gifttray" ng-class="{'gift-tray-open': !vm.collapsedGiftTray && vm.session.user.userId !== 0}">
+				<div ng-click="vm.disabledGiftTray()" class="overlay" ng-if="!vm.session.user.userId ||  vm.session.user.banId !== 0 || vm.session.user.moderator === 1"></div>
+				<div class="gifttray-basic" ng-class="{'disabled-gift': vm.swf.settingUpBroadcast}" ng-if="vm.collapsedGiftTray">
+					<div class="toggle-tray-btn" ng-click="vm.toggleGiftTray();">
+					    	<i class="ynicon ynicon-carrot-up"></i>
+					    	<i class="ynicon ynicon-gift"></i>
+					</div>
+				</div>
+				<div class="gifttray-basic menu-mode" ng-class="{'disabled-gift': vm.swf.settingUpBroadcast}" ng-if="!vm.collapsedGiftTray">
+					<div class="toggle-tray-btn" ng-click="vm.toggleGiftTray();">
+					    	<i class="ynicon ynicon-carrot-dwn"></i>
+					    	<i class="ynicon ynicon-gift"></i>
+					</div>
+				</div>
+				<div class="gifttray-wallet">
+					<span class="current-broadcaster short-text" translate="chat_gift_user" translate-values="{user:vm.swf.broadcast.username}"></span>
+					<div class="pull-right">
+						<span>
+							<span
+								tooltip="{{vm.session.user.userCoins | number}}"
+								tooltip-trigger="mouseenter"
+								tooltip-enable="vm.session.user.userCoins > 10000"
+								tooltip-append-to-body="true">
+								<i class="yncoin ynicon ynicon-coins"></i> {{vm.Api.squashedNumber(vm.session.user.userCoins, 4)}}
+							</span>
+							<span
+								tooltip="{{vm.session.user.vault.webBars | number}}"
+								tooltip-trigger="mouseenter"
+								tooltip-enable="vm.session.user.vault.webBars > 10000"
+								tooltip-append-to-body="true">
+								<i class="ynbar ynicon ynicon-icon-bar"></i> {{vm.Api.squashedNumber(vm.session.user.vault.webBars, 4)}}
+							</span>
+						</span>
+						<button class="btn btn-confirm btn-small" ng-if="!vm.session.user.spendingDisabled" ng-click="vm.buyBars()" translate="_getbars"></button>
+					</div>
+				</div>
+				<div class="gifttray-extension" only-scroll>
+					<!-- bc gifts -->
+					<img class="gift"
+						ng-repeat="gift in vm.bcGifts track by $index"
+						ng-if="!vm.swf.broadcast.disabledGoodies[gift.SKU] && ( gift.locales.indexOf(vm.swf.broadcast.locale) !== -1 || gift.locales.indexOf('ww') !== -1 ) && vm.session.user.userId === vm.swf.broadcast.userId"
+						ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{::gift.SKU}}/web.png"
+						tooltip-html-unsafe="{{vm.getMultiplierCost(gift)}}"
+						tooltip-trigger="mouseenter"
+						tooltip-append-to-body="true"
+						ng-click="vm.postGift(gift, undefined, undefined, $event)">
+					<!-- general gifts -->
+		 			<img class="gift"
+		 				ng-repeat="gift in vm.giftItems track by $index"
+			 			ng-if="!vm.swf.broadcast.disabledGoodies[gift.SKU] && ( gift.VIP === 0 || (vm.broadcast.broadcaster.partner === '1' && gift.VIP === 2) ) && ( gift.locales.indexOf(vm.swf.broadcast.locale) !== -1 || gift.locales.indexOf('ww') !== -1 )"
+						ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{::gift.SKU}}/web{{::(gift.itemGameType=='TIP' && vm.session.user.globalSpenderRank ? '_vip' : '')}}.png"
+						tooltip-html-unsafe="{{ ( vm.swf.broadcast.chatMode==1 && gift.costType=='COINS' && !vm.session.subStatus[vm.swf.broadcast.userId] ) ? 'subscribers only' : vm.getMultiplierCost(gift) }}"
+						tooltip-trigger="mouseenter"
+						tooltip-append-to-body="true"
+						ng-disabled="vm.session.user.userId === vm.swf.broadcast.userId && gift.itemGameType !== 'LIKES_BROADCASTER'"
+						ng-class="{'disabled-gift no-cursor': gift.minLevel > vm.session.user.realLevel || gift.cost > vm.session.user.userCoins || vm.swf.settingUpBroadcast || ( (vm.session.user.userId === vm.swf.broadcast.userId)) || ( vm.swf.broadcast.chatMode==1 && gift.costType=='COINS' && !vm.session.subStatus[vm.swf.broadcast.userId] ) }"
+						ng-click="vm.postGift(gift, undefined, undefined, $event)">
+			 	</div>
+			 	<div class="gifttray-premium" ng-class="{'premium-selected': vm.premiumGiftSelected.opened && vm.session.user.userId !== 0}">
+			 		<i class="ynicon ynicon-close" ng-click="vm.closeGiftTray()"></i>
+			 		<!-- normal premium gift -->
+			 		<img class="premium-gift" ng-if="vm.premiumGiftSelected.itemGameType !== 'TIP' && vm.premiumGiftSelected.itemGameType !== 'PROPOSAL' && vm.premiumGiftSelected.itemGameType !== 'FANMAIL'" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.premiumGiftSelected.SKU}}/web.png">
+			 		<!-- tip -->
+			 		<img class="premium-gift" ng-if="vm.premiumGiftSelected.itemGameType === 'TIP'" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.premiumGiftSelected.SKU}}/web_overlay{{vm.session.user.globalSpenderRank ? '_vip' : ''}}.png">
+			 		<!-- proposal -->
+			 		<div class="premium-gift" ng-if="vm.premiumGiftSelected.itemGameType === 'PROPOSAL'">
+				 		<img class="premium-gift" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.premiumGiftSelected.SKU}}/web_overlay.png" />
+	 					<div class="thumb proposal" ng-style="{background: 'url({{::vm.thumb}}' + vm.session.user.userId +'), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover'}"></div>
+			 		</div>
+			 		<!-- fanmail -->
+			 		<div class="premium-gift" ng-if="vm.premiumGiftSelected.itemGameType === 'FANMAIL'">
+				 		<img class="fanmail" ng-src="{{::vm.swf.giftsAssetsBaseUrl}}{{vm.premiumGiftSelected.SKU}}/web_animation{{vm.session.user.globalSpenderRank ? '_vip' : ''}}.gif" />
+	 					<div class="thumb circle-thumb" ng-style="{background: 'url({{::vm.thumb}}' + vm.session.user.userId +'), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover'}"></div>
+				 	</div>
+				 		<div class="premium-gift-name ellipsify transline-top" ng-class="{'fanmail-name': vm.premiumGiftSelected.itemGameType === 'FANMAIL'}">
+				 			<span>{{vm.premiumGiftSelected.name}}</span>
+				 			<span ng-if="vm.premiumGiftSelected.itemGameType === 'TIP'">{{vm.swf.broadcast.username}}!</span>
+				 		</div>
+		 			<div class="premium-gift-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'ANIMATION' && vm.premiumGiftSelected.description">
+		 				{{vm.premiumGiftSelected.description}}
+		 			</div>
+			 		<div class="premium-gift-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'LIKES'">
+			 			{{vm.premiumGiftSelected.description}}
+			 		</div>
+			 		<div class="premium-gift-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'LIKES_BROADCASTER'">
+			 			{{vm.premiumGiftSelected.description}}
+			 		</div>
+			 		<div class="premium-gift-desc transline-mid" ng-if="vm.premiumGiftSelected.SKU === 'CHATCOOLDOWN'">
+			 			{{vm.premiumGiftSelected.description}}
+			 			<span translate="chat_wait_time"></span>
+						<span>{{vm.cooldownTime * 1000 | date: 'mm:ss'}}</span>
+			 		</div>
+			 		<div class="premium-gift-desc fanmail-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'FANMAIL'">
+			 			<span translate="_send"></span>
+			 			<span class="short-text"> {{vm.swf.broadcast.username}}</span>
+			 			<span translate="chat_special_message_to_get_featured"></span>
+			 			<input
+			 			 	class="fanmail-input"
+			 			 	ng-class="{'input-invalid': vm.fanmailInvalid && (vm.fanMailMessage.length === 0 || !vm.fanMailMessage)}"
+			 			 	placeholder="Enter your message"
+			 			 	ng-model="vm.fanMailMessage"
+			 			 	ng-maxlength="38"
+			 			 	ng-required
+			 			 	yn-enter="vm.buyGift()"
+			 			 	maxlength="38">
+			 			<span class="fanmail-count">{{38 - vm.fanMailMessage.length}}</span>
+			 		</div>
+			 		<div class="premium-gift-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'PROPOSAL'">
+			 			{{vm.premiumGiftSelected.description}}
+			 		</div>
+			 		<div class="premium-gift-desc" ng-if="vm.premiumGiftSelected.itemGameType === 'TIP'">
+			 			<div class="tip-cost" ng-repeat="tip in vm.premiumGiftSelected.extraData.denominations" ng-click="vm.buyGift(tip)" ng-disabled="vm.premiumGiftSelected.buying || !vm.premiumGiftSelected.opened">
+							<i class="ynbar ynicon ynicon-icon-bar"></i>
+			 				<span>{{::tip | number}}</span>
+			 			</div>
+			 		</div>
+			 		<!-- BUTTONS -->
+			 		<!-- dynamic price -->
+			 		<div ng-if="vm.premiumGiftSelected.dynamicCost !== '0' && vm.premiumGiftSelected.SKU !== 'CHATCOOLDOWN'">
+				 		<button class="btn btn-confirm" id="buy-gift-button" ng-click="vm.buyGift()" ng-if="vm.swf.dynamicPricedGoodies[vm.premiumGiftSelected.SKU] && !vm.premiumGiftSelected.buying && vm.premiumGiftSelected.itemGameType !== 'TIP'">
+				 			<span><span translate="_send"></span> <i class="ynbar ynicon ynicon-icon-bar"></i> {{vm.swf.dynamicPricedGoodies[vm.premiumGiftSelected.SKU]}}</span>
+				 		</button>
+				 		<button class="btn btn-confirm" ng-if="!vm.swf.dynamicPricedGoodies[vm.premiumGiftSelected.SKU] || vm.premiumGiftSelected.buying">
+				 			<div class="loader"></div>
+				 		</button>
+			 		</div>
+			 		<!-- cooldown -->
+			 		<div ng-if="vm.premiumGiftSelected.dynamicCost !== '0' && vm.premiumGiftSelected.SKU === 'CHATCOOLDOWN'">
+				 		<button class="btn btn-confirm" id="buy-gift-button" ng-click="vm.buyGift()" ng-if="vm.premiumGiftSelected.purchasePrice && !vm.premiumGiftSelected.buying && vm.premiumGiftSelected.itemGameType !== 'TIP'">
+				 			<span><span translate="_chat_now"></span> <i class="ynbar ynicon ynicon-icon-bar"></i> {{vm.swf.dynamicPricedGoodies[vm.premiumGiftSelected.SKU]}}</span>
+				 			<span ng-if="vm.premiumGiftSelected.dynamicCost === '0'"><span translate="_send"></span> <i class="ynbar ynicon ynicon-icon-bar"></i> {{vm.premiumGiftSelected.purchasePrice}}</span>
+				 		</button>
+				 		<button class="btn btn-confirm" ng-if="!vm.premiumGiftSelected.purchasePrice || vm.premiumGiftSelected.buying">
+				 			<div class="loader"></div>
+				 		</button>
+			 		</div>
+			 		<!-- static price -->
+			 		<div ng-if="vm.premiumGiftSelected.dynamicCost === '0'">
+				 		<button class="btn btn-confirm" id="buy-gift-button" ng-click="vm.buyGift()" ng-if="vm.premiumGiftSelected.purchasePrice && !vm.premiumGiftSelected.buying && vm.premiumGiftSelected.itemGameType !== 'TIP'">
+				 			<span ng-if="vm.premiumGiftSelected.dynamicCost === '0'"><span translate="_send"></span> <i class="ynbar ynicon ynicon-icon-bar"></i> {{vm.premiumGiftSelected.purchasePrice}}</span>
+				 		</button>
+				 		<button class="btn btn-confirm" ng-if="!vm.premiumGiftSelected.purchasePrice || vm.premiumGiftSelected.buying">
+				 			<div class="loader"></div>
+				 		</button>
+			 		</div>
+
+
+			 	</div>
+			</div>
+		</div>
+		<div ng-if="vm.swf.activeChatTab === 'Snapshot' ">
+			<span share-panel close-callback="vm.reloadChatTab" class="sidebar-tab" id="sharepanel"></span>
+		</div>
+		<div ng-if="vm.swf.activeChatTab === 'GuestSnapshot' ">
+			<span share-panel close-callback="vm.reloadChatTab" target="guest" class="sidebar-tab" id="sharepanel"></span>
+		</div>
+		<div ng-if="vm.swf.activeChatTab === 'Audience'">
+			<span audience-panel class="sidebar-tab" id="audiencepanel"></span>
+		</div>
+		<div ng-if="vm.swf.activeChatTab === 'Guest'">
+			<span guest-panel class="sidebar-tab" id="guestpanel"></span>
+		</div>
+		<div ng-if="vm.swf.activeChatTab === 'Info'">
+			<div style="padding:10px;overflow:auto;height:540px;width:100%">
+				<div style="clear:both;float:left;font-size:14px;font-weight:bold;">
+					Streamer
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">ID:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.userId}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Streamer Boost Level:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.broadcasterBoostLevel}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Broadcasts count:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.broadcastsCount}}</div>
+				</div>
+				<div ng-if="vm.broadcast.broadcaster.device === 'Mobile'">
+					<div style="clear:both; float:left;margin-top:5px;">
+						<div style="float:left;width:168px;">Device:</div>
+						<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.deviceName}}</div>
+					</div>
+					<div style="clear:both; float:left;margin-top:5px;">
+						<div style="float:left;width:168px;">OS version:</div>
+						<div style="float:left;width:188px;text-align:right">
+						<span ng-if="vm.broadcast.broadcaster.platform==1">iOS </span>
+						<span ng-if="vm.broadcast.broadcaster.platform==2">Android </span>
+						{{vm.broadcast.broadcaster.osVersion}}
+						</div>
+					</div>
+					<div style="clear:both; float:left;margin-top:5px;">
+						<div style="float:left;width:168px;">Connection:</div>
+						<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.connection}}</div>
+					</div>
+					<div ng-if="vm.broadcast.broadcaster.provider !== ''">
+						<div style="clear:both; float:left;margin-top:5px;">
+							<div style="float:left;width:168px;">Provider:</div>
+							<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.provider}}</div>
+						</div>
+					</div>
+				</div>
+				<div ng-if="vm.broadcast.broadcaster.device === 'Computer'">
+					<div style="clear:both; float:left;margin-top:5px;">
+						<div style="float:left;width:168px;">Browser:</div>
+						<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.browser}}</div>
+					</div>
+					<div style="clear:both; float:left;margin-top:5px;">
+						<div style="float:left;width:168px;">OS:</div>
+						<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.os}}</div>
+					</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Coins:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.fineCoins}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Level:</div>
+					<div style="float:left;width:188px;text-align:right">
+					<span>{{vm.broadcast.broadcaster.currentLevel}}</span>
+					<span>(</span>
+					<span>{{vm.broadcast.broadcaster.levelPercentage}}</span>
+					<span>% to </span>
+					<span>{{vm.broadcast.broadcaster.nextLevel}}</span>
+					<span>)</span>
+					</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Points:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.finePoints}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Partner:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.partnerText}}</div>
+				</div>
+				<div style="clear:both;float:left;font-size:14px;font-weight:bold;">
+					Stream
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">ID:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.broadcastId}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Origin:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.broadcastOriginType}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Curent Chatcooldown:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.currentChatCooldown}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">New fans:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.fans}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Featured time:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.featuredTime}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Gifts value:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.fineGiftsValue}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Max concurrent viewers:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.maxConcurrentViewers}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Min chat level:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.minChatLevel}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Paid Chat:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.paidChat}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Reconnects:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.reconnects}}</div>
+				</div>
+				<div style="clear:both; float:left;margin-top:5px;">
+					<div style="float:left;width:168px;">Views with treshold:</div>
+					<div style="float:left;width:188px;text-align:right">{{vm.broadcast.broadcaster.viewsWithThreshold}}</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if="vm.swf.settingUpBroadcast" class="sidebar-tab" id="settinguppanel">
+			<div settingup-panel class="sidebar-tab" id="settinguppanel"></div>
+		</div>
+		
+	</div>
+</div>

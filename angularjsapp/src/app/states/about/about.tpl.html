@@ -1,0 +1,235 @@
+<div ng-if="visible" id="page_home">
+	<link rel="stylesheet" ng-href="{{::cdn.base}}/css/landing/flexslider.css">
+	<!-- header -->
+	<header>
+		<div class="content">
+			<a class="logo nav-logo pull-left" ng-href="/" ng-click="aboutClick('To site', 'YouNow Logo')" mobile-hide>
+				<img ng-src="{{::cdn.base}}/angularjsapp/src/assets/images/logo/skewed_white.svg" alt="Live Stream Video Chat">
+			</a>
+			<a class="logo" ng-href="/" ng-click="aboutClick('To site', 'YouNow Logo')" mobile-show>
+				<img ng-src="{{::cdn.base}}/angularjsapp/src/assets/images/logo/skewed_white.svg" alt="Live Stream Video Chat">
+			</a>
+		</div>
+	</header><!-- / header -->
+
+
+	<!-- intro -->
+	<section class="intro">
+
+		<!-- splashvideo -->
+		<video class="intro_video" autoplay loop ng-attr-poster="{{::cdn.base}}/images/about/novideo.jpg" id="video">
+			<source ng-src="{{::trustedSrc(cdn.base+'/landing/video/younow_shade2.webmhd.webm')}}" type="video/webm">
+			<source ng-src="{{::trustedSrc(cdn.base+'/landing/video/younow_shade2.mp4')}}" type="video/mp4">
+		</video>
+		<div class="intro_photo" ng-style="::{background: 'url({{::cdn.base}}/images/about/novideo2.jpg) center no-repeat'}"></div>
+
+
+		<!-- splashtext -->
+		<div class="intro_content">
+			<div class="content">
+
+
+				<h1 class="intro_text1">Express Yourself</h1>
+				<div class="intro_text2">Broadcast to a live audience. Explore and engage with talented content creators. <br>Connect with our vibrant real-time community.</div>
+
+
+				<div class="lbuttons">
+					<div class="lbuttons_buttons ">
+						<div class="x_apps">
+							<a class="lbuttons_button" ng-click="aboutClick('To App store', 'Android top')" href="https://play.google.com/store/apps/details?id=younow.live&referrer=utm_source%3Dyounow.com%26utm_campaign%3Dapp-promo-android%26utm_medium%3Dreferral%26utm_content%3Dweb-about-1-btn1" target="_blank">
+								<img ng-src="{{::cdn.base}}/images/about/btn_googleplay.png" width="204" height="55" name="googlebutton" border="0" />
+							</a>
+							<a class="lbuttons_button" ng-click="aboutClick('To App store', 'iOS top')" href="https://itunes.apple.com/app/apple-store/id471347413?mt=8&pt=669563&ct=web-about-1-btn1" target="_blank">
+								<img ng-src="{{::cdn.base}}/images/about/btn_ios.png" width="204" height="55" name="iosbutton" border="0" />
+							</a>
+						</div>
+						<div class="x_apps x_large">
+							<a class="lbuttons_button watchnow" href ng-click="watchLiveNow($event,'Watch live top')">
+								Watch Live Now
+							</a>
+						</div>
+					</div>
+					<div class="lbuttons_subtext">
+					</div>
+				</div>
+			</div>
+		</div><!-- / splashtext -->
+
+
+	</section><!-- / intro -->
+
+
+	<!-- withyounow -->
+	<section class="wy">
+
+		<div class="content">
+
+			<h2 class="wy_heading">
+				With YouNow You Can:
+			</h2>
+
+			<div class="wy_columns">
+
+				<div class="wy_column">
+					<div class="image"><img ng-src="{{::cdn.base}}/images/about/with_broadcast.jpg" width="222" height="222" alt="Broadcast Yourself" /></div>
+					<div class="title">Broadcast<br>Yourself</div>
+					<div class="text">
+					Tap ‘Go Live’ and you’re on! Broadcast to a live audience, expand your social media following, and grow your very own, loyal fanbase.
+					</div>
+				</div>
+
+				<div class="wy_column">
+					<div class="image"><img ng-src="{{::cdn.base}}/images/about/with_discover.jpg" width="222" height="222" alt="Discover Great People" /></div>
+					<div class="title">Discover Great <br>People</div>
+					<div class="text">
+					From live DJs & musicians to YouTubers & Viners, discover talented content creators and promote your favorites to the top!
+					</div>
+				</div>
+
+				<div class="wy_column">
+					<div class="image"><img ng-src="{{::cdn.base}}/images/about/with_power.jpg" width="222" height="222" alt="Uncover the Power of You" /></div>
+					<div class="title">Uncover the <br>Power of You</div>
+					<div class="text">
+					Whether you are in front of the camera or behind it, join a friendly community of people who love spending time together, and make your mark!
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</section><!-- / withyounow -->
+
+
+	<!-- promovideo -->
+	<section class="pv" ng-style="::{'background-image': 'url({{::cdn.base}}/landing/novideo_promo_retina.jpg) no-repeat'}">
+		<video class="pv_video" id="pv_video" ng-cloak ng-attr-poster="{{::cdn.base + '/landing/novideo_promo_retina.jpg'}}" ng-click="aboutClick('Watch video', 'Pause')"
+		onclick="
+			document.getElementById('pv_video').pause();
+			document.getElementById('pv_play').style.display='block';
+		">
+			<source ng-src="{{::cdn.base + '/landing/video/younow_promo.mp4' }}" type="video/mp4">
+			Sorry, your browser does not support HTML5 video.
+		</video>
+		<div class="pv_play"
+				id="pv_play"
+				ng-style="::{'background': 'url({{::cdn.base}}/landing/btn_play_about.png) no-repeat'}"
+				ng-click="aboutClick('Watch video', 'Play')"
+				onclick=" document.getElementById('pv_video').play(); document.getElementById('pv_play').style.display='none';">
+			</div>
+	</section><!-- / promovideo -->
+
+	<!-- community reviews -->
+	<section class="cr" ng-style="::{background: '#f4f8ef url({{::cdn.base}}/images/about/back_quote.png) center no-repeat'}">
+
+		<div class="content">
+
+			<h2 class="cr_heading">What our community is saying...</h2>
+
+			<div class="cr_reviews">
+
+				<div class="cr_review">
+					Once you start using it, you can't stop. You meet so many cool people from all over the world. So many diverse talents: singers, rappers, artists and performers of every type.
+				</div>
+				<div class="cr_signature">
+					<img ng-src="{{::cdn.base}}/images/about/thumb_rev1.png" width="40" height="40" />
+					<span>Gavin, London, UK</span>
+				</div>
+
+				<div class="cr_review">
+					I absolutely love this app! The people on here are so friendly. If you're in a bad mood, just get on YouNow - it always makes me smile.
+				</div>
+				<div class="cr_signature">
+					<img ng-src="{{::cdn.base}}/images/about/thumb_rev2.png" width="40" height="40">
+					<span>Cierra, Little Rock, AR</span>
+				</div>
+
+			</div>
+
+		</div>
+
+	</section><!-- / reviews -->
+`
+
+	<!-- getapp -->
+	<section class="getapp" >
+
+		<div class="content" >
+
+			<h2 class="getapp_heading">Get the YouNow App!</h2>
+
+			<img class="getapp_image" ng-src="{{::cdn.base}}/images/about/gettheapp3.jpg" width="880" height="426" alt="Get the YouNow App for Android and iPhone" />
+
+			<!-- buttons - copied from above -->
+			<div class="lbuttons">
+			<div class="lbuttons_buttons" style="padding:25px 0 0 0;">
+			<div class="x_apps x_dark">
+			<a class="lbuttons_button" ng-click="aboutClick('To App store', 'Android bottom')" href="https://play.google.com/store/apps/details?id=younow.live&referrer=utm_source%3Dyounow.com%26utm_campaign%3Dapp-promo-android%26utm_medium%3Dreferral%26utm_content%3Dweb-about-1-btn2" target="_blank">
+			<img ng-src="{{::cdn.base}}/images/about/btn_googleplay.png" width="204" height="55" name="googlebutton" border="0" />
+			</a>
+			<a class="lbuttons_button" ng-click="aboutClick('To App store', 'iOS bottom')" href="https://itunes.apple.com/app/apple-store/id471347413?mt=8&pt=669563&ct=web-about-1-btn2" target="_blank">
+			<img ng-src="{{::cdn.base}}/images/about/btn_ios.png" width="204" height="55" name="iosbutton" border="0" />
+			</a>
+			</div>
+			</div>
+			</div>
+
+
+		</div>
+
+	</section><!-- / getapp -->
+
+
+	<!-- watchnow -->
+	<section class="watchnow">
+
+		<div class="content" >
+
+			<h2 class="watchnow_heading">Want to see what’s live now?</h2>
+
+			<!-- buttons - copied from above -->
+
+			<!-- logged IN -->
+			<div class="lbuttons">
+			<div class="lbuttons_buttons" style="padding:20px 0 0 0;">
+			<div class="x_apps">
+			<a class="lbuttons_button watchnow" href="" ng-click="watchLiveNow($event,'Enter site bottom')">
+			Enter Site
+			</a>
+			</div>
+			</div>
+			</div>
+		</div>
+
+	</section><!-- / watchnow -->
+
+
+	<!-- about -->
+	<section class="about" >
+
+		<div class="content" >
+
+			<a name="about"></a>
+			<h2 class="about_heading">About YouNow</h2>
+
+			<div class="maincontent">
+				<p>We believe in the unlimited potential of human creativity. In fact, it’s why we come to work every day - to create a powerful platform where anyone can broadcast and express themselves in front of a vast live audience.</p>
+				<p>In a moment when social media and TV are converging, we’re proud to provide a product that fuses the experience of broadcasting, gaming, performing and social networking, giving direct power to the people and enabling them to discover and create new kinds of interactive content in real-time.</p>
+				<p>
+					Long at the forefront of user-generated video, we’re a small and experienced team working from a sunny loft in Midtown Manhattan. And we’re backed by
+					<a href="http://techcrunch.com/2014/02/22/meet-oren-zeev-silicon-valleys-builder-investor/" ng-click="aboutClick('About link', 'Oren')" target="_blank">Oren Zeev</a>, and VCs
+					<a href="http://venrock.com" ng-click="aboutClick('About link', 'Venrock')" target="_blank">Venrock</a>,
+					<a href="http://usv.com" ng-click="aboutClick('About link', 'USV')" target="_blank">Union Square Ventures</a>, and
+					<a href="http://comcastventures.com" ng-click="aboutClick('About link', 'USV')" target="_blank">Comcast Ventures</a>.
+				</p>
+				<p>Want to learn more? Check out our <a href="/press">Press page</a> or contact <a href="mailto:press@younow.com">press@younow.com</a> with any inquiries.</p>
+			</div>
+
+		</div>
+
+
+	</section><!-- / about -->
+
+
+	<div data-footer></div>
+</div>

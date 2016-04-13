@@ -1,0 +1,441 @@
+<div class="main-content main-async crazyD crazyX">
+
+	<div class="main-content-left">
+		<div class="user-summary " ng-class="session.user.userId===broadcasterService.channel.userId ? 'owner' : 'non-owner'">
+			<div class="user-cover" style="background-image:url({{cdn.channelImage(broadcasterService.broadcaster.userId, 'Cover', uploadedImageRefresh)}});">
+				<div ng-show="broadcasterService.channel.editingProfile" class="upload-photo editing">
+					<div class="upload-overlay"></div>
+					<input accept="image/jpeg" type="file" upload-profile-image do-upload="doUpload" upload-endpoint="updateCover" upload-name="cover" tooltip-trigger="show" tooltip="This image should be at least 270x580px and smaller than 6MB" tooltip-placement="bottom error">
+					<i class="ynicon ynicon-camera"></i>
+				</div>
+			</div>
+			<div class="user-description" itemscope itemtype="http://schema.org/Person">
+				<div
+				class="pull-left circle-thumb crop-thumb clickable"
+				ng-href="/{{broadcasterService.broadcaster.profileUrlString}}" prevent-default
+				ng-click="showProfileSummary(broadcasterService.broadcaster.userId)">
+					<div class="thumb-image" ng-style="::{ 'background': 'url('+cdn.nothumb+') no-repeat'}">
+						<div class="thumb-image-wide">
+							<img itemprop="image" class="thumb-image-img" ng-src="{{cdn.channelImage(broadcasterService.broadcaster.userId, 'Image', uploadedImageRefresh)}}" alt="{{broadcasterService.broadcaster.profile}}" />
+						</div>
+					</div>
+					<span class="ynbadge" ng-if="broadcasterService.channel.isSubscribable">
+						<img ng-src="{{::config.settings.BadgeBaseUrl}}/{{ broadcasterService.broadcaster.userId}}/1/badge@2x.png" />
+					</span>
+				</div>
+				<div ng-show="broadcasterService.channel.editingProfile" class="upload-photo editing">
+					<div class="upload-overlay"></div>
+					<input accept="image/jpeg" name="image" type="file" upload-profile-image do-upload="doUpload" upload-endpoint="updateThumb" upload-name="image" tooltip-trigger="show" tooltip="This image must be at least 80x80px and smaller than 6MB" tooltip-placement="top error">
+					<i class="ynicon ynicon-camera"></i>
+				</div>
+				<div
+					class="name"
+					ng-class="{'overflow':broadcasterService.channel.subscriptions_show_overflow}"
+					prevent-default>
+
+					<span class="short-text">
+						<span class="crowns-container">
+							<span class="user-crowns">
+								<span ng-if="broadcasterService.channel.globalSpenderRank==1">
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="broadcasterService.channel.globalSpenderRank==2">
+									<i class="ynicon ynicon-icon-vip2"></i>
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="broadcasterService.channel.globalSpenderRank==3">
+									<i class="ynicon ynicon-icon-vip2"></i>
+								</span>
+								<span ng-if="!broadcasterService.channel.globalSpenderRank">
+									<i class="ynicon ynicon-level"></i>
+								</span>
+							</span>
+						</span>
+						<b
+						ng-href="/{{broadcasterService.broadcaster.profileUrlString}}" prevent-default
+						ng-click="showProfileSummary(broadcasterService.broadcaster.userId)">
+							{{broadcasterService.channel.level}}
+							<span itemprop="name">{{broadcasterService.channel.fullName}}</span>
+						</b>
+					</span>
+					<span class="ynbadges" ng-if="broadcasterService.channel.subscriptions">
+						<a
+						class="ynbadge"
+						ng-repeat="(key,sub) in broadcasterService.channel.subscriptions"
+						ng-click="showProfileSummary(sub.userId)"
+						ng-href="/{{::sub.userId}}/channel"
+						prevent-default>
+							<img
+							ng-src="{{::config.settings.BadgeBaseUrl}}/{{sub.userId}}/{{sub.subscriptionType}}/badge@2x.png"
+							tooltip="{{(sub.lastName ? sub.firstName+' '+sub.lastName : sub.profileUrlString)}}"
+							tooltip-trigger="mouseenter"
+							tooltip-placement="top"
+							tooltip-append-to-body="true" />
+						</a>
+						<span class="ynbadge ynbadge-ellipsis" ng-if="broadcasterService.channel.subscriptions_extras && broadcasterService.channel.subscriptions_extras.length>0">
+							<i class="ynicon ynicon-icon-ellipsis"></i>
+							<div class="dropup">
+								<div class="dropdown-menu" role="menu">
+									<i class="ynicon ynicon-carrot-dwn"></i>
+									<ul class="" only-scroll>
+										<li ng-repeat="(k,s) in broadcasterService.channel.subscriptions_extras">
+											<a
+											class="ynbadge"
+											ng-click="showProfileSummary(s.userId)"
+											ng-href="/{{s.userId}}/channel"
+											prevent-default>
+												<img
+												ng-src="{{::config.settings.BadgeBaseUrl}}/{{s.userId}}/{{s.subscriptionType}}/badge@2x.png"
+												tooltip="{{(s.lastName ? s.firstName+' '+s.lastName : s.profileUrlString)}}"
+												tooltip-trigger="mouseenter"
+												tooltip-placement="left"
+												tooltip-append-to-body="true" />
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</span>
+
+					</span>
+
+				</div>
+				<div class="profile-actions" track-source="PROFILE">
+					<div class="pull-left btn-small" ng-show="session.user.userId!==broadcasterService.channel.userId" fan-button channel="broadcasterService.channel"></div>
+					<div class="pull-left btn-small" ng-show="session.user.userId!==broadcasterService.channel.userId" subscribe-button channel="broadcasterService.channel"></div>
+
+					<button class="btn btn-transparent flagging pull-right" ng-if="broadcasterService.channel" ng-click="showProfileSummary(undefined, '', undefined, { isFlagging: true })">
+						<i class="ynicon ynicon-flag"></i>
+					</button>
+
+					<div ng-show="session.user.userId===broadcasterService.channel.userId" class="pull-left editing-options">
+						<button ng-if="!broadcasterService.channel.editingProfile" ng-click="editProfile();" class="btn btn-cancel edit-profile" translate="profile_edit_profile"></button>
+						<button ng-if="broadcasterService.channel.editingProfile" ng-click="saveDescription();saveEdit();" class="btn btn-confirm" translate="_save"></button>
+						<button ng-if="broadcasterService.channel.editingProfile" ng-click="cancelEdit();" class="btn btn-cancel" translate="_cancel"></button>
+					</div>
+				</div>
+
+				<div class="user-bio-section">
+
+					<div ng-if="!broadcasterService.channel.editingProfile" class="user-bio" ng-class="{'text-muted': broadcasterService.channel.description.length === 0 || !broadcasterService.channel.description}">
+						<span itemprop="description" ng-bind-html="broadcasterService.channel.displayDescription"></span>
+						<span ng-if="broadcasterService.channel.alias">
+							<span class="bullet">•</span>
+							<span class="text-muted" itemprop="alternateName" ng-bind="broadcasterService.channel.alias"></span>
+						</span>
+					</div>
+					<textarea ng-model="broadcasterService.channel.description" ng-if="broadcasterService.channel.editingProfile" class="user-bio editing" maxlength="140">{{::('profile_describe_yourself' | translate)}}</textarea>
+				</div>
+
+				<div class="profile-pill-container">
+				  <div class="ep-badge" ng-if="broadcasterService.channel.isEp">
+				    <span class="tag short-text">
+				      <i class="ynicon ynicon-level"></i> <span translate="_editors_choice"></span><span ng-if="broadcasterService.channel.epTag.length > 0">: #{{broadcasterService.channel.epTag}}</span>
+				    </span>
+				  </div>
+				  <div class="total-views" ng-if="broadcasterService.channel.totalViews">
+				    <i class="ynicon ynicon-viewers"></i> {{broadcasterService.channel.totalViews}} <span translate="_views"></span>
+				  </div>
+				</div>
+
+				<div class="pull-left social-actions non-owner" ng-if="broadcasterService.channel">
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.twitterId.length !== 0"
+							ng-click="showProfileSummary(undefined, 'following', 'twitter')">
+						<i class="ynicon ynicon-social-tw"></i>
+					</button>
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.facebookId.length !== 0"
+							ng-click="showProfileSummary(undefined, 'following', 'facebook')">
+						<i class="ynicon ynicon-social-fb"></i>
+					</button>
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.youTubeChannelId.length !== 0"
+							ng-click="showProfileSummary(undefined, 'following', 'youtube')">
+						<i class="ynicon ynicon-icon-social-yt"></i>
+					</button>
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.instagramId.length !== 0"
+							ng-click="showProfileSummary(undefined, 'following', 'instagram')">
+						<i class="ynicon ynicon-social-insta"></i>
+					</button>
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.googleId.length !== 0"
+							ng-click="showProfileSummary(undefined, 'following', 'google')">
+						<i class="ynicon ynicon-social-gp"></i>
+					</button>
+				</div>
+				<div class="pull-left social-actions owner" ng-if="broadcasterService.channel">
+					<button class="btn btn-transparent" ng-class="{'not-connected': broadcasterService.channel.twitterId.length === 0}"
+							ng-click="socialMediaHandler('http://twitter.com/'+broadcasterService.channel.twitterHandle, broadcasterService.channel.twitterId.length !== 0)">
+						<i class="ynicon ynicon-social-tw"></i>
+					</button>
+					<button class="btn btn-transparent" ng-class="{'not-connected': broadcasterService.channel.facebookId.length === 0}"
+							ng-click="socialMediaHandler(broadcasterService.channel.facebookLink, broadcasterService.channel.facebookId.length !== 0)">
+						<i class="ynicon ynicon-social-fb"></i>
+					</button>
+					<button class="btn btn-transparent" ng-class="{'not-connected': broadcasterService.channel.youTubeChannelId.length === 0}"
+							ng-click="socialMediaHandler('https://www.youtube.com/channel/'+broadcasterService.channel.youTubeChannelId, broadcasterService.channel.youTubeChannelId.length !== 0)">
+						<i class="ynicon ynicon-icon-social-yt"></i>
+					</button>
+					<button class="btn btn-transparent" ng-class="{'not-connected': broadcasterService.channel.instagramId.length === 0}"
+							ng-click="socialMediaHandler('https://instagram.com/'+broadcasterService.channel.instagramHandle, broadcasterService.channel.instagramId.length !== 0)">
+						<i class="ynicon ynicon-social-insta"></i>
+					</button>
+					<button class="btn btn-transparent" ng-if="broadcasterService.channel.googleId.length !== 0"
+							ng-click="socialMediaHandler('https://plus.google.com/'+broadcasterService.channel.googleId, broadcasterService.channel.googleId.length !== 0)">
+						<i class="ynicon ynicon-social-gp"></i>
+					</button>
+				</div>
+				<div class="clear"></div>
+				<div class="owner social-alert" ng-if="!broadcasterService.channel.socialRatioCap">
+					<i class="ynicon ynicon-carrot-up"></i>
+					<alert type="success">
+						<span class="alert-text" translate="profile_connect_your_social_accounts"></span>
+						<span class="alert-right">{{ broadcasterService.channel.socialRatio }}</span>
+					</alert>
+				</div>
+
+ 			</div>
+		</div>
+		<div infinite-scroll="broadcasterService.getItems()" can-load="!broadcasterService.channel.finished[broadcasterService.tab] && !settingUp" threshold="300" pagescroll="true">
+			<tabset class="navigation" type="pills" ng-class="{ 'notSubscribable' : !broadcasterService.channel.isSubscribable }" ng-if="broadcasterService.channel">
+				<!-- broadcasts -->
+				<tab heading="{{::('profile_broadcasts' | translate)}}" ng-click="tabClick('broadcasts')" active="broadcasterService.asyncTabs.broadcasts" select="showTab('broadcasts')">
+					<div class="broadcasts-tab">
+						<div class="broadcasts">
+							<div class="broadcasts-container">
+								<ul class="broadcasts">
+									<li ng-repeat="post in broadcasterService.channel.broadcasts" class="comment">
+										<div data-younow-post></div>
+									</li>
+								</ul>
+								<div class="no-broadcasts" ng-if="!broadcasterService.channel.broadcasts || broadcasterService.channel.broadcasts.length === 0">
+									<i class="ynicon ynicon-bc-golive"></i>
+									<div ng-if="broadcasterService.channel.broadcastsCount == 0" translate="profile_no_broadcasters_yet"></div>
+									<div ng-if="broadcasterService.channel.broadcastsCount > 0" translate="profile_user_no_public_broadcasts"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</tab>
+				<!-- discussion comments -->
+				<tab heading="{{::('profile_discussion' | translate)}}" id="post-tab" ng-click="tabClick('posts')" active="broadcasterService.asyncTabs.posts" select="showTab('posts')">
+					<div class="conversation-tab ">
+						<div class="conversation-container">
+							<div class="comment-box">
+								<div class="comment-area form-control" tooltip-trigger="mouseenter" tooltip-html-unsafe="{{'profile_tip_mention_your_friends' | translate }}">
+									<div contenteditable mentio
+						                    mentio-typed-term="typedTerm"
+						                    mentio-require-leading-space="true"
+						                    class="editor"
+						                    id="textarea_"
+						                    ng-model="comment.html"
+						                    ng-keydown="submitOnEnter($event, comment)"
+						                    placeholder="{{ 'profile_write_something' | translate }}">
+						                </div>
+						                  <mentio-menu
+						                    mentio-for="'textarea_'"
+						                    mentio-trigger-char="'@'"
+						                    mentio-items="people"
+						                    mentio-template-url="angularjsapp/src/app/components/mention/mention.tpl.html"
+						                    mentio-search="searchPeople(term)"
+						                    mentio-select="insertMention(item)"
+						                    ></mentio-menu>
+									<div class="upload-photo">
+										<input class="pull-right" accept="image/jpeg, image/png" data-url="http://www.younow.com/php/api/post/create" name="media" type="file" yn-on-change="showUploadPreview" params="event,comment" id="file_" tooltip-trigger="show" tooltip="this image must be at least 100x100px and not larger than 10MB">
+										<i class="ynicon ynicon-camera pull-right"></i>
+									</div>
+									<div ng-show="comment.preview" class="upload-preview">
+										<button ng-click="removeUpload(comment)" aria-hidden="true" class="close" type="button">×</button>
+										<img ng-src="{{comment.preview}}" height="100">
+									</div>
+								</div>
+								<div class="comment-actions">
+									<button ng-disabled="posting" ng-click="postComment(comment)" class="btn btn-cancel" translate="_post"></button>
+								</div>
+							</div>
+							<ul class="comments">
+								<li ng-repeat="post in broadcasterService.channel.posts" class="comment" ng-class="{'new':broadcasterService.deeplinkId==post.id}">
+									<div data-younow-post></div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</tab>
+				<!-- total fans -->
+				<tab ng-if="broadcasterService.channel.totalFans!=false && broadcasterService.channel.totalFans!='0'" heading="{{ Api.squashedNumber(broadcasterService.channel.totalFans, 4).toUpperCase() }} {{::('_fans' | translate)}}" ng-click="tabClick('fans')" active="broadcasterService.asyncTabs.fans" select="showTab('fans')">
+					<div class="fans-tab">
+						<ul>
+							<li ng-repeat="fan in broadcasterService.channel.fans" class="fans-tab-fan">
+								<a
+									ng-href="/{{fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)"
+									class="circle-thumb clickable pull-left"
+									ng-style="::{'background':'url('+cdn.thumb+fan.userId+'), url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}">
+								</a>
+								<div class="pull-left">
+									<a
+									class="name clickable short-text"
+									ng-href="/{{fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)">
+										{{fullName(fan)}}
+									</a>
+									<div class="description short-text">
+										{{fan.description}}
+									</div>
+								</div>
+								<div class="fan-button-placeholder pull-right" track-source="PROFILE">
+									<div fan-button channel="fan"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</tab>
+				<!-- fan of  -->
+				<tab ng-if="broadcasterService.channel.totalFansOf!=false && broadcasterService.channel.totalFansOf!='0'"  heading="{{::('profile_fan_of' | translate)}} {{ Api.squashedNumber(broadcasterService.channel.totalFansOf, 4).toUpperCase() }}" ng-click="tabClick('fansof')" active="broadcasterService.asyncTabs.fansof" select="showTab('fansof')">
+					<div class="fans-of-tab ">
+						<ul>
+							<li ng-repeat="fan in broadcasterService.channel.fansof" class="fans-tab-fan">
+								<a
+									ng-href="/{{fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)"
+									class="circle-thumb clickable pull-left"
+									ng-style="::{'background':'url('+cdn.thumb+fan.userId+'), url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}">
+								</a>
+								<div class="pull-left">
+									<a
+									class="name clickable short-text"
+									ng-href="/{{ fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)"
+									>
+										{{ fullName(fan)}}
+									</a>
+									<div class="description short-text">
+										{{ fan.description}}
+									</div>
+								</div>
+								<div class="fan-button-placeholder pull-right" track-source="PROFILE">
+									<div fan-button channel="fan"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</tab>
+				<!-- subscribers -->
+				<tab ng-if="broadcasterService.channel.isSubscribable" heading="{{ Api.squashedNumber(broadcasterService.channel.totalSubscribers, 4).toUpperCase() }} {{::('_subscribers' | translate)}}" ng-click="tabClick('subscribers')" active="broadcasterService.asyncTabs.subscribers" select="showTab('subscribers')">
+					<div class="fans-tab subscribers-tab">
+						<ul>
+							<li ng-repeat="fan in broadcasterService.channel.subscribers" class="fans-tab-fan">
+								<a
+									ng-href="/{{ fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)"
+									class="circle-thumb clickable pull-left"
+									ng-style="{'background':'url('+cdn.thumb+fan.userId+'), url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}">
+								</a>
+								<div class="pull-left">
+									<a
+									class="name clickable short-text"
+									ng-href="/{{ fan.profileUrlString}}" prevent-default
+									ng-click="showProfileSummary(fan.userId)">
+										{{ fullName(fan)}}
+									</a>
+									<div class="description short-text">
+										{{ fan.description}}
+									</div>
+								</div>
+								<div class="fan-button-placeholder pull-right" track-source="PROFILE">
+									<div fan-button channel="fan"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+
+	<div class="main-content-right">
+
+		<!-- MINI PLAYER -->
+		<!-- live -->
+		<mini-player ng-if="broadcasterService.broadcaster.broadcastId" player-id="playeroniBsrErLcZk"></mini-player>
+		<!-- recent -->
+		<div class="mini-player" ng-if="broadcasterService.channel.preview=='recent'">
+			<div class="top clearfix">
+				<div class="pull-left ellipsify" translate="profile_latest_broadcast"></div>
+				<div class="pull-right ellipsify">#{{ broadcasterService.channel.broadcasts[0].media.broadcast.tags }}</div>
+			</div>
+			<div class="middle" ng-style="{'background-image':'url('+cdn.broadcast+broadcasterService.channel.broadcasts[0].media.broadcast.broadcastId+')'}">
+				<div
+				ng-click="showMedia(broadcasterService.channel.broadcasts[0].media.broadcast.broadcastId, {source:'LATEST',start:0}, broadcasterService.channel.broadcasts[0].media.broadcast)"
+				class="middle-player"
+				ng-style="{'background-image':'url('+cdn.image+'/profile/new/icon_play.png)'}">
+				</div>
+			</div>
+			<div class="bot clearfix">
+				<span class="pull-left">
+					<span><i class="ynicon ynicon-viewers"></i> {{ Api.squashedNumber(broadcasterService.channel.broadcasts[0].media.broadcast.totalViewers) }} </span>
+					<span><i class="ynicon ynicon-thumb"></i> {{ Api.squashedNumber(broadcasterService.channel.broadcasts[0].media.broadcast.totalLikes) }} </span>
+					<span><i class="ynicon ynicon-btn-bc-share-android"></i> {{ Api.squashedNumber(broadcasterService.channel.broadcasts[0].media.broadcast.shares) }} </span>
+				</span>
+				<span class="pull-right">
+				</span>
+			</div>
+		</div>
+		<!-- urge -->
+		<div class="mini-player simple-text" ng-if="broadcasterService.channel.preview=='prompt' && broadcasterService.broadcaster.userId == session.user.userId">
+			<div class="text">
+				<div class="title" translate="profile_latest_broadcast"></div>
+				<span class="owner" translate="profile_connect_with_audience_broadcast"></span>
+			</div>
+			<div class="actions">
+				<button class="btn btn-primary owner" ng-click="broadcasterService.goLive()" translate="_golive"></button>
+			</div>
+		</div>
+
+		<div class="activity-panel" ng-if="broadcasterService.channel.biggestFans.length">
+			<div class="online-fans-title">
+				<span translate><i class="ynicon ynicon-icon-whale"></i> profile_biggest_fans_last_thirty_days</span>
+			</div>
+			<div class="activity-panel">
+				<div class="panel-body">
+					<div class="friends-list mini-scroll" only-scroll ng-if="broadcasterService.channel.biggestFans.length > 0">
+						<a
+						class="activity"
+						ng-repeat="friend in broadcasterService.channel.biggestFans | filter:friendfilter | orderBy:'-bars'"
+						ng-href="/{{::friend.profile}}" prevent-default
+						ng-click="showProfileSummary(friend.userId)">
+							<div class="profile-img thumb" ng-style="::{'background': 'url('+(cdn.thumb+friend.userId)+'), url('+cdn.nothumb+') no-repeat'}"></div>
+							<div class="status">
+								<span class="name short-text">{{::friend.name}}</span>
+
+								<div ng-if="friend.bars" class="bars-text">
+									<i class="ynbar ynicon ynicon-icon-bar"></i> {{Api.squashedNumber(friend.bars) }}
+								</div>
+
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="activity-panel">
+			<div class="online-fans-title">
+				<span translate="profile_online_friends"></span> <span class="text-muted">{{broadcasterService.channel.totalOnlineFans}}</span>
+			</div>
+			<div class="activity-panel-module" activity-panel online-friends="broadcasterService.channel.onlineFans" source="OTHERFRIENDS"></div>
+		</div>
+
+		<div class="activity-panel social_links" ng-if="broadcasterService.channel.snKeyWords">
+			<div class="social_links_title" translate="profile_social_title"></div>
+			<div class="social_links_items">
+
+				<a class="social_link" ng-repeat="(key,social) in broadcasterService.channel.snKeyWords" ng-href="{{social.url}}" target="_blank" ng-style="{'background-image':'url(\'{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/social_profile/{{::key}}.png\')'}" ng-if="key!='facebook' && key!='google'">
+					<span class="social_title">{{social.nickname || social.firstName+' '+social.lastName}}</span>
+					<span class="social_description">{{social.description || 'No description'}}</span>
+				</a>
+
+			</div>
+		</div>
+
+	</div>
+</div>

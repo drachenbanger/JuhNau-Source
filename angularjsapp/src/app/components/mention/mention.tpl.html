@@ -1,0 +1,7 @@
+<ul class="list-group user-search">
+    <li mentio-menu-item="person" ng-repeat="person in items" class="list-group-item">
+        <img ng-src="{{person.thumb}}" class="circle-thumb">
+        <span class="text-primary" ng-bind-html="person.displayName | mentioHighlight:typedTerm:'menu-highlighted' | unsafe"></span>
+        <em class="text-muted" ng-bind="person.description"></em>
+    </li>
+</ul>

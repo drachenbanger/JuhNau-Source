@@ -1,0 +1,149 @@
+<div class="mini-overlay" ng-class="state">
+    <!-- hover name -->
+    <div class="display-name">
+        <span class="short-text">{{profile}}</span>
+    </div>
+    <!-- connecting -->
+    <div class="connecting-guest" ng-if="guest">
+        <div class="headline">Connecting...</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (guest.userId||0) +')'}"></div>
+            <img class="conn-gif-below" ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/guest_con_2x.gif"/>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{guest.name}}</div>
+            <div class="short-text location">{{guest.formattedLocation}}</div>
+        </div>
+    </div>
+    <!-- inviting -->
+    <div class="inviting-guest" ng-if="guest">
+        <div class="headline">Inviting Guest...</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (guest.userId||0) +')'}"></div>
+            <img class="conn-gif-below" ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/guest_con_2x.gif"/>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{guest.name}}</div>
+            <div class="short-text location">{{guest.formattedLocation}}</div>
+        </div>
+        <button class="btn btn-cancel" ng-click="cancelInvite()">Cancel</button>
+    </div>
+    <!-- inviting request from broadcaster for guest-->
+    <div class="inviting-request" ng-if="session.user.userId > 0">
+        <div class="headline">Guest Broadcast</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="::{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (swf.broadcast.userId||0) +')'}"></div>
+            <div class="circle-thumb thumb" ng-style="::{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (session.user.userId||0) +')'}"></div>
+            <img class="conn-gif" ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/guest_con2_2x_360.gif"/>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{swf.broadcast.profile}}</div>
+            <div>invited you to go live!</div>
+        </div>
+        <div class="actions" ng-class="{ 'asking-for-permissions': loadingPermissions}">
+            <button class="btn btn-primary" ng-click="acceptInvite()">
+                <span>Go Live</span>
+                <div class="loader-light"></div>
+            </button>
+            <button class="btn btn-important" ng-click="declineInvite()">Decline</button>
+            <div class="permissions-tip">Allow permissions via the dialog at the top of your browser to continue.</div>
+        </div>
+    </div>
+    <!-- inviting request for the audience-->
+    <div class="inviting-guest-audience" ng-if="pendingGuest.guest">
+        <div class="headline">Inviting Guest...</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (pendingGuest.guest.userId||0) +')'}"></div>
+            <img class="conn-gif-below" ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/animations/guest_con_2x.gif"/>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{pendingGuest.guest.name}}</div>
+            <div class="short-text location">{{pendingGuest.guest.formattedLocation}}</div>
+        </div>
+    </div>
+
+    <!-- invite declined -->
+    <div class="invite-declined" ng-if="pendingGuest.guest">
+        <div class="headline">Invite Declined</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (pendingGuest.guest.userId||0) +')'}"></div>
+            <div class="declined-icon"><i class="ynicon ynicon-bc-call-cancel"></i></div>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{pendingGuest.guest.name}}</div>
+            <div class="short-text location">{{pendingGuest.guest.formattedLocation}}</div>
+        </div>
+    </div>
+    <!-- invite timeout with retry option -->
+    <div class="invite-timeout" ng-if="pendingGuest.guest">
+        <div class="headline">No Response</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (pendingGuest.guest.userId||0) +')'}"></div>
+            <div class="declined-icon"><i class="ynicon ynicon-bc-call-cancel"></i></div>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{pendingGuest.guest.name}}</div>
+            <div class="short-text location">{{pendingGuest.guest.formattedLocation}}</div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-confirm" ng-click="retryDirectInvite()">Try Again</button>
+            <button class="btn btn-cancel" ng-click="cancelRetry()">Cancel</button>
+        </div>
+    </div>
+    <!-- ending-guest -->
+    <div class="ending-guest" ng-if="guest">
+        <div class="headline">Drop Guest?</div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (guest.userId||0) +')'}"></div>
+            <div class="cancel"><i class="ynicon ynicon-bc-call-cancel"></i></div>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{guest.name}}</div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-important" ng-click="confirmDrop()">Drop</button>
+            <button class="btn btn-cancel" ng-click="cancelDrop()">Cancel</button>
+        </div>
+    </div>
+    <!-- swapping guest -->
+    <div class="swapping-guest" ng-if="guest">
+        <div class="headline">
+            Make <span class="short-text">{{pendingGuest.guest.name}}</span> live?
+        </div>
+        <div class="profile-images">
+            <div class="circle-thumb thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (pendingGuest.guest.userId||0) +')'}"></div>
+        </div>
+        <div class="guest-info">
+            <div class="short-text">{{pendingGuest.guest.name}}</div>
+            <div class="short-text">{{pendingGuest.guest.formattedLocation}}</div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" ng-click="confirmSwap()">Make Live</button>
+            <button class="btn btn-cancel" ng-click="cancelSwap($event)">Cancel</button>
+        </div>
+    </div>
+    <!-- connecting overlay -->
+    <h3>Going Live...</h3>
+
+    <!-- background overlays -->
+    <!-- connecting broadcaster for guest -->
+    <div class="connecting-broadcaster">
+        <div class="background-thumb" ng-style="{'background-image': 'url(' + config.settings.ServerCDNBaseUrl + '/php/api/getBroadcastThumb/broadcastId=' + swf.broadcast.broadcastId + ')'}"></div>
+        <div class="spinning-loader"></div>
+    </div>
+    <!-- connecting guest for broadcaster -->
+    <div class="connecting-broadcaster-guest" ng-if="guest">
+        <div class="background-thumb" ng-if="::guest.snapshotUrl" ng-style="{'background-image': 'url('+ config.settings.GuestSnapshotsBaseUrl + guest.snapshotUrl+')'}"></div>        <div class="background-thumb" ng-if="::!guest.snapshotUrl" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (guest.userId||0) +')'}"></div>
+    </div>
+    <!-- inviting guest for broadcaster -->
+    <div class="inviting-broadcaster-guest" ng-if="guest">
+        <div class="background-thumb" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (guest.userId||0) +')'}"></div>
+    </div>
+    <!-- inviting guest request for guest and audience -->
+    <div class="inviting-guest-bg" ng-if="pendingGuest.guest">
+        <div class="background-thumb" ng-if="::pendingGuest.guest.snapshotUrl" ng-style="{'background-image': 'url('+ config.settings.GuestSnapshotsBaseUrl + pendingGuest.guest.snapshotUrl+')'}"></div>
+        <div class="background-thumb" ng-if="::!pendingGuest.guest.snapshotUrl" ng-style="{'background-image': 'url('+config.settings.ServerCDNBaseUrl + '/php/api/channel/getImage/channelId=' + (pendingGuest.guest.userId||0) +')'}"></div>
+    </div>
+    <!-- base backdrop -->
+    <div class="backdrop-overlay"></div>
+</div>

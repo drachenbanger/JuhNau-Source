@@ -1,0 +1,71 @@
+<div class="audience-summary" ng-if="vm.swf.audienceLists.nextRefresh - vm.swf.audienceLists.timer > 3 || vm.swf.audienceLists.currentPage !== 0" translate="audience_viewers_in_audience" translate-values="{value:vm.swf.broadcast.viewers}">
+	<button class="btn-reset pull-right" ng-click="vm.clickToRefresh()"><i class="ynicon ynicon-refresh"></i></button>
+</div>
+<div class="audience-summary refresh" ng-if="vm.swf.audienceLists.nextRefresh - vm.swf.audienceLists.timer <= 3 && vm.swf.audienceLists.currentPage === 0">
+	<span translate="audience_refreshing_viewers_in" translate-values="{viewers:vm.swf.broadcast.viewers}"></span> {{vm.swf.audienceLists.nextRefresh - vm.swf.audienceLists.timer}}</span>
+	<button class="btn-reset pull-right"><i class="ynicon ynicon-refresh"></i></button>
+</div>
+<div class="audience" id="audiencelist" only-scroll>
+	<div class="audience-page" ng-repeat="page in vm.swf.audienceLists.pages track by $index">
+		<div class="viewer" ng-repeat="viewer in page.audience">
+
+			<div class="thumb circle-thumb crop-thumb pull-left" ng-click="vm.openProfileSummary(viewer.userId, 'AUDIENCE')"  ng-style="{'background': 'url({{::vm.thumb}}{{::viewer.userId}}) no-repeat, url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover'}"></div>
+
+			<div class="viewer-information">
+
+				<div class="titles" ng-click="vm.openProfileSummary(viewer.userId, 'AUDIENCE')">
+					<span class="ynbadge" ng-if="viewer.subscriptionType">
+						<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.swf.broadcast.userId}}/{{::viewer.subscriptionType}}/badge@2x.png" />
+					</span>
+					<span class="short-text viewer-name">
+						<i class="ynicon ynicon-level" ng-if="!viewer.subscriptionType"></i>{{::viewer.level}} {{::viewer.name}}
+					</span>
+				</div>
+
+				<div class="infos" audience-message viewer="viewer">
+					<div class="info viewer-message subscriber" ng-if="::viewer.subscriptionDate" translate="audience_subscriber_since" translate-values="{value: viewer.subscriptionDate}">
+					</div>
+					<div class="info special-message fanRank" ng-if="::(viewer.fanRank !== -1)" translate="audience_fan_rank" translate-values="{value:viewer.fanRank}">
+						<span ng-if="::viewer.bars">
+							<img class="bar" ng-src="{{::vm.baseImageUrlv3}}/icon_bar_sm.png"> {{::viewer.bars}}
+						</span>
+					</div>
+					<div class="info special-message isFan" ng-if="::(viewer.fanDateUNIX && viewer.fanRank === -1 && vm.swf.broadcast.userId === vm.session.user.userId)" translate="audience_fan_since" translate-values="{value: viewer.fanDate[2]+'/'+viewer.fanDate[1]+'/'+viewer.fanDate[0]}">
+					</div>
+					<div class="info special-message birthday" ng-if="::(viewer.birthdayCopy)">
+						{{::viewer.birthdayCopy}}
+					</div>
+					<div class="info special-message gifts" ng-if="::(viewer.gifts > 0)" translate="audience_gave_gifts" translate-values="{value:viewer.gifts}">
+					</div>
+					<div class="info special-message viewersRs" ng-if="::(viewer.viewersRs > 0)" translate="audience_brought_viewers" translate-values="{viewers:viewer.viewersRs}">
+					</div>
+					<div class="info viewer-location location" ng-if="::((viewer.location.city.length > 0 || viewer.location.state.length > 0 || viewer.location.country.length > 0))">
+						<span ng-if="::viewer.location.city">{{::viewer.location.city + ','}}</span>
+						<span ng-if="::viewer.location.state">{{::viewer.location.state + ','}}</span>
+						<span ng-if="::viewer.location.country">{{::viewer.location.country}}</span>
+					</div>
+					<div class="info viewer-message fans" ng-if="::(viewer.fans)" translate="audience_fans" translate-values="{value:viewer.fans}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="viewer" ng-repeat="viewer in vm.swf.audience">
+		<div class="thumb circle-thumb pull-left" style="background: url(https://placekitten.com/g/200/300) no-repeat; background-size: cover;">
+			<i ng-if="false" class="ynicon ynicon-bc-call-nolines"></i>
+		</div>
+		<div class="viewer-information">
+			<div class="viewer-name"><i class="ynicon ynicon-level"></i>11 Jose Aquilar</div>
+			<div class="special-message">Birthday Today!</div>
+		</div>
+	</div>
+	<div class="viewer">
+		<div class="thumb circle-thumb pull-left" style="background: url(https://placekitten.com/g/200/300) no-repeat; background-size: cover;">
+			<i ng-if="false" class="ynicon ynicon-bc-call-nolines"></i>
+		</div>
+		<div class="viewer-information">
+			<div class="viewer-name"><i class="ynicon ynicon-level"></i>11 Jose Aquilar</div>
+			<div class="viewer-location">Los Angeles, CA</div>
+		</div>
+	</div> -->
+</div>

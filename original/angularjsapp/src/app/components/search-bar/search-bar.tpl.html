@@ -1,0 +1,27 @@
+<div class="search-box pull-left">
+
+	<input 	ng-if="::(type != 'home')"
+		 	typeahead="person.profile for person in search.query($viewValue)"
+			typeahead-loading="searching"
+			typeahead-on-select="search.selectResult($item, $model, $label)"
+			typeahead-template-url="angularjsapp/src/app/components/search-bar/search-results.tpl.html"
+			typeahead-wait-ms="100"
+			ng-model="search.searchBox"
+			ng-blur="search.trackBlur();"
+			class="search-field form-control"
+			placeholder="{{search_placeholder_site}}" type="text" />
+
+	<input 	ng-if="::(type == 'home')"
+			typeahead="person.profile for person in search.query($viewValue)"
+			typeahead-loading="searching"
+			typeahead-on-select="search.selectResult($item, $model, $label)"
+			typeahead-template-url="angularjsapp/src/app/components/search-bar/search-results.tpl.html"
+			typeahead-wait-ms="100"
+			ng-model="search.searchBox"
+			ng-blur="search.trackBlur();"
+			class="search-field form-control"
+			placeholder="{{search_placeholder_home}}" type="text" />
+
+	<i  ng-click="goToExplore()" class="ynicon ynicon-search"></i>
+	<button class="btn btn-primary" ng-if="::(type === 'home')" ng-click="goToExplore()" translate="_go"></button>
+</div>

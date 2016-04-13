@@ -1,0 +1,19 @@
+<div class="modal-body ep-expired">
+    <button aria-hidden="true" class="pull-right close" ng-click="$dismiss()" type="button">
+        <i class="ynicon ynicon-close"></i>
+    </button>
+    <div class="ep-thumb">
+        <div class="circle-thumb" ng-style="::{'background': 'url('+modal.thumb+') no-repeat, url('+modal.nothumb+') no-repeat', 'background-size': 'cover'}"></div>
+        <div class="ep-badge pull-left">
+            <i class="ynicon ynicon-level"></i> Editor's Choice
+        </div>
+    </div>
+    <h4 class="ep-tag">#{{::modal.session.user.editorsPick.tag}}</h4>
+    <h3 class="title">Your Editor's Choice Status is up.</h3>
+    <p class="ep-desc">
+        Hi {{::modal.name}}, we're excited we were able to help you grow your audience. We hope you've enjoyed your time as Editor's Choice <b>#dance</b>. To be considered for Editor's Choice in the future, keep creating great broadcast content!
+    </p>
+    <div class="bottom">
+        <button class="btn btn-confirm btn-wide" ng-click="modal.continue()">Continue</button>
+    </div>
+</div>

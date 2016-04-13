@@ -1,0 +1,257 @@
+<div id="playerfooter">
+	<div class="player-toolbar" ng-if="!vm.swf.settingUpBroadcast">
+		<div class="player-toolbar-left" ng-disabled="vm.swf.bootingFlash || vm.swf.eob">
+			<div id="toolbar-like-button"
+					 class="toolbar-button"
+					 ng-class="{'like-busy':vm.cooldown}"
+					 ng-click="vm.doLike($event)"
+					 tooltip-html-unsafe="{{vm.likeTooltip()}}"
+					 tooltip-trigger="mouseenter"
+					 tooltip-append-to-body="true">
+				<img ng-src="/angularjsapp/src/assets/images/player-footer/like-{{vm.swf.fullscreenActive ? 'fullscreen' : 'normal'}}.{{vm.cooldown ? 'gif' : 'png'}}">
+			</div>
+			<span class="toolbar-like-count">{{vm.swf.broadcast.likes}}</span>
+			<div id="broadcast-shares"
+				class="toolbar-button"
+				tooltip-trigger="show"
+				tooltip-append-to-body="true"
+				tooltip="+{{vm.swf.broadcast.user_shares}}"
+				ng-click="vm.openSnapshot();">
+				<i class="ynicon ynicon-btn-bc-share-android"></i>
+			</div>
+			<span class="share-like-count">{{vm.swf.broadcast.shares}}</span>
+		</div>
+		<div class="player-toolbar-right" ng-disabled="vm.swf.bootingFlash || vm.swf.eob">
+			<div ng-if="vm.swf.currentSession.isBroadcasting && vm.swf.broadcast.userId == vm.session.user.userId" class="toolbar-button dropup" dropdown>
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					tooltip="Change Chatmode"
+					tooltip-trigger="mouseenter"
+					tooltip-append-to-body="true"
+					dropdown-toggle>
+					<span class="ynicon ynicon-chat" ng-class="vm.muteIcon()"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-dwn"></i>
+					<li>
+						<a href ng-click="vm.swf.lowLevel(0)">Unrestricted Chat <i ng-if="vm.swf.currentLowLevel == 0" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+					<li>
+						<a href ng-click="vm.swf.lowLevel(5)">Level 5 Chat <i ng-if="vm.swf.currentLowLevel == 5" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+					<li>
+						<a href ng-click="vm.swf.lowLevel(10)">Level 10 Chat <i ng-if="vm.swf.currentLowLevel == 10" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+				</ul>
+			</div>
+			<!-- stats for nerds -->
+			
+			<div class="stats-for-nerds" dropdown on-toggle="vm.getWebrtcStats(open)" ng-if="vm.swf.currentSession.isBroadcasting && vm.swf.broadcast.userId == vm.session.user.userId && vm.session.user.partner == 1">
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					dropdown-toggle>
+						<i class="ynicon ynicon-carrot-dwn"></i>
+						<i class="ynicon ynicon-icon-quality"></i>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-up"></i>
+					<div class="nerd-stats-container">
+						<div class="nerd-stats-row" ng-if="::!vm.isFirefox">
+							<div>
+								<b>Video Resolution:</b> {{vm.forNerds.resolution}}
+							</div>
+							<div>
+								<b>Network Type:</b> {{vm.forNerds.network}}
+							</div>
+						</div>
+						<div class="nerd-stats-row">
+							<div>
+								<b>Audio Bit Rate:</b> {{vm.forNerds.abr}}
+							</div>
+							<div>
+								<b>Video Bit Rate:</b> {{vm.forNerds.vbr}}
+							</div>
+						</div>
+						<div class="nerd-stats-row">
+							<div>
+								<b>Video RTT:</b> {{vm.forNerds.vRTT}}
+							</div>
+							<div>
+								<b>Frame Rate:</b> {{vm.forNerds.framerate}}
+							</div>
+						</div>
+					</div>
+					<div class="nerd-stats-bot-row">
+						<bitrate-line ng-if="vm.forNerds" bps="vm.forNerds.bps"></bitrate-line>
+						<div>
+							<a class="btn btn-cancel" href="mailto:youremailaddress">Email Stats</a>
+						</div>
+					</div>
+				</ul>
+			</div>
+			<span class="ynicon ynicon-time"></span>
+			<span ng-if="!vm.swf.settingUpBroadcast">{{playerFooter.niceLength}}</span>
+			<span ng-if="vm.swf.settingUpBroadcast">00:00</span>
+			<span class="ynicon ynicon-viewers"></span>
+			<span>{{vm.swf.broadcast.viewers}}</span>
+			<!-- normal mute control -->
+			<span class="mute-container" ng-if="!vm.showFfMuteControls()" ng-disabled="vm.externalStreaming.streaming ||vm.externalStreaming.active ">
+				<div class="volume-bar clickable" ng-mousemove="vm.slideVolume($event)" ng-mouseup="vm.setVolume($event)">
+					<span class="volume-background">
+						<span class="volume-foreground" ng-style="{'width': vm.getVolume()+'px'}"></span>
+						<span class="volume-slider"></span>
+					</span>
+				</div>
+				<span
+					id="volume-icon"
+					class="volume-icon ynicon ynicon-icon-mic clickable"
+					ng-class="vm.muteIcon()"
+					ng-click="vm.setMute()"
+					tooltip-trigger="show"
+					tooltip-append-to-body="true"
+					tooltip="{{'player_youre_muted' | translate }}">
+				</span>
+			</span>
+			<!-- ff mute control -->
+			<span class="mute-container" ng-if="vm.showFfMuteControls()" >
+				<span
+					id="volume-icon"
+					class="volume-icon ynicon ynicon-icon-mic clickable"
+					ng-class="{'ynicon-icon-mic-off': !vm.ffStreamAudioEnabled, 'ynicon-icon-mic': vm.ffStreamAudioEnabled}"
+					ng-click="vm.RTCbroadcastSettings.ffMuteStream()"
+					ng-disabled="vm.externalStreaming.streaming || vm.externalStreaming.streaming"
+					tooltip-trigger="show"
+					tooltip-append-to-body="true"
+					tooltip="{{'player_youre_muted' | translate }}">
+				</span>
+			</span>
+			<!-- webRtc.ffMuteStream -->
+			<div ng-click="vm.togglePlayerFullscreen();" class="pull-right clickable fullscreen-toggle">
+				<i class="ynicon ynicon-icon-openexternal"></i>
+			</div>
+		</div><!-- / toolbar left -->
+	</div><!-- / toolbar -->
+	<!-- FLASH SETTINGUP TOOLBAR  -->
+	<div id="settingup-toolbar" ng-if="vm.swf.settingUpBroadcast && vm.config.mcu != '1'">
+		<div class="toolbar-center">
+			<div class="toolbar-button dropup" dropdown>
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					ng-click="vm.broadcastSettings.cameraSetup()"
+					ng-disabled="vm.externalStreaming.active"
+					tooltip="Change Camera"
+					tooltip-trigger="mouseenter"
+					tooltip-append-to-body="true"
+					dropdown-toggle>
+					<i class="ynicon ynicon-broadcast"></i>
+					<span translate="golive_camera"></span>
+				</button>
+			   	<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-dwn"></i>
+					<li ng-repeat="camera in vm.cameraOptions track by $index">
+						<a href ng-click="vm.broadcastSettings.setCamera($index, camera)">{{camera.name}} <i ng-if="camera.current" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+			    </ul>
+			</div>
+			<div class="mute-container toolbar-button dropup" dropdown>
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					ng-click="vm.broadcastSettings.microphoneSetup()"
+					ng-disabled="vm.externalStreaming.active"
+					tooltip="Change Microphone"
+					tooltip-trigger="mouseenter"
+					tooltip-append-to-body="true"
+					dropdown-toggle>
+					<i class="ynicon ynicon-icon-mic" ng-class="vm.muteIcon()"></i>
+					<span translate="golive_mic"></span>
+				</button>
+			  	<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-dwn"></i>
+					<li ng-repeat="microphone in vm.microphoneOptions track by $index">
+						<a href ng-click="vm.broadcastSettings.setMicrophone($index)">{{microphone.name}} <i ng-if="microphone.current" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+			  	</ul>
+			</div>
+			<div class="volume-bar clickable toolbar-button" ng-mousemove="vm.slideVolume($event)" ng-mouseup="vm.setVolume($event)">
+				<span class="volume-background">
+					<span class="volume-foreground" ng-style="{'width': vm.getVolume()+'px'}"></span>
+					<span class="volume-slider"></span>
+				</span>
+			</div>
+		</div>
+		<advanced-options></advanced-options>
+	</div>
+	<!-- WEBRTC SETTINGUP TOOLBAR -->
+	<div id="settingup-toolbar" ng-if="vm.swf.settingUpBroadcast && vm.config.mcu == '1'">
+		<!-- firefox selection -->
+		<div class="toolbar-center toolbar-firefox" ng-disabled="vm.webRtc.settings.state == 'connecting'" ng-if="::vm.isFirefox">
+			<div class="toolbar-button">
+				<button class="btn btn-confirm" ng-click="vm.RTCbroadcastSettings.ffMediaSetup()" ng-disabled="vm.externalStreaming.active" translate="golive_camera_setup">
+				</button>
+			</div>
+			<div class="firefox-volume-controls">
+				<div class="mute-container toolbar-button">
+					<button class="btn btn-transparent">
+						<i class="ynicon ynicon-icon-mic" ng-class="vm.muteIcon()"></i>
+					</button>
+				</div>
+				<div class="volume-bar clickable toolbar-button" ng-mousemove="vm.slideVolume($event)" ng-mouseup="vm.setVolume($event)">
+					<span class="volume-background">
+						<span class="volume-foreground" ng-style="{'width': vm.getVolume()+'px'}"></span>
+						<span class="volume-slider"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<!-- normal selection -->
+		<div class="toolbar-center" ng-disabled="vm.webRtc.settings.state == 'connecting'" ng-if="::!vm.isFirefox">
+			<div class="toolbar-button dropup" dropdown>
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					ng-click="vm.RTCbroadcastSettings.cameraSetup()"
+					ng-disabled="vm.externalStreaming.active"
+					tooltip="{{ 'golive_change_camera' | translate }}"
+					tooltip-trigger="mouseenter"
+					tooltip-append-to-body="true"
+					dropdown-toggle>
+					<i class="ynicon ynicon-broadcast"></i>
+					<span translate="golive_camera"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-dwn"></i>
+					<li ng-repeat="camera in vm.cameraOptions track by $index">
+						<a href ng-click="vm.RTCbroadcastSettings.setCamera(camera)">{{camera.label}} <i ng-if="camera.enabled" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+					<div ng-if="(!vm.cameraOptions || vm.cameraOptions.length === 0)" class="loader"></div>
+				</ul>
+			</div>
+			<div class="mute-container toolbar-button dropup" dropdown>
+				<button
+					class="btn btn-transparent dropdown-toggle"
+					ng-click="vm.RTCbroadcastSettings.microphoneSetup()"
+					ng-disabled="vm.externalStreaming.active"
+					tooltip="{{ 'golive_change_mic' | translate }}"
+					tooltip-trigger="mouseenter"
+					tooltip-append-to-body="true"
+					dropdown-toggle>
+					<i class="ynicon ynicon-icon-mic" ng-class="vm.muteIcon()"></i>
+					<span translate="golive_mic"></span>
+				</button>
+			  	<ul class="dropdown-menu" role="menu">
+					<i class="ynicon ynicon-carrot-dwn"></i>
+					<li ng-repeat="microphone in vm.microphoneOptions track by $index">
+						<a href ng-click="vm.RTCbroadcastSettings.setMicrophone(microphone)">{{microphone.label}} <i ng-if="microphone.enabled" class="ynicon ynicon-icon-check"></i></a>
+					</li>
+					<div ng-if="(!vm.microphoneOptions || vm.microphoneOptions.length === 0)" class="loader"></div>
+			  	</ul>
+			</div>
+			<div class="volume-bar clickable toolbar-button" ng-mousemove="vm.slideVolume($event)" ng-mouseup="vm.setVolume($event)">
+				<span class="volume-background">
+					<span class="volume-foreground" ng-style="{'width': vm.getVolume()+'px'}"></span>
+					<span class="volume-slider"></span>
+				</span>
+			</div>
+		</div>
+		<advanced-options></advanced-options>
+	</div>
+</div>

@@ -1,0 +1,111 @@
+<div class="comment-container " ng-if="post.id" ng-attr-id="post_{{::post.id}}">
+	<a
+	class="circle-thumb crop-thumb pull-left"
+	ng-click="showProfileSummary(post.user.userId)"
+	ng-href="/{{post.user.profileUrlString}}" prevent-default>
+		<div class="thumb-image" ng-style="::{ 'background': 'url('+cdn.nothumb+') no-repeat'}">
+			<div class="thumb-image-wide">
+				<img class="thumb-image-img" class="thumb-image" ng-src="{{::cdn.thumb+post.user.userId}}" alt="{{::post.user.profile}}" />
+			</div>
+		</div>
+	</a>
+	<div class="admin-controls pull-right" ng-show="canEdit(post)" dropdown>
+		<button class="btn btn-transparent" dropdown-toggle href="javascript:void(0)">
+			<img ng-src="{{::cdn.base}}/images/groups/icon_pro_arrow.png">
+		</button>
+		<ul class="dropdown-menu">
+			<i class="ynicon ynicon-carrot-up"></i>
+			<li ng-if="::post.downloadUrl !== undefined">
+				<a class="download" target="_self" ng-href="{{::post.downloadUrl}}" translate="_download" rel="nofollow"></a>
+			</li>
+			<li ng-if="canPin(post)" ng-click="togglePin(post)">
+				<a href="javascript:void(0)" ng-if="post.isPinned" translate="profile_unpin"></a>
+				<a href="javascript:void(0)" ng-if="!post.isPinned" translate="profile_pin"></a>
+			</li>
+			<li>
+				<a class="delete-comment" data-confirm-message="post_are_you_sure_delete" confirm="delete" confirm-data="post" href="javascript:void(0)"><span translate="_delete"></span></a>
+			</li>
+		</ul>
+	</div>
+	<div class="description">
+		<img ng-if="post.isPinned" class="pin pull-left" ng-src="{{::cdn.base}}/images/groups/icon_post_pin.png">
+		<a
+		class="name"
+		ng-href="/{{post.user.profileUrlString}}" prevent-default
+		ng-click="showProfileSummary(post.user.userId)">
+			{{::post.user.firstName}} {{::post.user.lastName}}
+		</a>
+		<div ng-if="::(post.media.broadcast.minutesAgo >= 10080)">
+			<div class="minutes-ago text-muted">{{::post.media.broadcast.broadcastTitle}}</div>
+		</div>
+		<div ng-if="::(post.timeAgo)">
+			<div class="minutes-ago text-muted" ng-if="::post.timeAgo !== '0 second ago'">{{::post.timeAgo}}</div>
+			<div class="minutes-ago text-muted" ng-if="::post.timeAgo == '0 second ago'" translate="post_just_now"></div>
+		</div>
+	</div>
+	<div class="body clear">
+		<div class="post-comment">
+			<div ng-bind-html="::post.post"></div>
+			<div class="clear"></div>
+		</div>
+		<div class="comment-media " ng-if="post.hasOwnProperty('embed')">
+			<div ng-include src="'angularjsapp/src/app/components/post/embed/'+post.embed+'.tpl.html'"></div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="like" ng-click="toggleLike(post)">
+			<i class="ynicon ynicon-thumb" ng-class="{'not-liked': !post.liked, liked: post.liked}"></i>
+			<span ng-if="post.liked" class="liked" translate="_liked"></span>
+			<span ng-if="!post.liked" translate="_like"></span>
+			<span ng-show="post.likesCount">&#8211; {{post.likeText}}</span>
+		</div>
+	</div>
+	<div ng-if="post.hasMore" class="see-more "><a href="javascript:void(0)" ng-click="moreComments(post)" translate="post_see_previous_comments"></a></div>
+	<ul ng-if="::!post.parentId" class="replies ">
+		<li ng-repeat="reply in post.replies" class="comment " ng-class="{'new-reply':broadcasterService.deeplinkId==reply.id}">
+			<div data-younow-reply></div>
+		</li>
+	</ul>
+	<div ng-if="::!post.parentId" class="reply-box row">
+		<div class="comment-area"  tooltip-trigger="mouseenter" tooltip-html-unsafe="{{::('post_tip_mention_your_friends' | translate)}}">
+			<div contenteditable mentio
+			mentio-typed-term="typedTerm"
+			mentio-require-leading-space="true"
+			class="editor form-control"
+			style="min-height:25px; padding: 2px 25px 3px 31px;"
+			id="textarea_{{post.id}}"
+			ng-model="post.html"
+			ng-keydown="submitOnEnter($event, post)"
+			placeholder="{{'post_comment_on' | translate }}"
+			></div>
+			<mentio-menu
+			mentio-for="'textarea_'+post.id"
+			mentio-trigger-char="'@'"
+			mentio-items="people"
+			mentio-template-url="angularjsapp/src/app/components/mention/mention.tpl.html"
+			mentio-search="searchPeople(term)"
+			mentio-select="insertMention(item)"
+			></mentio-menu>
+			<div ng-show="!session.loggedIn" class="circle-thumb" ng-style="::{background: 'url('+cdn.nothumb+') no-repeat', backgroundSize: 'cover'}">
+			</div>
+			<div ng-show="session.loggedIn" class="circle-thumb crop-thumb">
+				<div class="thumb-image" ng-style="::{background: 'url('+cdn.thumb+session.user.userId+') no-repeat'}">
+					<div class="thumb-image-wide">
+						<img class="thumb-image-img" ng-src="{{::cdn.thumb+session.user.userId}}" alt="{{::session.user.profile}}" />
+					</div>
+				</div>
+			</div>
+			<div class="upload-photo">
+				<input accept="image/jpeg, image/png" data-url="http://www.younow.com/php/api/post/create" name="media" type="file" yn-on-change="showUploadPreview" params="event,post" ng-attr-id="file_{{::post.id}}">
+				<i class="ynicon ynicon-camera pull-right"></i>
+			</div>
+			<div ng-show="post.preview" class="upload-preview">
+				<button ng-click="removeUpload(post)" aria-hidden="true" class="close" type="button">×</button>
+				<img ng-src="{{post.preview}}" height="100">
+			</div>
+		</div>
+	</div>
+	<div class="options pull-right hidden"></div>
+	<div class="options-screen pull-left hidden"></div>
+	<div class="clear"></div>
+</div>

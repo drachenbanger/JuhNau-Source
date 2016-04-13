@@ -1,0 +1,220 @@
+<div class="main-content explore-content clearfix live-thumbs">
+
+	<div class="main-content-left"
+		ng-class="{'large': !showMiniplayer && !eps.list && query !== undefined}"
+		infinite-scroll="getItems()"
+		can-load="!finished"
+		threshold="{{::(resultsView=='new' ? 0 : 200)}}"
+		pagescroll="true">
+
+
+		<!-- QUEUE (TAG) -->
+		<div class="explore_results" ng-if="queue[0] && tag">
+			<h3 class="explore_header" translate="explore_tag_title_live" translate-values="{tag:'#'+tag}"></h3>
+			<div class="explore_items clearfix">
+				<div ng-repeat="person in queue" class="result">
+
+					<div
+						class="thumb box-thumb"
+						ng-style="::{'background-image': 'url('+person.thumb+'), url('+cdn.nothumb+')'}"
+						ng-href="/{{::person.profile}}"
+						ng-click="selectUser(person, false, true);trackBroadcaster();"
+						prevent-default>
+						<a
+							ng-click="selectUser(person, false, true);trackBroadcaster();"
+							ng-href="/{{::person.profile}}"
+						 	prevent-default>
+							<img
+								alt="{{::person.profile}}" 
+								ng-src="{{::person.thumb}}" 
+								class="user-profile" >
+							</img>
+						</a>
+						<a
+							ng-click="showTag($event, tag)"
+							ng-href="/explore/{{::tag}}"
+						 	class="user-tag short-text"
+						 	prevent-default>
+							#{{::tag}}
+						</a>
+						<div class="tag-fade"></div>
+					</div>
+					<div class="result-text">
+						<a
+						ng-href="/{{::person.profile}}" prevent-default
+						ng-click="showProfileSummary(person.userId)"
+						class="result-text text1 name short-text">
+							<i class="ynicon ynicon-level"></i>{{::person.level}} {{::person.fullName}}
+						</a>
+						<span>
+							<i class="ynicon ynicon-broadcast pull-left"></i>
+							<span class="user-status pull-left"> <span translate="_live"></span> &#8226;</span>
+						</span>
+						<div ng-if="::person.viewers!=undefined" class="user-viewers">
+							<i class="ynicon ynicon-viewers"></i> {{::person.viewers}}
+						</div>
+						<div ng-if="::person.viewers==undefined" class="user-fans">{{::person.totalFans || person.fans}} fans</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="explore_more" ng-if="queueMore" ng-click="getQueue()">
+				<span ng-if="getQueueLoading">Loading...</span>
+				<span ng-if="!getQueueLoading">View more</span>
+			</div>
+		</div>
+		
+		<!-- ITEMS (TAG) -->
+		<div class="explore_results" ng-if="resultsView=='new' && results[0]" ng-class="{tag:tag}">
+			<h3 class="explore_header" translate="explore_tag_title_best" translate-values="{tag:tag}"></h3>
+			<div class="explore_items clearfix">
+				<div ng-repeat="person in results" class="result">
+
+					<div
+						class="tagged-cover thumb box-thumb"
+						ng-style="::{'background-image': 'url('+person.cover+'), url('+cdn.nothumb+')'}"
+						ng-href="/{{::person.profile}}"
+						ng-click="selectUser(person, false, true);trackBroadcaster();"
+						prevent-default>
+					</div>
+					<a
+						ng-click="selectUser(person, false, true);trackBroadcaster();"
+						ng-href="/{{::person.profile}}"
+					 	class="tagged-thumb"
+					 	prevent-default>
+						<img
+							alt="{{::person.profile}}" 
+							ng-src="{{::person.thumb}}" 
+							class="thumb circle-thumb" >
+						</img>
+					</a>
+					<div class="tagged-text">
+						<a
+						ng-href="/{{::person.profile}}" prevent-default
+						ng-click="showProfileSummary(person.userId)"
+						class="tagged-title name short-text">
+							<i class="ynicon ynicon-level"></i>{{::person.level}} {{::person.fullName}}
+						</a>
+						<div class="tagged-fans user-fans">{{::person.totalFans || person.fans}} fans</div>
+						<div class="tagged-desc user-fans">{{::person.desc}}</div>
+					</div>
+
+					<div class="tagged-button wide_button_container" fan-button channel="person" classname="wide"></div>
+
+				</div>
+			</div>
+		</div>
+		
+		<!-- ITEMS (ALL or SEARCH) -->
+		<div class="explore_results" ng-if="resultsView=='old'">
+			<h3 class="explore_header" ng-if="!tag" translate="explore_header"></h3>
+			<h3 class="explore_header" ng-if="noresults" translate="explore_no_user_found"></h3>
+			<div ng-repeat="person in results" class="result">
+				<div
+					class="thumb box-thumb"
+					ng-href="/{{::person.profile}}"
+					ng-click="selectUser(person, false, true);trackBroadcaster();"
+					prevent-default>
+					<img
+						alt="{{::person.profile}}" 
+						ng-src="{{::person.thumb}}" 
+						fallback-src="{{::person.thumb_backup}}" 
+						class="user-profile" >
+					</img>
+					<a
+						ng-if="person.tag"
+						ng-click="showTag($event, person.tag)"
+						ng-href="/explore/{{::person.tag}}"
+					 	class="user-tag short-text"
+					 	prevent-default>
+						#{{::person.tag}}
+					</a>
+					<div class="tag-fade"></div>
+				</div>
+				<a
+				ng-href="/{{::person.profile}}" prevent-default
+				ng-click="showProfileSummary(person.userId)"
+				class="result-text text1 name short-text">
+					<i class="ynicon ynicon-level"></i>{{::person.level}} {{::person.fullName}}
+				</a>
+				<div class="result-text text2">
+					<span>
+						<i ng-if="::person.tag" class="ynicon ynicon-broadcast pull-left"></i>
+						<span ng-if="::person.tag" class="user-status pull-left"> <span translate="_live"></span> &#8226;</span>
+					</span>
+					<div ng-if="::person.viewers!=undefined" class="user-viewers">
+						<i class="ynicon ynicon-viewers"></i> {{::person.viewers}}
+					</div>
+					<div ng-if="::person.viewers==undefined" class="user-fans">{{::person.totalFans || person.fans}} fans</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="main-content-right" ng-if="showMiniplayer || (eps.list && eps.list.length > 0) || !query">
+
+		<!-- MINI PLAYER -->
+		<div class="mini-player" ng-if="showMiniplayer">
+			<div class="top clearfix">
+				<a class="pull-left ellipsify" ng-if="broadcast.broadcastId" ng-href="/{{broadcast.user.profileUrlString}}" prevent-default ng-click="showBroadcast()"><i class="ynicon ynicon-level"></i>{{broadcasterService.channel.level}} {{broadcast.profile}}</a>
+				<div class="pull-right ellipsify">#{{broadcast.tags[0]}}</div>
+			</div>
+			<div class="middle clearfix">
+				<div id="mini-player">
+					<div class="player" id="playeroniBsrErLcZk"></div>
+				</div>
+			</div>
+			<div class="bot clearfix">
+				<span class="pull-left">
+					<span><i class="ynicon ynicon-viewers"></i> {{ Api.squashedNumber(broadcast.viewers) }} </span>
+					<span><i class="ynicon ynicon-thumb"></i> {{ Api.squashedNumber(broadcast.likes) }} </span>
+					<span><i class="ynicon ynicon-btn-bc-share-android"></i> {{ Api.squashedNumber(broadcast.shares) }} </span>
+				</span>
+				<span class="pull-right" ng-click="swf.toggleMute()">
+					<i class="ynicon" ng-class="swf.volume==0 ? 'ynicon-mute-sel' : 'ynicon-mute'"></i>
+				</span>
+			</div>
+			<div class="actions">
+				<button class="btn btn-primary" translate="profile_enter_live_chat" ng-click="showBroadcast()" translate="explore_enter_live_chat"></button>
+			</div>
+		</div>
+
+		<!-- vip list -->
+		<div class="column-list" ng-if="!query" top-broadcasters-height>
+			<div class="title" translate="explore_topbroadcasters"></div>
+			<div class="column-scroll mini-scroll">
+				<div ng-repeat="vip in ::vips.list" class="list-item">
+					<a class="circle-thumb pull-left"
+						ng-style="::{'background': 'url('+vip.thumbnail+') no-repeat, url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}"
+						ng-click="showProfileSummary(vip.userId)"
+						ng-href="/{{::vip.profile}}"
+						prevent-default>
+					</a>
+					<div class="description short-text">{{::vip.profile}}</div>
+					<div class="fan-button-placeholder" track-source="EXPLORE_VIP">
+						<div fan-button size="small" channel="vip"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- ep list -->
+		<div class="column-list" ng-if="eps.list && eps.list.length > 0">
+			<div class="title" translate="_editors_choice"></div>
+			<div class="column-scroll mini-scroll">
+				<div ng-repeat="ep in ::eps.list" class="list-item">
+					<a class="circle-thumb pull-left"
+						ng-style="::{'background': 'url('+cdn.thumb+ep.userId+') no-repeat, url('+cdn.nothumb+') no-repeat', 'background-size': 'cover'}"
+						ng-click="showProfileSummary(ep.userId)"
+						ng-href="/{{::ep.name}}"
+						prevent-default>
+					</a>
+					<div class="description short-text">{{::ep.name}}</div>
+					<div class="fan-button-placeholder" track-source="EXPLORE_EP">
+						<div fan-button size="small" channel="ep"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

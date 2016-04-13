@@ -1,0 +1,182 @@
+<section class="xTemp homeSection search-container content-creator-container">
+
+	<div class="search-top">
+		<a>
+			<img class="mcn-logo" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/fullscreen-standard-logo-white.png">
+			<img class="younow-logo" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/logo_younow_white.png">
+		</a>
+		<div class="get-partnered" ng-click="vm.scrollToSignUp()">
+			<div class="call">
+				<p>GET PARTNERED</p>
+			</div>
+			<div class="arrow">
+				<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/right_arrow.png">
+			</div>
+		</div>
+
+	</div>
+
+
+			<!-- younow-home-app-promo -->
+	<div class="home-video-container">
+		<video class="home-video" autoplay="" loop="" ng-attr-poster="{{::vm.configSettings.ServerCDNBaseUrl +'/images/about/novideo.jpg'}}" id="homeVideo">
+			<source ng-src="{{::vm.configSettings.ServerCDNBaseUrl + '/landing/video/younow_shade2.webmhd.webm'}}" type="video/webm">
+			<source "{{::vm.configSettings.ServerCDNBaseUrl + '/landing/video/younow_shade2.mp4'}}" type="video/mp4">
+		</video>
+		<div ng-style="::{'background-image': 'url('+vm.configSettings.ServerCDNBaseUrl + '/images/bike_girl2.jpg'+')'}" class="mobile-banner"></div>
+	</div>
+	<h1>Go Live. Hang with Fans. Monetize.</h1>
+</section>
+
+<div scrolled-class="385" class="get-partnered-panel" id="get-partnered" ng-click="vm.scrollToSignUp()">
+	<div class="call-to-action">
+		<p> GET PARTNERED</p>
+	</div>
+	<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/white_down_caret.png">
+</div>
+
+
+<div class="benefits">
+	<div class="guest">
+		<h4 scrolled-class="385" >Guest <br> Broadcasting</h4>
+		<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/Feature1_GuestBC.jpg">
+		<p>Bring your audience in to broadcast with you.</p>
+	</div>
+	<div class="earn">
+		<h4>Earn Money From Tips &amp; Gifts</h4>
+		<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/Feature2_Tips.jpg">
+		<p>Viewers buy bars. Bars buy gifts. Gifts make YouNow Partners real money.</p>
+	</div>
+	<div class="audience">
+		<h4>Expand Your Audience</h4>
+		<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/Feature3_Subscribe.jpg">
+		<p>Fans can subscribe to your YouTube channel and follow you on Twitter directly from the app.</p>
+	</div>
+</div>
+
+<div class="how-it-works">
+
+	<h2>
+		HOW DOES IT WORK?
+	</h2>
+
+	<div class="tutorial-vid">
+		<iframe src="https://player.vimeo.com/video/130339308"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	</div>
+
+
+	<div class="benefits white">
+		<div ng-class="{'visible': vm.selectedTestimonial === '1'}" class="guest">
+
+			<img class="arrow left " ng-click="vm.nextTestimonial('back') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_left.png">
+			<img class="headshot" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/testimonial_haileyknox.jpg">
+			<img class="arrow right" ng-click="vm.nextTestimonial('next') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_right.png">
+
+			<p>"YouNow has helped me to find my audience like no other platform could, and has opened opportunities for me to connect with fans in very real and meaningful way."</p>
+
+			<p class="author">- Hailey Knox</p>
+		</div>
+		<div ng-class="{'visible': vm.selectedTestimonial === '2'}" class="audience">
+
+			<img class="arrow left" ng-click="vm.nextTestimonial('back') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_left.png">
+			<img class="headshot" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/testimonial_twaimz.jpg">
+			<img class="arrow right" ng-click="vm.nextTestimonial('next') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_right.png">
+
+			<p>"I am OBSESSED with YouNow! It’s a great way to connect with people I like to call my friends, not fans!"</p>
+
+			<p class="author">- twaimz</p>
+		</div>
+		<div ng-class="{'visible': vm.selectedTestimonial === '3'}" class="earn">
+
+			<img class="arrow left" ng-click="vm.nextTestimonial('back') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_left.png">
+			<img class="headshot" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/testimonial_LABeast.jpg">
+			<img class="arrow right" ng-click="vm.nextTestimonial('next') "ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/next_arrow_right.png">
+
+			<p>"YouNow has given me the gift to have face to face conversations any time, 365 days of the year, worldwide with the people I care about the most — my loyal and dedicated fans."</p>
+
+			<p class="author">- L.A. Beast</p>
+		</div>
+	</div>
+
+	<div class="featured-in">
+		<p>ALSO FEATURED IN</p>
+	</div>
+
+	<div class="logos">
+		<div>
+			<a target="_blank" href=" http://www.billboard.com/articles/business/6836149/younow-music-live-streaming-adi-sideman-hailey-knox">
+			<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/logo_billboard.png">
+			</a>
+
+			<a target="_blank" href="http://variety.com/2015/digital/news/never-mind-periscope-or-meerkat-younow-has-already-paid-top-live-streamers-1-million-1201483789/">
+			<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/logo_variety.png">
+			</a>
+
+			<a target="_blank" href="http://dailydot.com/entertainment/younow-livestreaming-platform/?tw=dd">
+			<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/logo_dailydot.png">
+			</a>
+
+			<a target="_blank" href="http://www.slate.com/articles/technology/users/2015/12/younow_a_live_streaming_social_network_is_making_stars.2.html">
+			<img id="scroll-point" ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/logo_slate.png">
+			</a>
+		</div>
+
+	</div>
+
+
+</div>
+
+
+<div class="get-started" ng-class="{'hidden': vm.success}">
+	<h2>Let's Get Started!</h2>
+	<h4> Leave your contact details and we'll be in touch soon.</h4>
+
+<!-- need to validate these -->
+	<form ng-class="{'submitted-form': vm.submittedForm}">
+		<div class="name">
+			<div class="input-block name" yn-enter="vm.submitPartnerInfo()">
+				<input ng-model="vm.partnerInfo.firstName" required placeholder="First Name"></input>
+				<div class="warning">First Name Required</div>
+			</div>
+
+			<div class="input-block name" yn-enter="vm.submitPartnerInfo()">
+				<input ng-model="vm.partnerInfo.lastName" required placeholder="Last Name"></input>
+				<div class="warning">Last Name Required</div>
+			</div>
+		</div>
+		<div class="input-block email" yn-enter="vm.submitPartnerInfo()">
+			<input ng-model="vm.partnerInfo.email" required type="email" class="email" placeholder="Email"></input>
+			<div class="warning">Valid Email Required</div>
+		</div><br>
+
+		<div class="input-block phone" yn-enter="vm.submitPartnerInfo()">
+			<input ng-model="vm.partnerInfo.phone" required type="number" ng-minlength="10" ng-maxlength="11" class="number" placeholder="Phone Number"></input>
+			<div class="warning">Valid Phone Number Required (no dashes or parentheses)</div>
+		</div>
+	</form>
+
+	<div ng-click="vm.submitPartnerInfo()"class="interest-btn">
+		<p> I'm Interested! Help me get partnered!</p>
+	</div>
+
+</div>
+
+<div class="success get-started" ng-class="{'visible': vm.success}">
+		<h2>Thanks! We'll Be in touch soon</h2>
+		<h4> In the meantime, sign up on YouNow!</h4>
+
+		<a target="_blank" href="https://www.younow.com/">
+			<div class="green-btn">
+				<p>Create a YouNow Account</p>
+			</div>
+		</a>
+
+		<h1> DOWNLOAD THE APP</h1>
+
+		<a href="https://itunes.apple.com/app/apple-store/id471347413">
+		<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/apple_download.png">
+		</a>
+		<a href="https://play.google.com/store/apps/details?id=younow.live">
+		<img ng-src="{{::vm.configSettings.ServerCDNBaseUrl}}/images/android_download.png">
+		</a>
+</div>

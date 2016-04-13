@@ -1,0 +1,31 @@
+<div ng-if="match.model.objectID" class="searchResult">
+	<div class="circle-thumb pull-left" ng-attr-style="{{$parent.$parent.$parent.$parent.cdn.background(match.model.objectID)}}">
+		<div class="live" ng-show="match.model.tag"><i class="ynicon ynicon-broadcast"></i></div>
+	</div>
+	<div class="pull-left userInfo">
+		<div class="name pull-left">
+			<i class="ynicon ynicon-level"></i><span>{{match.model.level}}</span>
+			<span class="short-text">{{match.model.fullName}}</span>
+		</div>
+		<div ng-show="match.model.viewers" class="viewers pull-right">
+			<img ng-src="{{$parent.$parent.$parent.cdn.base}}/images/younow_header/icon_viewers_search.png">{{match.model.viewers}}</div>
+		<div class="description line-clamp pull-left" ng-bind-html="match.model.hashedDescription"></div>
+	</div>
+</div>
+<div ng-if="match.model.dbg">
+	<a class="tagResult" ng-href="/explore/{{match.model.tag}}">
+		<div class="short-text">{{match.model.tag}}</div>
+		<span class="pull-right"> 
+			<i class="ynicon ynicon-broadcast"></i>
+			<span>{{match.model.live}}</span>
+		</span>
+		<span class="pull-right">
+			<i class="ynicon ynicon-viewers"></i>
+			<span>{{match.model.viewers}}</span>
+		</span>
+	</a>
+</div>
+<div ng-if="match.model.more" class="searchResult-more transline-top ellipsify">
+	<span translate="search_see_all_for"></span>
+	<span class="searchTerm short-text">{{match.model.query}}</span>
+</div>

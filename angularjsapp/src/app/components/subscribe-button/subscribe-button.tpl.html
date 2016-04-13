@@ -1,0 +1,8 @@
+<button class="btn btn-small btn-subscribe {{subStatus[channel.userId]?'btn-subscribed':'btn-to-subscribe'}} {{fanStatus[channel.userId]?'is-fanned':'not-fanned'}}" ng-if="( !hidden && ( fanStatus[channel.userId] || subStatus[channel.userId] ) )" ng-click="subscribe()">
+	<span class="tosubscribe" ng-if="!subStatus[channel.userId]">
+		<i class="ynicon ynicon-icon-subscribe"></i> {{'_subscribe' | translate}}
+	</span>
+	<span class="subscribed" ng-if="subStatus[channel.userId]">
+		<i class="ynicon ynicon-icon-check"></i> {{'_subscribed' | translate}}
+	</span>
+</button>

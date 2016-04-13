@@ -1,0 +1,361 @@
+<div class="end-of-broadcast-container">
+	
+	<!-- HEADER -->
+	<div class="eob-header">
+		<div class="broadcast-info">
+			<a
+				class="thumb thumb-eob circle-thumb pull-left"
+				ng-style="::{ background: 'url(' + vm.thumb + vm.session.user.userId + '), url({{vm.noThumb}}) no-repeat', 'background-size': 'cover' }"
+				ng-href="/{{::vm.session.user.profile}}" prevent-default
+				ng-click="vm.openBroadcasterProfile(vm.session.user.userId)">
+			</a>
+			<div class="broadcaster-setup-description">
+				<div class="short-text" translate="eob_this_broadcast"> - </div>&nbsp;
+				<span class="short-text bold">{{::vm.swf.eob.duration}} </span>&nbsp;
+			<span class="broadcaster-tags short-text bold" translate="_on"> </span> &nbsp;
+				<a
+				class="broadcaster-tags short-text bold link"
+				ng-repeat="tag in vm.broadcast.broadcaster.tags"
+				ng-href="/explore/{{tag}}" prevent-default
+				ng-click="vm.goToTag(tag)">
+					#{{tag}}
+				</a>
+			</div>
+		</div>
+		<button ng-if="vm.swf.eob !== undefined" class="drop-broadcast btn btn-transparent active clear-eob" ng-click="vm.goToMainState()">
+			<i class="ynicon ynicon-close"></i>
+		</button>
+	</div>
+
+
+	<!-- NON PARTNER STATS-->
+	<div ng-if="::(vm.swf.eob.partner!=1 && vm.swf.eob.partner!=2 && vm.swf.eob.partner!=6 && vm.swf.eob.partner!=7)" class="stats-container">
+		<div class="your-stats"> 
+			<p translate="eob_your_stats"></p>
+		</div>
+		<div class="details">
+			<div class="detail-container" ng-if="::vm.swf.eob.viewers >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-viewers"></i>
+				</div>
+				<div class="info">
+					<div class="stat" >{{::vm.swf.eob.viewers}}</div>
+					<div class="title" translate="_views"></div>
+				</div>
+			</div>
+			<div ng-if="::vm.swf.eob.estimatedEarnings !== undefined" class="detail-container earnings">
+				<div class="icon">
+					<i class="ynicon ynicon-user"></i>
+				</div>
+				<div class="info">
+					<div class="stat">${{::vm.swf.eob.estimatedEarnings}}</div>
+					<div class="title" translate="eob_premium_earnings"></div>
+					<a href="/partners" target="_blank" translate="eob_apply_partner"> </a>
+				</div>
+			</div>
+			<div ng-if="::vm.swf.eob.giftsTotal > 0" class="detail-container">
+				<div class="icon">
+					<i class="ynicon ynicon-gift"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.giftsTotal}}</div>
+					<div class="title" translate="eob_premium_givers"></div>
+				</div>
+			</div>
+			<div class="detail-container" ng-if="::vm.swf.eob.fansAdded >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-user"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.fansAdded}}</div>
+					<div class="title" translate="eob_newfans"></div>
+				</div>
+			</div>
+			<div class="detail-container" ng-if="::vm.swf.eob.likes >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-thumb"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.likes}}</div>
+					<div class="title" translate="eob_likes"></div>
+				</div>
+			</div>
+			<div class="detail-container">
+				<div class="icon">
+					<i class="ynicon ynicon-level"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.progress}}%</div>
+					<div class="title" translate="eob_progress_to" translate-values="{level:vm.swf.eob.nextLevel}">{{::vm.swf.eob.nextLevel}}</div>
+				</div>
+				<div class="level-bar">
+					<div class="total-progress pull-left" ng-style="::{'width': vm.swf.eob.progress+'%'}"></div>
+					<div class="last-progress pull-left" ng-style="::{'width': vm.swf.eob.endLevel+'%'}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- PARTNER STATS-->
+	<div ng-if="::(vm.swf.eob.partner==1 || vm.swf.eob.partner==2 || vm.swf.eob.partner==6 || vm.swf.eob.partner==7)" class="stats-container">
+		<div class="your-stats"> 
+			<p translate="eob_your_stats"></p>
+		</div>
+		<div class="details">
+			<div class="detail-container" ng-if="::vm.swf.eob.viewers >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-viewers"></i>
+				</div>
+				<div class="info">
+					<div class="stat" >{{::vm.swf.eob.viewers}}</div>
+					<div class="title"translate="_views"></div>
+				</div>
+			</div>
+			<div class="detail-container earnings">
+				<div class="icon">
+					<i class="ynicon ynicon-user"></i>
+				</div>
+				<div class="info">
+					<div class="stat">${{::vm.swf.eob.estimatedEarnings}}</div>
+					<div class="title" translate="eob_premium_earnings"></div>
+					
+					<!-- apply to be a partner -->
+					<a class="short-text" ng-if="::vm.swf.eob.partner==2" href="/partners" target="_blank" translate="eob_apply_partner"></a>
+					
+					<!-- accept update -->
+					<a class="short-text" ng-if="::(vm.swf.eob.partner==6 || vm.swf.eob.partner==7)" href="/partners" target="_blank" translate="eob_must_accept"></a>
+					
+					<!-- has tipalti, view earnings -->
+					<a class="short-text" ng-if="::(vm.swf.eob.partner==1 && vm.session.user.isTipaltiPayable)" href="/partners/earnings" target="_blank"  translate="eob_view_monthly_earnings"></a>
+					
+					<!-- doesn't have tipalti, update payment settings -->
+					<a class="short-text" ng-if="::(vm.session.user.mcnTypeId !== '4' && vm.session.user.mcnTypeId !== '3' && vm.swf.eob.partner==1 && !vm.session.user.isTipaltiPayable)" href="/partners/payment-settings" target="_blank"  translate="eob_tipalti"></a>
+
+				</div>
+			</div>
+			<div class="detail-container" ng-if="::vm.swf.eob.subscriptionEarning >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-icon-subscribers"></i>
+				</div>
+				<div class="info">
+					<div class="stat">
+						${{::vm.swf.eob.subscriptionEarnings ||0}}/mo
+					</div>
+					<div class="title" translate="eob_sub_earnings"></div>
+				</div>
+			</div>
+
+			<div class="detail-container" ng-if="::vm.swf.eob.giftsTotal >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-gift"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.spendersCount}}</div>
+					<div class="title" translate="eob_premium_givers"></div>
+				</div>
+			</div>
+			<div class="detail-container" ng-if="::vm.swf.eob.fansAdded >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-user"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.fansAdded}}</div>
+					<div class="title" translate="eob_newfans"></div>
+				</div>
+			</div>
+			<div class="detail-container" ng-if="::vm.swf.eob.likes >= 1">
+				<div class="icon">
+					<i class="ynicon ynicon-thumb"></i>
+				</div>
+				<div class="info">
+					<div class="stat">{{::vm.swf.eob.likes}}</div>
+					<div class="title" translate="eob_likes"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FAN LIST -->
+
+	<div ng-if="vm.swf.eob.supportersCount > 0 && vm.sentThanks === false"  class="supporter-container">
+		<div class="title"> 
+
+			<p ng-if="::vm.swf.eob.supportersIncludesNewFans" translate="eob_top_and_new_fans"></p>
+			<p ng-if="::!vm.swf.eob.supportersIncludesNewFans" translate="eob_top_fans"></p>
+			<div ng-if="!vm.fanned" class="fan-all-button">
+				<p ng-click="vm.fanAll()"class="fan-message" translate="eob_fan_all"></p>
+				<p class="plus"> + </p>
+			</div>
+			<div ng-if="vm.fanned" class="fan-all-button fanned">
+				<p ng-click="vm.fanAll()"class="fan-message" translate="eob_all_fanned"></p>
+				<p class="plus"> + </p>
+			</div>
+		</div>
+		<div infinite-scroll="vm.loadMoreSupporters()" class="supporter-list">
+			<div class="supporter" ng-repeat="supporter in vm.supporterList" track-source="{{::(supporter.supporterType === 'fan' ? 'EOB_MANUAL_NEW' : 'EOB_MANUAL_TOP')}}">
+				<a
+					class="thumb thumb-eob circle-thumb pull-left"
+					ng-style="::{ background: 'url(' + vm.thumb + {{supporter.userId}} + '), url({{vm.noThumb}}) no-repeat', 'background-size': 'cover' }"
+					ng-href="/{{supporter.userId}}" prevent-default
+					ng-click="vm.openBroadcasterProfile(supporter.userId)">
+				</a>
+				<div class="center-block">
+					<p class="profile">{{supporter.profile}}</p>
+
+					<!-- SPENDER Detail-->
+					<div ng-if="supporter.supporterType === 'spender'" class="spender">
+						<p class="detail">#{{vm.supporterList.indexOf(supporter) - vm.swf.eob.subscribersAdded + 1}}</p>
+						<i class="ynbar ynicon ynicon-icon-bar"></i>
+					</div>
+
+					<!-- SUBSCRIBER Detail-->
+					<div ng-if="supporter.supporterType === 'subscriber'" class="subscriber">
+						<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{::vm.session.userId}}/1/badge@2x.png">>
+						<p class="detail" translate="eob_new_subscriber"></p>
+					</div>
+
+					<!-- FAN Detail -->
+					<div ng-if="supporter.supporterType === 'fan'" class="subscriber">
+						<p class="detail" translate="eob_fan_count" translate-values="{count:supporter.extraData}"></p>
+					</div>
+
+				</div>
+
+				<div class="btn-small fan-button" fan-button channel="supporter"></div>
+			</div>
+
+		</div>
+			<!-- thanks box -->
+			<div class="thanks-container">
+
+				<h2 ng-if="::vm.swf.eob.supportersIncludesNewFans" translate="eob_thanks_new"></h2>
+				<h2 ng-if="::!vm.swf.eob.supportersIncludesNewFans" translate="eob_thanks"></h2>
+
+				<p ng-if="::vm.swf.eob.supportersCount > 1" translate="eob_send_thanks" translate-values="{count:{{::vm.swf.eob.supportersCount}}}"></p>
+				<p ng-if="::vm.swf.eob.supportersCount < 2" translate="eob_send_thanks_singular" translate-values="{count:{{::vm.swf.eob.supportersCount}}}"></p>
+
+				<div contenteditable 
+					mentio=""
+					mentio-typed-term="typedTerm"
+					mentio-require-leading-space="true"
+					class="editor form-control"
+					style="display: block; margin: auto; height: 70px; width: 250px; text-align:left; padding-top: 6px; padding-left: 6px; line-height: 17px; overflow: scroll; font-size: 13px;"
+					id="thanksComment"
+					ng-model="thanksMessage.html"
+					placeholder="{{'eob_thanks_placeholder' | translate }}"
+					></div>
+
+				<mentio-menu
+					mentio-for="'thanksComment'"
+					mentio-trigger-char="'@'"
+					mentio-items="vm.people"
+					mentio-template-url="angularjsapp/src/app/components/mention/mention.tpl.html"
+					></mentio-menu>
+
+					<!-- attributes to be added above for mentions -->
+					<!-- mentio-search="vm.searchPeople(term)"
+					mentio-select="vm.insertMention(item)" -->
+
+				<a ng-click="vm.thankAll()"class="btn btn-blue" translate="_post"> </a>
+
+			</div>
+	</div>
+
+	<!-- SOCIAL PANEL -->
+	<div ng-if="vm.swf.eob.supportersCount < 1 || vm.sentThanks === true" class="social-panel" ng-class="{'non-partner':vm.swf.eob.supportersCount < 1}">
+		<div class="title"> 
+			<p translate="eob_find_fans"></p>
+		</div>
+		<h1 translate="eob_connect_to"></h1>
+
+			<!-- YOUTUBE -->
+			<div class="youtube-not-connected social-option" ng-if="!vm.session.user.youTubeUserName">
+				<div class="youtube-logo logo not-connected">
+					<i class="ynicon ynicon-icon-social-yt2"></i>
+				</div>	
+				<div class="connect">
+					<span ng-click="vm.session.connect('youtube','EOB', vm.session.user.userId)" translate="_connect"></span>
+				</div>
+			</div>
+
+			<div class="youtube-connected social-option" ng-if="vm.session.user.youTubeUserName">
+				<div class="youtube-logo logo connected">
+					<i class="ynicon ynicon-icon-social-yt2"></i>
+				</div>
+				<div class="connect connected">
+					<span translate="eob_connected"></span>
+					<i class="ynicon ynicon-icon-check"></i>
+				</div>
+			</div>
+
+			<!-- TWITTER -->
+			<div class="twitter-not-connected social-option" ng-if="!vm.session.user.twitterId">
+				<div class="twitter-logo logo not-connected">
+					<i class="ynicon ynicon-social-tw"></i>
+				</div>
+				<div class="connect">
+					<span ng-click="vm.session.connect('twitter','EOB', vm.session.user.userId)" translate="_connect"></span>
+				</div>
+			</div>
+
+			<div class="twitter-connected social-option"  ng-if="vm.session.user.twitterId">
+					<div class="twitter-logo logo connected">
+						<i class="ynicon ynicon-social-tw"></i>
+					</div>
+					<div class="connect connected">
+						<span translate="eob_connected"></span> 
+						<i class="ynicon ynicon-icon-check"></i> 
+					</div>			
+			</div>
+
+			<!-- INSTAGRAM -->
+			<div class="instagram-not-connected social-option" ng-if="!vm.session.user.instagramId">
+				<div class="instagram-logo logo not-connected">
+					<i class="ynicon ynicon-social-insta"></i>
+				</div>
+				<div class="connect">
+					<span ng-click="vm.session.connect('instagram','EOB', vm.session.user.userId)" translate="_connect"></span> 
+				</div>
+			</div>
+
+			<div class="instagram-connected social-option"  ng-if="vm.session.user.instagramId">
+				<div class="instagram-logo logo connected">
+					<i class="ynicon ynicon-social-insta"></i>
+				</div>
+				<div class="connect connected">
+					<span translate="eob_connected"></span> 
+					<i class="ynicon ynicon-icon-check"></i>
+				</div>			
+			</div>
+
+			<!-- FACEBOOK -->
+			<div class="facebook-not-connected social-option" ng-if="!vm.session.user.facebookId">
+				<div class="facebook-logo logo not-connected">
+					<i class="ynicon ynicon-social-fb"></i>
+				</div>
+				<div class="connect">
+					<span ng-click="vm.session.connect('facebook','EOB', vm.session.user.userId)" translate="_connect"></span> 
+				</div>
+			</div>
+
+			<div class="facebook-connected social-option"  ng-if="vm.session.user.facebookId">
+				<div class="facebook-logo logo connected">
+					<i class="ynicon ynicon-social-fb"></i>
+				</div>
+				<div class="connect connected">
+					<span translate="eob_connected"></span> 
+					<i class="ynicon ynicon-icon-check"></i>
+				</div>			
+			</div>
+
+			<!-- thanks confirmation -->
+			<div class="thanks-container" ng-if="vm.sentThanks === true">
+				<p ng-if="::vm.swf.eob.supportersCount > 1" translate="eob_thanks_confirmation" translate-values="{count:{{::vm.swf.eob.supportersCount}}}"> </p>
+				<p ng-if="::vm.swf.eob.supportersCount < 2" translate="eob_thanks_confirmation_singular" translate-values="{count:{{::vm.swf.eob.supportersCount}}}"></p>
+
+			</div>
+
+	</div>
+
+</div>

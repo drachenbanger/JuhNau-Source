@@ -1,0 +1,96 @@
+<div ng-if="!vm.pendingForm">
+
+	<section class="intro">
+		<div class="container">
+			
+			<div class="info">
+				<h1>Earning Revenue is Simple</h1>
+				<p class="text">Our Partner Program rewards top talent on YouNow. Earn revenue based on audience participation – not someone else's ads.</p>
+				<p><a href="#" class="btn btn-apply" ng-click="vm.enablePendingForm()">Apply</a></p>
+			</div>
+
+		</div>
+	</section>
+
+	<section class="body">
+		<div class="container">
+
+			<div class="title">
+				<h9>What you need to know</h9>
+			</div>
+			<div class="columns">
+
+				<div class="column column2">
+					<h7>Audience Engagement, Not Ads</h7>
+					<p>
+						The more viewers, audience interaction and premium gifts, the more revenue you make! It's all about engagement, not ads.
+					</p>
+				</div>
+				<div class="column column2">
+					<h7>Earn After Every Broadcast</h7>
+					<p>
+						At the end of each broadcast you see your estimated earnings, or check your earnings at anytime from your profile!
+					</p>
+				</div>
+				<div class="column column2">
+					<h7>Payment is Easy</h7>
+					<p>
+						As a Partner, you earn revenue at the end of each broadcast, and get paid out once a month – no hassle!
+					</p>
+				</div>
+				<div class="column column2">
+					<h7>What We Expect from Partners</h7>
+					<p>
+						We expect Partners to maintain average concurrent viewership of 500+, broadcast regularly (3x / week), and have content that conforms to our <a href="/partner/agreement.php" target="_blank">Terms of Service</a> and <a href="/partner/dmca.html" target="_blank">DMCA Guidelines</a>.
+					</p>
+				</div>
+
+			</div>
+
+			<div class="apply">
+				<a href="#" class="btn" ng-click="vm.enablePendingForm();">Apply</a>
+			</div>
+
+		</div>
+	</section>
+
+</div>
+
+<div class="partner" id="partnerApply" ng-if="vm.pendingForm">
+	<div class="container">
+
+		<h9>Become a Partner</h9>
+		<hr />
+		<p>Apply today and start monetizing your broadcasts.</p>
+		<form name="pendingForm" novalidate ng-submit="vm.submitPendingForm();" ng-class="{'submitted':vm.pendingFormSubmitted}">
+			<div class="input-row">
+				Full Name*<br>
+				<input name="name" type="text" ng-model="vm.pendingForm.name" required>
+			</div>
+			<div class="input-row">
+				Email*<br>
+				<input name="email" height="25" type="text" ng-model="vm.pendingForm.email" required ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/">
+			</div>
+			<div class="input-row">
+				Phone Number*<br>
+				<input name="phone" height="25" type="text" ng-model="vm.pendingForm.phone" required ng-pattern="/^\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})$/">
+			</div>
+			<div class="input-row">
+				Social Links*<br>
+				<textarea rows="4" placeholder="Ex. www.twitter.com/yourhandle, www,youtube.com/username, etc." ng-model="vm.pendingForm.social" required></textarea>
+			</div>
+			<div class="input-row">
+				Tell us more about you and your desire to become a YouNow Partner*
+				<textarea rows="4" ng-model="vm.pendingForm.about" required></textarea>
+			</div>
+			
+			<p class="message error" ng-if="vm.pendingFormError">Sorry. Something went wrong. Please refresh the page.</p>
+			
+			<div class="apply">
+				<button type="submit" class="btn">Submit</button>
+			</div>
+		</form>
+
+	</div>
+
+</div>

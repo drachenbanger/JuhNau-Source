@@ -1,0 +1,163 @@
+<div class="navbar">
+	<div class="navbar-content">
+
+		<a class="nav-logo pull-left" href="/{{config.hrefLanguage}}" prevent-default ng-click="clickLogo(config.hrefLanguage)">
+			<img ng-src="{{::cdn.base}}/angularjsapp/src/assets/images/logo/skewed_green.svg" alt="Live Stream Video Chat">
+		</a>
+
+		<yn-search-bar></yn-search-bar>
+		<div class="explore-text pull-left">
+			<a ng-href="/explore/" translate="header_explore" ng-click="goToExplore()"><!--{{ broadcasterService.getBc().profile }} | {{ broadcasterService.channelSwitch }} | {{ broadcasterService.viewtimeSeconds }}--></a>
+		</div>
+		<div class="user-actions pull-right">
+			<!-- logged in header options -->
+			<div ng-if="session.loggedIn">
+				<button class="pull-left btn btn-primary" ng-click="goLive()" translate="header_golive"></button>
+				<button class="btn btn-confirm" ng-href="{{'dashboard_mod_link'|translate}}" prevent-default ng-click="openModForm(('dashboard_mod_link'|translate))" type="button">
+					<span translate="dashboard_mod_title"></span>
+				</button>
+				<div class="pull-right">
+
+					<div class="notifications pull-left">
+						<div class="btn-group" id="notifications-dropdown" dropdown>
+							<button class="btn btn-transparent" dropdown-toggle ng-click="checkNotifications($event)">
+								<i class="ynicon ynicon-notifications"></i>
+							</button>
+							<div class="dropdown-menu">
+								<i class="ynicon ynicon-carrot-up"></i>
+								<div class="feed mini-scroll" only-scroll infinite-scroll="session.getNotifications()" can-load="!session.noMoreNotifications" threshold="300">
+									<ul class="list">
+										<li ng-repeat="notification in session.notifications"
+												ng-class="{new: notification.new}"
+												ng-click="openNotification(notification)">
+											<div class="notification-item">
+												<div class="circle-thumb pull-left" ng-style="{background: 'url(' + cdn.thumb+notification.eventUserId + ')  no-repeat, url(' + config.settings.ServerCDNBaseUrl  + '/images/nothumb.jpg) no-repeat', 'background-size': 'cover'}"></div>
+												<div class="description line-clamp pull-left">
+													<div class="name">
+														<span>{{notification.userName}}</span> {{notification.template}}
+													</div>
+													<div class="time-ago">{{notification.timeAgo}}</div>
+												</div>
+											</div>
+										</li>
+									</ul>
+								</div>
+								<div ng-show="(!session.notifications || session.notifications.length === 0) && session.noMoreNotifications" class="empty">
+									<span translate="header_this_is_where_your_notifications_appear"></span>
+								</div>
+								<div class="settings-link clickable" ng-click="openSettings('notifications')" translate="header_settings"></div>
+							</div>
+						</div>
+						<div class="chiclet" ng-show="session.notificationCount">
+							<span class="count">{{session.notificationCount}}</span>
+							<audio id="notificationSound">
+								<source ng-src="{{::cdn.base + '/audio/notification_feed/younow_notifications.wav'}}" type="audio/x-wav">
+							</audio>
+						</div>
+					</div>
+					<div class="user-menu pull-left" dropdown is-open="userMenuOpened">
+						<div ng-click="selfProfile()" ng-mouseleave="dismissUserMenu(true)" ng-mouseenter="userMenuOpened = true; dismissUserMenu(false)">
+							<div class="circle-thumb clickable pull-left" ng-style="{background: 'url('+cdn.base+'/php/api/channel/getImage/channelId='+session.user.userId+') no-repeat', 'background-size': 'cover'}"></div>
+							<div class="main-menu clickable pull-left">
+								<i class="ynicon" ng-class="{'ynicon-carrot-up': userMenuOpened, 'ynicon-carrot-dwn': !userMenuOpened }"></i>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<ul class="dropdown-menu" ng-mouseleave="userMenuOpened = false" ng-mouseenter="userMenuOpened = true; dismissUserMenu(false)">
+							<i class="ynicon ynicon-carrot-up"></i>
+							<li class="user">
+								<div class="user-title">{{session.user.profile}}</div>
+
+								<div class="user-progress">
+									<div class="user-progress-text" translate="header_progress" translate-values="{progress:session.user.progress,level:session.user.level+1}"></div>
+									<div class="user-progress-bar"><div class="user-progress-value" style="width:{{session.user.progress}}%;"></div></div>
+								</div>
+
+								<div class="user-credits">
+									<span>
+										<span
+											tooltip="{{session.user.userCoins | number}}"
+											tooltip-trigger="mouseenter"
+											tooltip-enable="session.user.userCoins > 10000">
+											<i class="yncoin ynicon ynicon-coins"></i>
+											<span>{{Api.squashedNumber(session.user.userCoins, 4)}}</span>
+										</span>
+									</span>
+									<span>
+										<span
+											tooltip="{{session.user.vault.webBars | number}}"
+											tooltip-trigger="mouseenter"
+											tooltip-enable="session.user.vault.webBars > 10000">
+											<i class="ynbar ynicon ynicon-icon-bar"></i>
+											<span>{{Api.squashedNumber(session.user.vault.webBars, 4)}}</span>
+										</span>
+									</span>
+									<span ng-if="!session.user.spendingDisabled">
+										<span>
+											<button class="btn btn-small btn-confirm" ng-click="getBars()" translate="header_getbars"></button>
+										</span>
+									</span>
+								</div>
+
+							</li>
+							<li>
+								<a ng-if="::isPartner('pending')" ng-href="/partners" target="_blank">
+									<img class="ynicon" ng-src="{{::cdn.image}}/topnav/menu_user_partner.png">
+									<span translate="header_partner_program"></span>
+								</a>
+							</li>
+							<li>
+								<a ng-if="::isPartner('active')" ng-href="/partners/earnings" target="_blank">
+									<img class="ynicon" ng-src="{{::cdn.image}}/topnav/menu_user_partner.png">
+									<span translate="header_earnings"></span>
+								</a>
+							</li>
+
+							<li>
+								<a ng-if="::needsUpdate()" ng-href="/partners/payment-settings" target="_blank">
+									<i class="ynicon ynicon-icon-paymentsettings"></i>
+									<span translate="header_tipalti"></span>
+								</a>
+							</li>
+
+							<li>
+								<a ng-click="selfProfile()" ng-href="/{{session.user.profile}}/channel" prevent-default>
+									<i class="ynicon ynicon-user"></i>
+									<span translate="header_profile"></span>
+								</a>
+							</li>
+							<li>
+								<a ng-click="openSettings()" ng-href="/settings" prevent-default>
+									<i class="ynicon ynicon-settings"></i>
+									<span translate="header_settings"></span>
+								</a>
+							</li>
+							<li>
+								<a ng-click="session.showInviteUsers()" href>
+									<i class="ynicon ynicon-audience"></i>
+									<span translate="header_invite_friends"></span>
+								</a>
+							</li>
+							<li>
+								<a ng-click="session.logout()" href>
+									<i class="ynicon ynicon-logout"></i>
+									<span translate="header_logout"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- logged out header options -->
+			<div class="pull-right" ng-if="!session.loggedIn">
+				<span class="login-text">
+					<a href="" ng-click="session.showLoginModal('','BUTTON'); loginClick('Click Signup');" translate="header_signup"></a>
+				</span>
+				<span class="login-text">
+					<a href="" ng-click="session.showLoginModal('','BUTTON'); loginClick('Click Login');" translate="header_login"></a>
+				</span>
+				<button class="btn btn-primary" ng-click="getTheApp()" translate="header_get_the_app"></button>
+			</div>
+		</div>
+	</div>
+</div>

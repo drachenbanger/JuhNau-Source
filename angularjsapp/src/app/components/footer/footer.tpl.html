@@ -1,0 +1,103 @@
+<div class="newFooter">
+
+	<!-- Start Container -->
+	<div class="container">
+
+
+		<!-- Localization -->
+		<div class="selectUILanguages">
+
+
+
+			<div class="selectUILanguage transline-top">
+				<label><i class="ynicon ynicon-icon-languages"></i> <span translate="_select_language"></span>:</label>
+				<span class="selectUILanguage">
+					<div class="d_up" language-select>
+						<div class="d_content">
+							<div class="d_column">
+								<div class="d_item" ng-repeat="(la, lang) in ::config.UILanguages" ng-class="{'active':config.UILanguage == la}" ng-click="selectLanguage(la);"><i class="ynicon ynicon-icon-check"></i> <span>{{lang}}</span></div>
+							</div>
+						</div>
+						<i class="d_arrow ynicon ynicon-carrot-dwn"></i>
+					</div>
+					<span class="selectUIInput">{{ config.UILanguages[ config.UILanguage ] }}</span>
+				</span>
+			</div>
+
+			<div class="selectUILanguage transline-top" ng-if="session.user.profile">
+				<label><i class="ynicon ynicon-icon-content-locale"></i> <span translate="_select_content_locale"></span>:</label>
+				<span class="selectUILanguage">
+					<div class="d_up" language-select>
+						<div class="d_content">
+							<div class="d_column">
+								<div class="d_item" ng-repeat="(la, lang) in ::config.UILocales" ng-class="{'active':config.UILocale == la}" ng-click="selectLocale(la);"><i class="ynicon ynicon-icon-check"></i> <span translate="{{lang}}"></span></div>
+								<div class="d_item" ng-class="{'active':config.UILocale == 'ww'}" ng-click="selectLocale('ww');"><i class="ynicon ynicon-icon-check"></i> <span translate="Worldwide"></span></div>
+							</div>
+						</div>
+						<i class="d_arrow ynicon ynicon-carrot-dwn"></i>
+					</div>
+					<span class="selectUIInput" translate="{{ config.UILocales[ config.UILocale ] || 'Worldwide' }}"></span>
+				</span>
+			</div>
+
+		</div>
+
+		<!-- Links -->
+		<div class="section footerlinks" style="font-size:13px;display:inline;margin-left:10px;margin-right:10px;">
+			<p style="line-height:18px;margin-top:7px;">
+				<a href="javascript:void(0)" ng-click="showAbout()" ng-if="state.current.name!='about'" translate="footer_about_title"></a>
+				<span class="footerdivider" ng-if="state.current.name!='about'">|</span>
+
+				<a href="/featured" ng-click="doAboutClick('Footer link', 'Live Now')" ng-if="state.current.name==='about' && open" translate="footer_live_title" mobile-hide></a>
+				<span class="footerdivider" ng-if="state.current.name==='about' && open" mobile-hide>|</span>
+
+				<a href="/press" ng-click="openDoc($event, 'Press')" target="_blank" translate="footer_press_title"></a>
+				<span class="footerdivider">|</span>
+
+				<a href="/careers" ng-click="doAboutClick('Footer link', 'Careers')" target="_blank" translate="footer_careers_title"></a>
+				<span class="footerdivider">|</span>
+
+				<a href="http://blog.younow.com/" ng-click="doAboutClick('Footer link', 'Blog')" target="_blank" translate="footer_blog_title"></a>
+				<span class="footerdivider">|</span>
+				<a ng-href="{{'footer_terms_link' | translate}}" ng-click="openDoc($event,'Terms')" translate-cloak translate="footer_terms_title"></a>
+				<span class="footerdivider">|</span>
+				<a ng-href="{{'footer_rules_link' | translate}}" ng-click="openDoc($event,'Rules')" translate-cloak translate="footer_rules_title"></a>
+				<span class="footerdivider">|</span>
+				<a ng-href="{{'footer_privacy_link' | translate}}" ng-click="openDoc($event,'Privacy')" translate-cloak translate="footer_privacy_title"></a>
+				<span class="footerdivider">|</span>
+				<a ng-href="{{'footer_trust_link' | translate}}" ng-click="openDoc($event,'Trust')" translate-cloak translate="footer_trust_title"></a>
+				<span class="footerdivider">|</span>
+
+				<a href="https://younow.zendesk.com/home" ng-click="doAboutClick('Footer link', 'FAQ')" target="_blank" translate="footer_faq_title"></a>
+				<span class="footerdivider">|</span>
+				<a href="/app/iphone" ng-click="doAboutClick('Footer link', 'iOS')" target="_blank" translate="footer_ios_title"></a>
+				<span class="footerdivider">|</span>
+				<a href="/app/android" ng-click="doAboutClick('Footer link', 'Android')" target="_blank" translate="footer_android_title"></a>
+				<span class="footerdivider">|</span>
+				<a href="/partners/" ng-click="doAboutClick('Footer link', 'Partners')" target="_blank" translate="footer_partners_title"></a>
+				
+				<span ng-if="config.UILanguage == 'de'" class="footerdivider">|</span>
+				<a ng-if="config.UILanguage == 'de'" href="/policy/de/impressum" target="_blank">Impressum</a>
+			</p>
+		</div>
+		<!-- End Links-->
+			<!-- Social -->
+			<div class="section footericons">
+				<a href="https://www.facebook.com/younow" ng-click="doAboutClick('Footer link', 'Facebook')" target="_blank">
+					<img ng-src="{{::cdn.image}}/partners/icon_foot_fb.png" name="fbbutton" height="33" width="33"></a>
+				<a href="https://www.twitter.com/younow" ng-click="doAboutClick('Footer link', 'Twitter')" target="_blank">
+					<img ng-src="{{::cdn.image}}/partners/icon_foot_tw.png" name="twbutton" height="33" width="33"></a>
+				<a href="http://www.instagram.com/younow" ng-click="doAboutClick('Footer link', 'Instagram')" target="_blank">
+					<img ng-src="{{::cdn.image}}/partners/icon_foot_insta.png" name="instabutton" height="33" width="33"></a>
+				<a href="http://blog.younow.com/" ng-click="doAboutClick('Footer link', 'Tumblr')" target="_blank">
+					<img ng-src="{{::cdn.image}}/partners/icon_foot_tm.png" name="tmbutton" height="33" width="33"></a>
+				<a href="https://www.youtube.com/user/YouNowlive" ng-click="doAboutClick('Footer link', 'Youtube')" target="_blank">
+					<img ng-src="{{::cdn.image}}/partners/icon_foot_yt.png" name="ytbutton" height="33" width="33"></a>
+			</div>
+			<!-- End Social -->
+			<div class="clear"></div>
+	</div>
+	<font color="#d8d8d8">
+		<!-- End Container -->
+	</font>
+</div>

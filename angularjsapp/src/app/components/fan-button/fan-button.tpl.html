@@ -1,0 +1,11 @@
+<button class="btn btn-small btn-fan {{::classname}} {{fanStatus[channel.userId]?'btn-fanned':'btn-to-fan'}} {{subStatus[channel.userId]?'is-subscribed':'not-subscribed'}}" ng-if="!hidden" ng-click="toggleFan()" >
+	<span class="tofan" ng-if="!fanStatus[channel.userId]">
+		<i class="ynicon ynicon-user-add"></i> 
+		<span class="text_regular" translate="_fan_verb"></span> 
+		<span class="text_wide" translate="_fan_become" style="display:none;"></span>
+	</span>
+	<span class="fanned" ng-if="fanStatus[channel.userId]">
+		<i class="ynicon ynicon-user-check"></i> 
+		<span translate="_fanned"></span>
+	</span>
+</button>

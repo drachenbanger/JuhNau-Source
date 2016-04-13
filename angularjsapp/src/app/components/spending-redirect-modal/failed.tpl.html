@@ -1,0 +1,13 @@
+<div class="modal-body">
+    <button aria-hidden="true" class="close" ng-click="dismiss()" type="button">
+        <i class="ynicon ynicon-close"></i>
+    </button>
+    <h2>Sorry, {{::params.purchaseItem}} could not be purchased</h2>
+    
+    <p>Did you know you can download our app on iTunes or Google Play and purchase {{ ::(params.what=='subscription' ? 'a '+params.what : params.what) }} there?</p>
+    <div class="actions">
+        <button class="btn btn-confirm" ng-click="downloadTheApp()">Download now</button>
+    </div>
+
+    <p>Have more questions <a ng-href="settings.SupportUrl" target="_blank">contact support</a></p>
+</div>

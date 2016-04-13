@@ -1,0 +1,32 @@
+<form action="" method="POST" name="stripeForm" ng-submit="component.submitForm($event)" novalidate id="payment-form" class="stripe-form">
+  <span class="payment-errors">{{component.errorMessage}}</span>
+
+  <div class="form-row" ng-class="{'incorrect': stripeForm.ccNumber.$invalid && component.formSubmitted}">
+    <label class="stripe-label">
+      <span class="stripe-field-name" ng-class="{'show-field-name': stripeForm.ccNumber.$viewValue.length > 0}">Card Number</span>
+      <input class="stripe-field" type="text" placeholder="Card Number" name="ccNumber" ng-model="ccNumber" ng-required="true" ng-pattern="component.ccRegex" maxlength="20" size="20" data-stripe="number"/>
+    </label>
+  </div>
+
+  <div class="form-row" ng-class="{'incorrect': (stripeForm.ccMonth.$invalid || stripeForm.ccYear.$invalid) && component.formSubmitted}">
+    <label class="stripe-label">
+      <span class="stripe-field-name" ng-class="{'show-field-name': stripeForm.ccMonth.$viewValue.length > 0 || stripeForm.ccYear.$viewValue.length > 0}">Expiration (MM/YYYY)</span>
+      <input class="stripe-field month-field" type="text" placeholder="MM" ng-model="ccMonth" name="ccMonth" ng-pattern="component.moRegex" ng-required="true" maxlength="2" size="2" data-stripe="exp-month"/>
+      <input class="stripe-field year-field" type="text" placeholder="YYYY" ng-model="ccYear" name="ccYear" ng-pattern="component.yrRegex" ng-required="true" maxlength="4" size="4" data-stripe="exp-year"/>
+    </label>
+  </div>
+
+  <div class="form-row" ng-class="{'incorrect': stripeForm.cvvNumber.$invalid && component.formSubmitted}">
+    <label class="stripe-label">
+      <span class="stripe-field-name" ng-class="{'show-field-name': stripeForm.cvvNumber.$viewValue.length > 0}">CVV</span>
+      <input class="stripe-field" type="text" placeholder="CVV" name="cvvNumber" ng-model="cvvNumber" ng-required="true" ng-pattern="component.cvvRegex" maxlength="4" size="4" data-stripe="cvc"/>
+    </label>
+  </div>
+
+  <button type="submit" class="btn btn-confirm-light">
+      <div class="spinning-container" ng-if="component.formSubmitting">
+          <span class="spinning-loader"></span>
+      </div>
+        Submit
+  </button>
+</form>

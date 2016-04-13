@@ -1,0 +1,123 @@
+<div class="close-header">
+    <button ng-click="panel.close()" class="close btn-reset"><i class="ynicon ynicon-close"></i></button>
+</div>
+
+<div class="snapshot-image" ng-class="{retake: panel.swf.snapshot.retake}">
+    <!-- normal -->
+    <img class="snapshot-image-img" ng-if="::(!panel.target)" ng-src="data:image/jpeg;base64,{{panel.swf.snapshot.snapshot}}" />
+    <i
+        id="snapshot-retake"
+        class="snapshot-btn snapshot-retake ynicon ynicon-camera"
+        ng-click="panel.newSnapshot()"
+        ng-if="::(!panel.target)"
+        tooltip="{{'chat_already_shared_snapsho_take_another' | translate }}"
+        tooltip-append-to-body="true"
+        tooltip-trigger="show">
+    </i>
+
+    <!-- guest -->
+    <img class="snapshot-image-img" ng-if="::(panel.target == 'guest' || panel.guestService.guest.userId == panel.session.user.userId)" ng-src="data:image/jpeg;base64,{{panel.guestService.eobSnapshot}}" />
+    <i
+        id="snapshot-retake"
+        class="snapshot-btn snapshot-retake ynicon ynicon-camera"
+        ng-click="panel.newSnapshot()"
+        ng-if="::( (panel.target == 'guest' && panel.guestService.guest) || panel.guestService.guest.userId == panel.session.user.userId)"
+        tooltip="{{'chat_already_shared_snapsho_take_another' | translate }}"
+        tooltip-append-to-body="true"
+        tooltip-trigger="show">
+    </i>
+</div>
+<input 
+	class="snapshot-href" 
+	value="{{panel.swf.snapshot.links.COPIEDURL}}" 
+	copy-on-click
+	tooltip="copied to clipboard"
+	tooltip-append-to-body="true"
+      tooltip-trigger="hrefCopied"
+/>
+
+<div class="share-title short-text" ng-if="::(!panel.target)">{{ '_promote' | translate }} {{panel.swf.broadcast.username}}!</div>
+<div class="share-title short-text" ng-if="::(panel.target == 'guest')">Share your broadcast selfie!</div>
+<div class="share-message">
+    <form name="panel.shareForm" novalidate>
+        <input
+            placeholder="{{'chat_add_a_message' | translate }}"
+            name="share_message"
+            ng-model="panel.swf.broadcast.share_message"
+            ng-maxlength="60"
+            ng-trim="false"
+            maxlength="60">
+        </input>
+    </form>
+    <div ng-if="panel.swf.broadcast.share_message && panel.swf.broadcast.share_message.length < 60" class="character-count">{{60 - panel.swf.broadcast.share_message.length}}</div>
+    <div ng-if="panel.swf.broadcast.share_message && panel.shareForm.share_message.$viewValue.length >= 60" class="character-count invalid" >0</div>
+</div>
+<div class="share-actions">
+
+    <button class="btn-reset btn-facebook" ng-disabled="panel.swf.snapshot.sharing.facebook" tooltip="{{'chat_share_to' | translate }} Facebook" tooltip-trigger="mouseenter" tooltip-append-to-body="true" ng-click="panel.attemptShare('facebook')" ng-class="{active: panel.swf.snapshot.shared.facebook}">
+        <div ng-if="panel.swf.snapshot.sharing.facebook" class="loader"></div>
+        <span ng-if="!panel.swf.snapshot.sharing.facebook">
+            <i class="ynicon ynicon-icon-share-fb" ng-if="!panel.swf.broadcast.shared.facebook"></i>
+            <i class="ynicon ynicon-icon-share-fb-on" ng-if="panel.swf.broadcast.shared.facebook"></i>
+        </span>
+        <div>
+            <span ng-if="!panel.swf.snapshot.sharing.facebook && !panel.swf.snapshot.shared.facebook" translate="_share"></span>
+            <span ng-if="panel.swf.snapshot.shared.facebook" translate="_shared"></span>
+            <span ng-if="panel.swf.snapshot.sharing.facebook" translate="_sharing"></span>
+        </div>
+    </button>
+
+    <button class="btn-reset btn-twitter" ng-disabled="panel.swf.snapshot.sharing.twitter" tooltip="{{'chat_share_to' | translate }} Twitter" tooltip-trigger="mouseenter" tooltip-append-to-body="true" ng-click="panel.attemptShare('twitter')" ng-class="{active: panel.swf.snapshot.shared.twitter}">
+        <div ng-if="panel.swf.snapshot.sharing.twitter" class="loader"></div>
+        <span ng-if="!panel.swf.snapshot.sharing.twitter">
+            <i class="ynicon ynicon-icon-share-tw" ng-if="!panel.swf.broadcast.shared.twitter"></i>
+            <i class="ynicon ynicon-icon-share-tw-on" ng-if="panel.swf.broadcast.shared.twitter"></i>
+        </span>
+        <div>
+            <span ng-if="!panel.swf.snapshot.sharing.twitter && !panel.swf.snapshot.shared.twitter" translate="_tweet"></span>
+            <span ng-if="panel.swf.snapshot.shared.twitter" translate="_tweeted"></span>
+            <span ng-if="panel.swf.snapshot.sharing.twitter" translate="_tweeting"></span>
+        </div>
+    </button>
+
+    <button class="btn-reset btn-tumblr" ng-disabled="panel.swf.snapshot.sharing.tumblr" tooltip="{{'chat_share_to' | translate }} Tumblr" tooltip-trigger="mouseenter" tooltip-append-to-body="true" ng-click="panel.attemptShare('tumblr')" ng-class="{active: panel.swf.snapshot.shared.tumblr}">
+        <div ng-if="panel.swf.snapshot.sharing.tumblr" class="loader"></div>
+        <span ng-if="!panel.swf.snapshot.sharing.tumblr">
+            <i class="ynicon ynicon-social-tm" ng-if="!panel.swf.broadcast.shared.tumblr"></i>
+            <i class="ynicon ynicon-icon-share-tm-on" ng-if="panel.swf.broadcast.shared.tumblr"></i>
+        </span>
+        <div>
+            <span ng-if="!panel.swf.snapshot.sharing.tumblr && !panel.swf.snapshot.shared.tumblr" translate="_post"></span>
+            <span ng-if="panel.swf.snapshot.shared.tumblr" translate="_posted"></span>
+            <span ng-if="panel.swf.snapshot.sharing.tumblr" translate="_posting"></span>
+        </div>
+    </button>
+
+    <!-- normal -->
+    <button class="btn-reset btn-invite" ng-if="::!panel.target" ng-disabled="panel.swf.snapshot.sharing.younow" tooltip="{{'chat_invite_your_friends' | translate }}" tooltip-trigger="mouseenter" ng-click="panel.attemptShare('invite')" tooltip-append-to-body="true" ng-class="{active: panel.swf.broadcast.shared.younow}">
+        <div ng-if="panel.swf.snapshot.sharing.younow" class="loader"></div>
+        <span ng-if="!panel.swf.snapshot.sharing.younow">
+            <i class="ynicon ynicon-icon-share-restream" ng-if="!panel.swf.broadcast.shared.younow"></i>
+            <i class="ynicon ynicon-icon-share-restream-on" ng-if="panel.swf.broadcast.shared.younow"></i>
+        </span>
+        <div>
+            <span ng-if="!panel.swf.snapshot.sharing.younow && !panel.swf.snapshot.shared.younow && !panel.swf.broadcast.shared.younow" translate="_invite"></span>
+            <span ng-if="panel.swf.snapshot.shared.younow || panel.swf.broadcast.shared.younow" translate="_invited"></span>
+            <span ng-if="panel.swf.snapshot.sharing.younow" translate="_inviting"></span>
+        </div>
+    </button>
+
+    <!-- guest -->
+    <button class="btn-reset btn-invite" ng-if="::(panel.target == 'guest')" ng-disabled="panel.swf.snapshot.sharing.younow" tooltip="Post on YouNow" tooltip-trigger="mouseenter" ng-click="panel.attemptShare('post')" tooltip-append-to-body="true" ng-class="{active: panel.post.shared}">
+        <div ng-if="panel.post.sharing" class="loader"></div>
+        <span ng-if="!panel.post.sharing">
+            <i class="ynicon ynicon-social-yn"></i>
+        </span>
+        <div class="center-text">
+            <span ng-if="!panel.post.sharing && !panel.post.shared">Post</span>
+            <span ng-if="panel.post.shared">Posted</span>
+            <span ng-if="panel.post.sharing">Posting</span>
+        </div>
+    </button>
+
+</div>

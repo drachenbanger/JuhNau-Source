@@ -1,0 +1,18 @@
+<div data-header></div>
+<div class="notification" ng-class="{active: $root.notificationActive, fixed: $root.notificationFixed}">
+	<alert type="{{$root.notificationType}}" ng-bind-html="$root.notificationMessage"></alert>
+	<button class="close" ng-click="closeNotification()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>
+<div id="partnersFaq" class="partnersContent">
+
+	<div ng-class="{'ready': infoPartnersFaqReady, 'rtl': rtl}">
+		<div class="container">
+			<div class="content" id="partnersFaqContent" ng-bind-html="partnersFaqContent">
+			</div>
+		</div>
+	</div>
+
+</div>
+<div data-footer ng-if="infoPartnersFaqReady"></div>

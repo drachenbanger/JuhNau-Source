@@ -1,0 +1,216 @@
+<div ng-if="vm.renderPage" class="home-container" scrolled-class="440">
+
+	<div id="old_navbar" data-header></div>
+
+	<section class="homeSection top-container">
+		
+		<div class="search-top">
+			<a href ui-sref="main.channel.detail">
+				<img class="logo-image" ng-src="{{::cdn.base}}/angularjsapp/src/assets/images/logo/skewed_white.svg" alt="Live Stream Video Chat">
+			</a>
+			<div class="search-cta pull-right">
+				<a href="#" prevent-default ng-click="vm.openLoginModal('LOGIN')" translate="header_login"></a>
+				<button class="btn btn-outline" ng-click="vm.openLoginModal('SIGNUP')" translate="header_signup"></button>
+				<button class="btn btn-primary" ng-click="vm.getTheApp()" translate="header_get_the_app"></button>
+			</div>
+			<yn-search-bar></yn-search-bar>
+		</div>
+		<div class="home-video-container">
+			<video class="home-video" autoplay="" loop="" ng-attr-poster="{{::vm.baseCDN +'/images/about/novideo.jpg'}}" id="homeVideo">
+				<source ng-src="{{::vm.baseCDN + '/landing/video/younow_shade2.webmhd.webm'}}" type="video/webm">
+				<source ng-src="{{::vm.baseCDN + '/landing/video/younow_shade2.mp4'}}" type="video/mp4">
+			</video>
+		</div>
+		<h1 class="homeTitle" translate="home_tagline"></h1>
+		<h4 class="homeSubtitle" translate="home_tagline_subtext"></h4>
+
+		<div class="homeButtons">
+		
+			<div class="btn-groups">
+				<div class="btn-group">
+			            <button class="btn btn-facebook" ng-disabled="loggingIn.facebook" ng-click="login('facebook')">
+			                <i class="ynicon ynicon-social-fb"></i>
+			                <span ng-if="!loggingIn.facebook" class="transline"><span translate="loginmodal_signinwith"></span> <span>Facebook</span></span>
+			                <div ng-if="loggingIn.facebook" class="loader-light"></div>
+			            </button>
+			      </div>
+				<div class="btn-group">
+			            <button class="btn btn-twitter" ng-disabled="loggingIn.twitter" ng-click="login('twitter')">
+			                <i class="ynicon ynicon-social-tw"></i>
+			                <span ng-if="!loggingIn.twitter" class="transline"><span translate="loginmodal_signinwith"></span> <span>Twitter</span></span>
+			                <div ng-if="loggingIn.twitter" class="loader-light"></div>
+			            </button>
+			      </div>
+				<div class="btn-group">
+			            <button class="btn btn-google" ng-disabled="loggingIn.google" ng-click="login('google')">
+			                <i class="ynicon ynicon-social-gp"></i>
+			                <span ng-if="!loggingIn.google" class="transline"><span translate="loginmodal_signinwith"></span> <span>Google</span></span>
+			                <div ng-if="loggingIn.google" class="loader-light"></div>
+			            </button>
+			      </div>
+		      </div>
+
+			<div class="btn-groups moreOptions">
+				<div class="btn-group">
+			            <button class="btn btn-instagram" ng-if="moreOptions" ng-disabled="loggingIn.instagram" ng-click="login('instagram')">
+			                <i class="ynicon ynicon-social-insta"></i>
+			                <span ng-if="!loggingIn.instagram" class="transline"><span translate="loginmodal_signinwith"></span> <span>Instagram</span></span>
+			                <div ng-if="loggingIn.instagram" class="loader-light"></div>
+			            </button>
+				</div>
+				<div class="btn-group">
+				      <div ng-if="!moreOptions" ng-click="showMoreOptions()" class="moreOptionsClick" translate="homepage_other_option"></div>
+			      </div>
+			</div>
+
+		</div>
+
+	      <div class="topTermsLine" translate="homepage_by_terms" translate-values="{a_open:'<a href=\'/policy/en/terms\' target=\'_blank\'>',a_close:'</a>'}">
+	      </div>
+
+	</section>
+
+	<section class="homeSection">
+
+		<div class="trending_things">
+			<div class="trending_topics">
+				<h2 class="trending_title" translate="topics_trending"></h2>
+				<div class="tags_items">
+					<a ng-repeat="tag in ::vm.liveTopics"
+						class="tags_tag"
+						ng-href="/explore/{{::tag.tagLink}}" prevent-default 
+						ng-click="vm.stateChange('main.explore', { 'tag': tag.tag })"
+						>{{::tag.tag}}</a>
+				</div>
+				<a class="trending_more" ng-href="/explore/" prevent-default ng-click="vm.stateChange('main.explore', undefined, true)" prevent-default translate="topics_more"></a>
+			</div>
+
+			<div class="trending_broadcasters">
+				<h2 class="trending_title" translate="homepage_trending_now"></h2>
+				<div class="trending_items clearfix">
+					
+					<div class="trending_item" ng-repeat="(k,bcst) in ::vm.dashboard.users | orderBy:'-userlevel'" ng-if="k<9">
+						<div class="trending_square" ng-if="bcst.tags">
+							<div class="trending_content">
+								
+								<a class="trending_image" ng-href="/{{::bcst.profile}}" prevent-default ng-click="vm.stateChange('main.channel.detail', { 'profileUrlString': bcst.profile })">
+									<div class="thumb-image" ng-style="::{'background-image':'url('+vm.nothumb+')'}">
+										<div class="thumb-image-wide">
+											<img class="thumb-image-img" ng-src="{{bcst.thumb}}" ng-alt="Watch {{::bcst.profile}}'s broadcast" />
+										</div>
+										<div class="thumb_viewers">
+											<i class="ynicon ynicon-viewers"></i> 
+											{{::bcst.viewers}}
+										</div>
+									</div>
+								</a>
+								<div class="trending_info transline-mid">
+									<a 
+										class="trending_thumb thumb circle-thumb" 
+										ng-style="{ background: 'url(' + vm.thumb + bcst.userId + '), url(' + vm.nothumb + ') no-repeat', 'background-size': 'cover' }" 
+										ng-href="/{{::bcst.profile}}" prevent-default 
+										ng-click="vm.stateChange('main.channel.detail', { 'profileUrlString': bcst.profile })">
+									</a>
+									<div class="trending_description clearfix">
+										<span class="trend_right" ng-if="bcst.totalFans">
+											<i class="ynicon ynicon-user"></i>{{::bcst.totalFans}}
+										</span>
+										<a class="trend_left short-text" ng-href="/{{::bcst.profile}}" prevent-default ng-click="vm.stateChange('main.channel.detail', { 'profileUrlString': bcst.profile })" prevent-default>
+											{{::bcst.profile}}
+										</a>
+										<a class="trend_bottom short-text" ng-href="/explore/{{::bcst.tags[0]}}" prevent-default ng-click="vm.stateChange('main.explore', { 'tag': bcst.tags[0] })">
+											#{{::bcst.tags[0]}}
+										</a>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="trending_square ad_square" ng-if="!bcst.tags" ng-click="vm.openLoginModal('EXPERIMENT')">
+							<div class="trending_content">
+
+								<div class="title" translate="homepage_see_friends">
+								</div>
+								<div class="button" translate="homepage_join">
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+				<div class="more-link-container">
+					<a class="more-link" href="/explore/" prevent-default ng-click="vm.stateChange('main.explore')" prevent-default><span translate="homepage_view_more"></span> &raquo;</a>
+				</div>
+			</div>
+		</div>
+		
+	</section>
+
+	<section class="homeSection experiment_connect">
+
+		<div class="experiment_connect_title" translate="home_tagline_subtext">
+		</div>
+
+		<div class="homeButtons">
+		
+			<div class="btn-groups">
+				<div class="btn-group">
+			            <button class="btn btn-facebook" ng-disabled="loggingIn.facebook" ng-click="login('facebook')">
+			                <i class="ynicon ynicon-social-fb"></i>
+			                <span ng-if="!loggingIn.facebook" class="transline"><span translate="loginmodal_signinwith"></span> <span>Facebook</span></span>
+			                <div ng-if="loggingIn.facebook" class="loader-light"></div>
+			            </button>
+			      </div>
+				<div class="btn-group">
+			            <button class="btn btn-twitter" ng-disabled="loggingIn.twitter" ng-click="login('twitter')">
+			                <i class="ynicon ynicon-social-tw"></i>
+			                <span ng-if="!loggingIn.twitter" class="transline"><span translate="loginmodal_signinwith"></span> <span>Twitter</span></span>
+			                <div ng-if="loggingIn.twitter" class="loader-light"></div>
+			            </button>
+			      </div>
+				<div class="btn-group">
+			            <button class="btn btn-google" ng-disabled="loggingIn.google" ng-click="login('google')">
+			                <i class="ynicon ynicon-social-gp"></i>
+			                <span ng-if="!loggingIn.google" class="transline"><span translate="loginmodal_signinwith"></span> <span>Google</span></span>
+			                <div ng-if="loggingIn.google" class="loader-light"></div>
+			            </button>
+			      </div>
+		      </div>
+
+			<div class="btn-groups moreOptions">
+				<div class="btn-group">
+			            <button class="btn btn-instagram" ng-if="moreOptions" ng-disabled="loggingIn.instagram" ng-click="login('instagram')">
+			                <i class="ynicon ynicon-social-insta"></i>
+			                <span ng-if="!loggingIn.instagram" class="transline"><span translate="loginmodal_signinwith"></span> <span>Instagram</span></span>
+			                <div ng-if="loggingIn.instagram" class="loader-light"></div>
+			            </button>
+				</div>
+				<div class="btn-group">
+				      <div ng-if="!moreOptions" ng-click="showMoreOptions()" class="moreOptionsClick" translate="homepage_other_option"></div>
+			      </div>
+			</div>
+
+		</div>
+
+	      <div class="experiment_terms" translate="homepage_by_terms" translate-values="{a_open:'<a href=\'/policy/en/terms\' target=\'_blank\'>',a_close:'</a>'}">
+	      </div>
+
+	</section>
+
+	<section class="homeSection experiment_app">
+		<span class="the_text">
+		<strong>DarkMode 2.0</strong><br />
+		Developed by SOULDR!NKER<br />
+		Brought to you by <strong>ASHTAR</strong>
+		</span>
+	</section>
+	
+	<section class="homeSection mobile-container">
+		<div ng-include="'angularjsapp/src/app/components/mobile-download/mobile-download.tpl.html'"></div>
+	</section>
+	
+	<div class="homeSection darkFooter" data-footer></div>
+</div>

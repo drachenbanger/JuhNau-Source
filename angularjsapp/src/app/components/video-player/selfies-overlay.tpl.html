@@ -1,0 +1,23 @@
+<div class="selfies-overlay" ng-if="selfies.selfieReady || selfies.attempted" ng-click="nextSelfie();">
+    <div class="selfies-unavailable" ng-if="::selfies.attempted">
+        <div>
+            <h4 ng-bind-html="::selfiesUnavailableTxt"></h4>
+            <button class="btn btn-confirm" ng-click="selfies.attempted = false" translate="_OK"></button>
+        </div>
+        <div class="selfies-unavailable-backdrop" ng-style="::{'background': 'url('+config.settings.ServerCDNBaseUrl + '/angularjsapp/src/assets/images/ui_random/selfie_placeholder.gif) no-repeat', 'background-size': 'cover'}"></div>
+    </div>
+    <div class="selfies-unavailable" ng-if="selfies.emptyQueue">
+        <div>
+            <h4 translate="selfies_no_queue"></h4>
+            <button class="btn btn-confirm" translate="_OK"></button>
+        </div>
+    </div>
+    <div class="display-name" ng-click="openProfile($event)" ng-if="!selfies.attempted && !selfies.emptyQueue">
+        <span class="short-text">{{selfies.currentSelfie.name}}</span>
+    </div>
+    <div ng-if="session.user.userId == swf.broadcast.userId && !selfies.attempted && !selfies.emptyQueue">
+        <button class="btn btn-transparent" ng-click="closeSelfies()">
+            <i class="ynicon ynicon-close"></i>
+        </button>
+    </div>
+</div>

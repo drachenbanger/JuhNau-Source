@@ -1,0 +1,17 @@
+<div class="modal-body">
+	<h5 class="agreement-title">{{title}}</h5>
+	<div class="agreement-message">{{message}}</div>
+	<div class="actions" ng-show="!cancelState">
+		<button class="btn btn-primary" ng-click="checkAgreement(true)" translate="_continue"></button>
+	</div>
+	<div class="actions" ng-show="cancelState">
+		<button class="btn btn-cancel" ng-click="checkAgreement()" translate="_cancel"></button>
+		<button class="btn btn-cancel" ng-click="finalDismiss()" translate="_skip"></button>
+	</div>
+    <button ng-if="!cancelState" aria-hidden="true" class="close btn-reset" ng-click="checkAgreement(false)" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+	 <button ng-if="cancelState" aria-hidden="true" class="close btn-reset" ng-click="finalDismiss()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>

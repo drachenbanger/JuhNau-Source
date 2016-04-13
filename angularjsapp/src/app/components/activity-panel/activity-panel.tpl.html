@@ -1,0 +1,24 @@
+<div class="panel-body">
+	<div class="friends-list mini-scroll" only-scroll ng-if="onlineFriends.length > 0 && panel.cdn !== undefined">
+		<a class="activity" ng-repeat="friend in onlineFriends | filter:friendfilter" ng-href="/{{friend.profile}}" prevent-default ng-click="panel.changeBroadcaster( friend.channelId, source );panel.trackClickFriend( friend, source, $index );">
+			<div class="profile-img thumb" ng-style="::{'background-image': 'url('+panel.cdn.thumb+friend.userId+'), url('+panel.cdn.nothumb+')'}">
+				<span class="live" ng-if="friend.status===2"><i class="ynicon ynicon-broadcast"></i></span>
+			</div>
+			<div class="status">
+				<span class="name short-text">{{friend.name}}</span>
+
+				<span ng-if="friend.status!==2" class="short-text current-activity">
+					<i class="ynicon ynicon-viewers" ng-if="friend.channelName"></i> {{friend.channelName}}
+				</span>
+				<span ng-if="friend.status===2" class="short-text current-activity"><i ng-if="friend.tags[0]">#</i>{{friend.tags[0]}}</span>
+
+				<div ng-if="friend.bars" class="bars-text">
+					<i class="ynbar ynicon ynicon-icon-bar"></i> {{friend.bars | number}}
+				</div>
+
+			</div>
+		</a>
+	</div>
+	<span class="no-friends-msg" ng-if="onlineFriends.length === 0 || !onlineFriends" translate="activity_no_friends_online"></span>
+</div>
+<div id="div-gpt-ad-1392148686409-0"></div>

@@ -1,0 +1,61 @@
+<div class="modal-body">
+    <button ng-if="soft" aria-hidden="true" class="close" ng-click="cancel()" type="button">
+        <i class="ynicon ynicon-close"></i>
+    </button>
+    <div class="instructions row">
+		<div class="row">
+			<span class="heading" translate="{{::data.title}}"></span>
+		</div>
+    </div>
+
+<center>
+    <div class="networks btn-group">
+        <div class="network row">
+	        <div class="cell">
+	            <button class="btn btn-facebook full-width" ng-disabled="loggingIn.facebook" ng-click="login('facebook')">
+	                <i class="ynicon ynicon-social-fb"></i>
+	                <span ng-if="!loggingIn.facebook" class="transline"><span translate="loginmodal_signinwith"></span> <span>Facebook</span></span>
+	                <div ng-if="loggingIn.facebook" class="loader-light"></div>
+	            </button>
+            </div>
+        </div>
+        <div class="network row">
+	        <div class="cell">
+	            <button class="btn btn-twitter full-width" ng-disabled="loggingIn.twitter" ng-click="login('twitter')">
+	                <i class="ynicon ynicon-social-tw"></i>
+	                <span ng-if="!loggingIn.twitter" class="transline"><span translate="loginmodal_signinwith"></span> <span>Twitter</span></span>
+	                <div ng-if="loggingIn.twitter" class="loader-light"></div>
+	            </button>
+            </div>
+        </div>
+        <div class="network row">
+	        <div class="cell">
+	            <button class="btn btn-google full-width" ng-disabled="loggingIn.google" ng-click="login('google')">
+	                <i class="ynicon ynicon-social-gp"></i>
+	                <span ng-if="!loggingIn.google" class="transline"><span translate="loginmodal_signinwith"></span> <span>Google</span></span>
+	                <div ng-if="loggingIn.google" class="loader-light"></div>
+	            </button>
+            </div>
+        </div>
+        <div class="network row">
+	        <div class="cell">
+	            <button class="btn btn-instagram full-width" ng-if="moreOptions" ng-disabled="loggingIn.instagram" ng-click="login('instagram')">
+	                <i class="ynicon ynicon-social-insta"></i>
+	                <span ng-if="!loggingIn.instagram" class="transline"><span translate="loginmodal_signinwith"></span> <span>Instagram</span></span>
+	                <div ng-if="loggingIn.instagram" class="loader-light"></div>
+	            </button>
+            </div>
+        </div>
+        <div class="network row">
+	        <div class="cell">
+	        	<div ng-if="!moreOptions" ng-click="showMoreOptions()" class="show-more-options" translate="loginmodal_more_options"></div>
+	        </div>
+        </div>
+    </div>
+</center>
+
+    <span class="terms-copy transline-mid">
+        <span translate="loginmodal_by_clicking_agree"></span> 
+        <a href="/terms.php" target="_blank" style="color:#999999;" translate="loginmodal_terms"></a>.
+    </span>
+</div>

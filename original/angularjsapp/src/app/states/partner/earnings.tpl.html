@@ -1,0 +1,56 @@
+<div data-header></div>
+<div class="notification" ng-class="{active: $root.notificationActive, fixed: $root.notificationFixed}">
+	<alert type="{{$root.notificationType}}" ng-bind-html="$root.notificationMessage"></alert>
+	<button class="close" ng-click="closeNotification()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>
+<div id="partnersEarnings" class="partnersContent">
+
+	<div class="userearnings">
+		<div class="userearningsowenothumb">
+			<div class="userearningstitle" translate="earnings_title"></div>
+			<div class="userearningsowenumnothumb">${{vm.session.user.vault.dollars | number:0}}</div>
+			<div class="earningsfrom" translate="partner_earnings_from"> </div>
+		</div>
+	</div>
+
+	<div class="earningsrows">
+		<div class="earningsrow">
+			<div class="earningsstattitle">{{ 'earnings_lastpayment' | translate}} {{( vm.session.user.lastPaymentDate ? ': '+vm.session.user.lastPaymentDate : '' )}}</div>
+			<div class="earningsstat">{{( vm.session.user.lastPaymentAmount ? '$'+vm.session.user.lastPaymentAmount : 'N/A' )}}</div>
+		</div>
+		<div class="earningsrow" ng-if="vm.session.user.vault.subscribers!=undefined">
+			<div class="earningsstattitle" translate="earnings_subscribers"></div>
+			<div class="earningsstat">{{vm.session.user.vault.subscribers | number:0}}</div>
+		</div>
+		<div class="earningsrow" ng-if="vm.session.user.vault.subscriptionCycleEarnings!=undefined">
+			<div class="earningsstattitle" translate="earnings_sub"></div>
+			<div class="earningsstat">${{vm.session.user.vault.subscriptionCycleEarnings | number:0}}</div>
+		</div>
+		<div class="earningsrow">
+			<div class="earningsstattitle" translate="earnings_top"></div>
+			<div class="earningsstat">${{vm.session.user.vault.maxEarnings | number:0}}</div>
+		</div>
+		<div class="earningsrow">
+			<div class="earningsstattitle" translate="earnings_lifetime"></div>
+			<div class="earningsstat">${{vm.session.user.vault.lifeTimeEarnings | number:0}}</div>
+		</div>
+	</div>
+
+	<div class="bottom">
+		<p class="faq-link"><a ng-href='/partners/faq' prevent-default ng-click="vm.goToFaq();" translate="earnings_getmore"></a></p>
+		
+		<!-- subscribable -->
+		<div ng-if="vm.session.user.vault.subscriptionCycleEarnings!=undefined">
+			<p translate="earnings_sub_estimates"></p>
+			<p translate="earnings_sub_details"></p>
+		</div>
+		<!-- regular -->
+		<div ng-if="vm.session.user.vault.subscriptionCycleEarnings==undefined">
+			<p translate="earnings_par_estimates"></p>
+		</div>
+	</div>
+
+</div>
+<div data-footer ng-hide="$root.hideFooter"></div>

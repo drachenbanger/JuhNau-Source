@@ -1,0 +1,35 @@
+<div data-header></div>
+<div class="notification" ng-class="{active: $root.notificationActive, fixed: $root.notificationFixed}">
+	<alert type="{{$root.notificationType}}" ng-bind-html="$root.notificationMessage"></alert>
+	<button class="close" ng-click="closeNotification()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+</div>
+<div id="partnersPage" class="partnersContent">
+
+	<div class="notpartner" id="partner0" ng-if="vm.session.user.userId===0 || vm.session.user.partner===0 || vm.session.user.partner===4 || vm.session.user.partner===5 || vm.session.user.partner===8 || vm.session.user.partner===9 || vm.session.user.partner===10">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/not.tpl.html'"></div>
+	</div>
+
+	<div class="partner" id="partner1" ng-if="vm.session.user.partner===1">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/active.tpl.html'"></div>
+	</div>
+
+	<div class="partner" id="partner2" ng-if="vm.session.user.partner==2">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/application_pending.tpl.html'"></div>
+	</div>
+
+	<div class="partner" id="partner3" ng-if="vm.session.user.partner==3">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/pending.tpl.html'"></div>
+	</div>
+
+	<div class="partner" id="partner6" ng-if="vm.session.user.partner==6">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/pending_approved_confirm.tpl.html'"></div>
+	</div>
+
+	<div class="partner" id="partner7" ng-if="vm.session.user.partner==7">
+		<div ng-include src="'angularjsapp/src/app/states/partner/partials/active_confirm.tpl.html'"></div>
+	</div>
+
+</div>
+<div data-footer ng-hide="$root.hideFooter"></div>

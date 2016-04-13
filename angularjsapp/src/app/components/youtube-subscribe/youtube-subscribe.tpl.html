@@ -1,0 +1,17 @@
+<div ng-attr-style="width:425px;background:url('{{base}}/images/back_pop_youtube.jpg') no-repeat;height:210px;text-align:center;border:0px;">
+
+    <!-- header //-->
+    <div style="height:30px;"></div>
+    <!-- end header //-->
+
+    <div style="height:55px;">
+    </div>
+
+    <div ng-if="channel" class="g-ytsubscribe" data-channel="{{channel}}" data-layout="full" data-count="default" data-onytevent="onYtEvent"></div>
+    <div ng-if="channelid" class="g-ytsubscribe" data-channelid="{{channelid}}" data-layout="full" data-count="default" data-onytevent="onYtEvent"></div>
+
+    <div style="height:30px;">
+    </div>
+
+</div>
+<a id="fancybox-close" ng-click="$dismiss()"></a>

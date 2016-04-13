@@ -1,0 +1,16 @@
+<div class="modal-body">
+ 	<button aria-hidden="true" class="close btn-reset" ng-click="vm.closeModal()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+    <div class="modal-body">
+        <div class="title" translate="reconnect_title"></div>
+    	<div class="modal-message" translate="reconnect_message" translate-values="{value: vm.viewers}"></div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-danger" type="button" ng-click="vm.endBroadcast()" ng-disabled="vm.retryTime > 0" translate="reconnect_no"></button>
+    <button class="btn btn-confirm" type="button" ng-click="vm.reconnect()" ng-disabled="vm.retryTime > 0">
+        <span class="loader-light" ng-if="vm.retryTime > 0"></span>
+        <span ng-if="!vm.retryTime" translate="_yes"></span>
+    </button>
+</div>

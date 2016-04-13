@@ -1,0 +1,98 @@
+<div class="guest-nav">
+    <span class="guest-total" ng-bind-html="vm.guestService.guestListCountFormatted"></span>
+    <div class="btn-group" dropdown>
+        <button class="btn btn-transparent pull-right" dropdown-toggle>
+            <span class="text-muted" translate="sort_by"></span> <span translate="{{vm.guestListFilter}}"></span> <i class="ynicon ynicon-carrot-dwn"></i>
+        </button>
+        <ul class="dropdown-menu" ng-class="vm.guestListFilter">
+            <li class="level" ng-click="vm.sortGuestList('level')">
+                <i class="ynicon ynicon-carrot-up"></i>
+                <a href translate="sorting_level"></a>
+            </li>
+            <li class="waiting-longest" ng-click="vm.sortGuestList('waitingtime', 'asc')">
+                <a href translate="sorting_waitingtime_asc"></a>
+            </li>
+            <li class="waiting-shortest" ng-click="vm.sortGuestList('waitingtime', 'desc')">
+                <a href translate="sorting_waitingtime_desc"></a>
+            </li>
+            <li class="alphabetical" ng-click="vm.sortGuestList('alphabetical')">
+                <a href translate="sorting_alphabetical"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- viewers guestlist -->
+<div class="guest-list mini-scroll" infinite-scroll="vm.loadGuestList(true)" ng-class="{'broadcaster-guest-list': vm.swf.broadcast.userId == vm.session.user.userId, 'frozen': vm.previewImage !== undefined, 'guest-guest-list': vm.guestService.guest.userId == vm.session.user.userId}" only-scroll>
+    <div class="guest guest-optin" ng-class="{'clickable': !vm.guestService.userGuestObj}" ng-click="vm.openGuestOptIn()">
+        <img class="preview-image" ng-class="{ 'in-list': vm.state === 'guestList'}" ng-if="vm.previewImage" ng-src="data:image/jpeg;base64,{{vm.previewImage}}">
+        <img class="thumbnail-image" ng-if="vm.guestService.userGuestObj" ng-class="{'invisible': vm.previewImage}" ng-src="{{vm.guestService.userGuestObj.snapshot}}">
+        <div class="thumbnail-placeholder" ng-if="!vm.guestService.userGuestObj.snapshot">
+            <i class="ynicon ynicon-bc-call"></i>
+        </div>
+        <div class="summary-placeholder" ng-if="!vm.guestService.userGuestObj">
+            <b translate="guest_become"></b>
+        </div>
+        <div class="summary-placeholder in-list" ng-if="vm.guestService.userGuestObj">
+            <b translate="guest_inqueue"></b>
+            <button class="btn btn-important" ng-click="vm.optOut()" translate="guest_remove"></button>
+        </div>
+    </div>
+    <guest-list guests="vm.guestList" user-id="vm.session.user.userId" config="vm.config" open-profile="vm.openProfile" invite-guest="vm.inviteGuest" broadcaster="vm.swf.broadcast" translated-text="vm.translatedText" watch-depth="reference"/>
+
+    <!-- <div class="guest" ng-repeat="guest in vm.guestList" ng-if="::(guest.userId != vm.session.user.userId)"  >
+        <div class="thumb clickable" ng-click="vm.openProfile(guest.userId, $index)" ng-style="::{'background-image': 'url({{::(vm.config.settings.GuestSnapshotsBaseUrl + guest.snapshotUrl)}})', 'background-size': 'cover'}"></div>
+        <div class="summary">
+            <div class="guest-name short-text clickable" ng-click="vm.openProfile(guest.userId)">
+                <user-badge role="{{::guest.chatRole}}" level="{{::guest.level}}" subscription-type="{{::guest.subscriptionType}}" channelId="{{::guest.userId}}"></user-badge>
+                <b>{{::guest.name}}</b>
+            </div>
+            <div>
+                <span class="guest-bars" ng-if="::(guest.bars > 0)"><i class="ynicon ynicon-icon-bar"></i> {{::guest.bars}}</span>
+                <span class="bullet" ng-if="::(guest.bars > 0 && guest.formattedLocation.length > 0)">&#8226;</span>
+                <span class="guest-location" ng-if="::(guest.formattedLocation.length > 0)">{{::guest.formattedLocation}}</span>
+            </div>
+            <div class="description line-clamp"  ng-if="::(guest.description && guest.description.length > 0)">
+                {{::guest.description}}
+            </div>
+            <button class="btn btn-primary" ng-click="vm.inviteGuest(guest)" translate="guest_make"></button>
+        </div>
+    </div> -->
+</div>
+
+<!-- empty guestlist -->
+<div class="guest-list-empty" ng-if="vm.guestList.length === 0 || !vm.guestList">
+    <i class="ynicon ynicon-bc-call-nolines"></i>
+    <div translate="guest_nomore"></div>
+</div>
+
+<!-- guest preview -->
+<div class="guest-preview" ng-class="{'active': vm.state === 'guestPreview'}">
+    <button class="btn btn-transparent go-back" ng-click="vm.closeGuestOptIn()">
+        <i class="ynicon ynicon-btn-back"></i>
+    </button>
+    <h4 class="preview-title"><span translate="guest_smile_selected" style="display:inline;"></span><span class="short-text">{{::vm.swf.broadcast.profile}}.</span></h4>
+    <div class="preview-video-container">
+        <span class="counter" ng-if="vm.counter > 0">{{vm.counter}}</span>
+        <video id="preview-video" camera-valid on-valid="vm.cameraValid()"></video>
+    </div>
+    <div tooltip="{{vm.cameraReady ? '' : 'We weren’t able to detect your camera. Please check your browser settings.'}}"
+        tooltip-trigger="mouseenter"
+        tooltip-placement="top"
+        tooltip-append-to-body="true">
+        <button class="btn btn-confirm preview-control"
+            ng-if="!vm.imageTaken"
+            ng-disabled="vm.counter > 0 || !vm.cameraReady"
+            ng-click="vm.previewCountdown()">
+            <i class="ynicon ynicon-camera"></i>
+        </button>
+    </div>
+    <!-- retry buttons -->
+    <div class="retry-buttons" ng-if="vm.imageTaken">
+        <button class="btn btn-cancel preview-control" ng-disabled="vm.counter > 0" ng-click="vm.previewCountdown()">
+            <i class="ynicon ynicon-icon-redo"></i>
+        </button>
+        <button class="btn btn-primary preview-control" ng-disabled="vm.counter > 0" ng-click="vm.optIn()">
+            <i class="ynicon ynicon-icon-send"></i>
+        </button>
+    </div>
+</div>

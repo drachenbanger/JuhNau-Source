@@ -1,0 +1,75 @@
+<div id="leftsidebar">
+	<div class="channel-menu-content">
+
+        <div class="left-panel">
+			<div class="panel-title nowrap short-text" ng-if="leftSidebar.session.user.userId !== 0" ng-click="leftSidebar.friendsCollapsed  = !leftSidebar.friendsCollapsed">
+				<span translate="sidebar_online_friends"></span>
+				<i class="ynicon" ng-class="{'ynicon-carrot-dwn': !leftSidebar.friendsCollapsed , 'ynicon-carrot-rgt': leftSidebar.friendsCollapsed }"></i>
+			</div>
+			<div 	activity-panel
+					class="activity-panel"
+				 	ng-if="leftSidebar.session.user.userId !== 0 && leftSidebar.session.onlineFriends"
+					online-friends="leftSidebar.session.onlineFriends"
+					collapse="leftSidebar.friendsCollapsed"
+					source="MYFRIENDS">
+			</div>
+		</div>
+
+        <div class="left-panel">
+			<div class="panel-title nowrap short-text" ng-click="leftSidebar.usersFeaturedCollapsed = !leftSidebar.usersFeaturedCollapsed" ng-if="leftSidebar.dashboard.featuredUsers.length > 0">
+				<span translate="sidebar_featured_people"></span>
+				<i class="ynicon" ng-class="{'ynicon-carrot-dwn': !leftSidebar.usersFeaturedCollapsed, 'ynicon-carrot-rgt': leftSidebar.usersFeaturedCollapsed}"></i>
+			</div>
+			<div class="panel-body" collapse="leftSidebar.usersFeaturedCollapsed" ng-if="leftSidebar.dashboard.featuredUsers.length > 0">
+				<div class="trending-users mini-scroll" only-scroll>
+					<a ng-repeat="person in leftSidebar.dashboard.featuredUsers" ng-href="/{{person.profile}}" prevent-default ng-click="leftSidebar.changeBroadcaster(person.userId,'FEATURED')">
+						<span class="trending-user">{{::person.username}}</span>
+						<span class="viewerCount">{{person.viewers}}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="left-panel">
+			<div class="panel-title nowrap short-text" ng-click="leftSidebar.usersTrendingCollapsed = !leftSidebar.usersTrendingCollapsed">
+				<span translate="sidebar_trending_people"></span>
+				<i class="ynicon" ng-class="{'ynicon-carrot-dwn': !leftSidebar.usersTrendingCollapsed, 'ynicon-carrot-rgt': leftSidebar.usersTrendingCollapsed}"></i>
+			</div>
+			<div class="panel-body" collapse="leftSidebar.usersTrendingCollapsed">
+				<div class="trending-users mini-scroll" only-scroll>
+					<a ng-repeat="person in leftSidebar.dashboard.users" ng-href="/{{person.profile}}" prevent-default ng-click="leftSidebar.changeBroadcaster(person.userId,'TRENDING')">
+						<span class="trending-user">{{::person.username}}</span>
+						<span class="viewerCount">{{person.viewers}}</span>
+					</a>
+					<a ui-sref="main.explore" class="trending-people-more" translate="_more"></a>
+				</div>
+			</div>
+		</div>
+
+		<div class="left-panel">
+			<div class="panel-title nowrap short-text" ng-click="leftSidebar.tagsTrendingCollapsed = !leftSidebar.tagsTrendingCollapsed">
+				<span translate="sidebar_trending_tags"></span>
+				<i class="ynicon" ng-class="{'ynicon-carrot-dwn': !leftSidebar.tagsTrendingCollapsed, 'ynicon-carrot-rgt': leftSidebar.tagsTrendingCollapsed}"></i>
+			</div>
+			<div class="trending-tags-list mini-scroll" only-scroll collapse="leftSidebar.tagsTrendingCollapsed">
+				<div>
+					<a ng-repeat="tag in leftSidebar.dashboard.tags" ng-href="/explore/{{tag.tag}}" ng-click="leftSidebar.getTagFeatured(tag.tag)" prevent-default>
+						<span class="trending-tag" data-tagname="musicians">#{{::tag.tag}}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="left-panel">
+			<div class="panel-title short-text">
+				<span class="mobile-title">DarkMode 2.0</span>
+			</div>
+			<div id="get-app-subtext">
+			Developed by SOULDR!NKER<br />
+			Brought to you by the power of <strong>ASHTAR</strong><br />
+			Ashtar be with you! Ashtar to your health!
+			
+			</div>
+		</div>
+	</div>
+</div>

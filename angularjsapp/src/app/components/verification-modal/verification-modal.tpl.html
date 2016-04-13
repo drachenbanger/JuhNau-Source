@@ -1,0 +1,91 @@
+<div class="modal-body wide">
+    <div class="panel-four active">
+        <div class="heading">
+            <div class="title" ng-if="verification.verifyNow">Get Verified!</div>
+            <div class="title" ng-if="!verification.verifyNow">Purchase Successful!</div>
+            <div class="subtitle">
+                <span ng-show="verification.verifyNow && data.source.source === 'buyBars'">
+                    For your security we want to verify your card to purchase more bars.
+                </span>
+                <span ng-show="verification.verifyNow && data.source.source === 'subscribeModal'">
+                    For your security we want to verify your card to purchase a Subscription.
+                </span>
+                <span ng-if="source === 'buyBars'">
+                    <b>Your Bars:</b>
+                    <span class="icon"><img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/icons_v3/icon_bar_sm.png"/></span>
+                    <b>{{session.user.vault.webBars}}</b>
+                </span>
+            </div>
+        </div>
+        <div class="content" ng-show="verification.verifyNow" ng-class="{'animate-in': verification.animate}">
+            <div class="pull-left verification-image">
+                <span class="verification-image-number">{{::verification.sale.high | currency}}</span>
+                <img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/bars/icons/verify_848_blank.png">
+            </div>
+            <div class="desc">
+                You were charged a little bit less than the normal {{::verification.sale.originalAmount | currency}} price — somewhere between {{::verification.sale.low | currency}} and {{::verification.sale.high | currency}}. We need you to confirm how much (it wont end in $.99).
+                Open up your credit card’s online statement and look for a charge from YOUNOW (or BRAINTREE.COM) in your recent activity.
+                In most cases charges show up instantly, but if you don’t see it, wait a bit (in some cases, up to a day),
+                <span ng-if="::data.source.source === 'buyBars'">and come back to verify your bars before you purchase any more.</span>
+                <span ng-if="::data.source.source === 'subscribeModal'">and come back to verify your card before purchasing.</span>
+            </div>
+            <div class="verification-info">
+                <div class="pull-left">
+                    <i class="ynicon ynicon-icon-verify"></i>
+                </div>
+                <div class="verification-info-copy pull-left">One discounted charge was made on {{::verification.sale.date | date : 'M/d/yy'}} to your {{::verification.sale.paymentType}} ending in x{{::verification.sale.last4}}</div>
+            </div>
+            <div ng-class="{failed: verification.failed}">
+                <div class="verification-failed">
+                    <div>The amount you entered before, {{::verification.amountAttempted | currency}}, does not match. Try again.</div>
+                    <div><b>Be careful! This is your last try to submit an amount for verification.</b></div>
+                    <div class="text-muted">(Double check your credit card, you can always come back later)</div>
+                </div>
+                <div class="verification-form pull-left">
+                    <form name="verificationForm" novalidate>
+                        <label>Amount of Charge</label>
+                        <span><b>$</b></span>
+                        <input
+                            type="number"
+                            name="verificationAmount"
+                            ng-model="verification.amount"
+                            ng-pattern="'^[0-9]+(\.[0-9]{1,2})?$'"
+                            ng-required="true"
+                            tooltip="{{verification.invalid}}"
+                            tooltip-trigger="show"
+                            tooltip-append-to-body="true"
+                            tooltip-placement="bottom error"
+                            yn-enter="verifyAmount()"
+                            id="verification-tooltip">
+                    </form>
+                </div>
+            </div>
+            <button class="btn btn-confirm verify-now-btn pull-left" ng-disabled="verification.processing" ng-click="verifyAmount()">
+                <span ng-if="!verification.processing">Verify Amount</span>
+                <div class="loader-light" ng-if="verification.processing"></div>
+            </button>
+        </div>
+        <div class="content" ng-if="!verification.verifyNow">
+            <div class="pull-left verification-image">
+                <span class="verification-image-number">{{::verification.sale.high | currency}}</span>
+                <img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/bars/icons/verify_848_blank.png">
+            </div>
+            <div class="desc verification-sale">
+                <div>For your protection, we need you to verify your credit card before you can purchase any more bars.</div>
+                <div>Its simple, but you will need access to your online credit card statement so you can verify the last charge we made to your card.</div>
+            </div>
+            <button class="btn btn-cancel pull-left" ng-click="cancel()">
+                <span>Verify Later</span>
+            </button>
+            <button class="btn btn-confirm pull-left" ng-click="verification.verifyNowState()">
+                <span>Verify Now</span>
+            </button>
+        </div>
+        <div class="bottom">
+            <div class="contact-support">
+                <span class="text-muted">Need help?</span>
+                <a ng-href="https://younow.zendesk.com/anonymous_requests/new?ticket[subject]=Credit+Card+Verification&ticket[ticket_form_id]=67755&ticket[fields][24381885]={{::verification.sale.last4}}&ticket[fields][23984596]={{::session.user.fullName}}" target="_blank">Contact support</a>
+            </div>
+        </div>
+    </div>
+</div>

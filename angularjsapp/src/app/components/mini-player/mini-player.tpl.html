@@ -1,0 +1,25 @@
+<div class="mini-player">
+    <div class="top clearfix">
+        <a class="pull-left ellipsify" prevent-default ng-href="/{{ vm.broadcasterService.broadcaster.profile }}" ng-click="vm.enterChat()" translate="profile_latest_broadcast"></a>
+        <!--<div class="pull-left"><i class="ynicon ynicon-level"></i>{{ ::broadcasterService.channel.level }} {{ ::broadcasterService.broadcaster.profile }}</div>-->
+        <div class="pull-right ellipsify">#{{ vm.broadcasterService.broadcaster.tags[0] }}</div>
+    </div>
+    <div class="middle">
+        <div id="player">
+            <div class="middle-player" ng-attr-id="{{::playerId}}"></div>
+        </div>
+    </div>
+    <div class="bot clearfix">
+        <span class="pull-left">
+            <span><i class="ynicon ynicon-viewers"></i> <span>{{::vm.viewers}} </span></span>
+            <span><i class="ynicon ynicon-thumb"></i> <span>{{::vm.likes}} </span></span>
+            <span><i class="ynicon ynicon-btn-bc-share-android"></i> <span>{{::vm.shares}} </span></span>
+        </span>
+        <span class="pull-right" ng-click="vm.swf.toggleMute()">
+            <i class="ynicon" ng-class="vm.swf.volume==0 ? 'ynicon-mute-sel' : 'ynicon-mute'"></i>
+        </span>
+    </div>
+    <div class="actions">
+        <button class="btn btn-primary" ng-click="vm.enterChat()"><i class="ynicon ynicon-broadcast"></i> <span translate="profile_enter_live_chat"></span></button>
+    </div>
+</div>

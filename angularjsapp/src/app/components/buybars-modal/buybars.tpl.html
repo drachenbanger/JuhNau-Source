@@ -1,0 +1,59 @@
+<div class="modal-body" ng-class="{large: modalLarge && activeItem.buying, small: vendor == 'payPal' && activeItem.buying}">
+    <div class="overlay" ng-if="!iframeLoaded && config.buybarsiframe">
+        <div class="loader"></div>
+    </div>
+    <div class="panel-one" ng-class="{'loading-payments': gettingToken}">
+        <button aria-hidden="true" class="close" ng-click="cancel()" type="button">
+            <i class="ynicon ynicon-close"></i>
+        </button>
+        <div class="heading">
+        	<div class="title" translate="buybarsmodal_header"></div>
+        	<div class="subtitle" translate="buybarsmodal_subtext"></div>
+        	<div class="status">
+        		<span><span translate="buybarsmodal_yourbars"></span>: </span>
+    			<img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/icons_v3/icon_bar_sm.png" />
+    			<span>{{ Api.squashedNumber(session.user.vault.webBars, 5) }}</span>
+    		</div>
+        </div>
+        <div class="content">
+            <div class="spinning-loader token-feedback"></div>
+        	<div class="item transline-mid" ng-click="toggleActiveItem(item)" ng-class="::{popular: item.popular === '1'}" ng-repeat="item in products track by $index">
+        		<span class="icon"><img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/bars/icons/{{::item.SKU}}.png" /></span>
+        		<span class="name">
+        			<b>{{::item.name}}</b> ({{::item.amount |number }} <span translate="_bars"></span>)
+        			<div class="buybars_vip_bonus" ng-if="session.user.globalSpenderRank"><i class="ynicon ynicon-icon-vip2"></i><span> + {{::item.bonusBars}} </span><span translate="_bars"></span><span> &amp; {{::item.bonusCoins}} </span><span translate="_coins"></span></span></div>
+        		</span>
+        		<span class="popular-copy" ng-if="::(item.popular === '1')">- <span translate="buybarsmodal_mostpopular"></span></span>
+        		<button class="btn btn-small">${{::item.price}}</button>
+        	</div>
+        </div>
+    </div>
+    <div class="panel-two" ng-class="{'active': activeItem.buying}">
+        <button ng-click="toggleActiveItem()" class="btn btn-transparent"><i class="ynicon ynicon-btn-back"></i></button>
+        <div class="heading">
+            <div class="title" translate="buybarsmodal_selectmethod"></div>
+            <div class="subtitle" translate="buybarsmodal_entercard"></div>
+            <div class="item">
+                <span class="icon"><img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/bars/icons/{{activeItem.SKU}}.png" /></span>
+                <span class="name"> <b>{{activeItem.name}} ({{activeItem.amount | number}} <span translate="_bars"></span>)<span class="sub"> - ${{activeItem.price}}</span></b> </span>
+            </div>
+        </div>
+        <div class="content" ng-class="(vendor + '-container')">
+            <button class="btn btn-confirm" ng-if="vendor === 'payPal'" ng-click="paypalCheckout()" translate="buybarsmodal_paypal">
+            </button>
+            {{details}}
+            <form id="braintree-form" ng-if="(!config.buybarsiframe && vendor === 'braintree') || (!vendor)">
+                <div id="braintree-dropin"></div>
+                <button type="submit" ng-disabled="disableBuy" class="btn btn-confirm">
+                    <div class="spinning-container" ng-if="disableBuy">
+						<span class="spinning-loader"></span>
+					</div>
+                    <b translate="_submit"></b>
+                </button>
+            </form>
+        </div>
+        <div class="bottom">
+            <div class="copy"><span translate="buybarsmodal_copy_terms" style="display:inline;"></span> <a href="/policy/en/terms" target="_blank" translate="_terms_of_service"></a> <span translate="_and"></span> <a href="/policy/en/privacy" target="_blank" translate="_privacy_policy"></a>.</div>
+        </div>
+    </div>
+</div>

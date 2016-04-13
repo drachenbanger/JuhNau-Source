@@ -1,0 +1,9 @@
+<div data-header></div>
+<div id="docs" class="info-page" ng-class="{'ready': ready, 'rtl': rtl}">
+    <div id="doc-header">{{docTitle}}</div>
+    <div id="doc-sidebar">
+    <div ng-repeat="section in sections" class="doc-section" ng-click="scrollTo(section.offsetTop)">{{section.innerText}}</div>
+    </div>
+    <div id="doc-content" ng-bind-html="docContent"></div>
+</div>
+<div data-footer ng-hide="$root.hideFooter"></div>

@@ -1,0 +1,17 @@
+<div class="advanced-options dropup" dropdown>
+    <button
+        class="btn btn-transparent dropdown-toggle"
+        ng-click="vm.RTCbroadcastSettings.microphoneSetup()"
+        tooltip="Advanced Options"
+        tooltip-trigger="mouseenter"
+        tooltip-append-to-body="true"
+        dropdown-toggle>
+        <i class="ynicon ynicon-settings"></i>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <i class="ynicon ynicon-carrot-dwn"></i>
+        <li ng-click="toggleExternalStreaming()">
+            <i ng-if="externalStreaming.active" class="ynicon ynicon-icon-check"></i> Use external streaming tool
+        </li>
+    </ul>
+</div>

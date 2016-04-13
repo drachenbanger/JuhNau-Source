@@ -1,0 +1,101 @@
+<div id="playerheader">
+	<a
+	class="thumb circle-thumb pull-left"
+	ng-if="!vm.swf.settingUpBroadcast && !vm.swf.currentSession.isBroadcasting"
+	ng-style="{ background: 'url(' + vm.thumb + vm.broadcast.broadcaster.userId + '), url({{vm.noThumb}}) no-repeat', 'background-size': 'cover' }"
+	ng-href="/{{vm.broadcast.broadcaster.profile}}" prevent-default
+	ng-click="vm.openBroadcasterProfile(vm.broadcast.broadcaster.userId)">
+		<span class="ynbadge" ng-if="vm.broadcast.broadcaster.isSubscribable && !vm.swf.settingUpBroadcast">  
+			<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{vm.broadcast.broadcaster.userId}}/1/badge@2x.png" />
+		</span>
+	</a>
+	<a
+	class="thumb circle-thumb pull-left"
+	ng-if="vm.swf.settingUpBroadcast || vm.swf.currentSession.isBroadcasting"
+	ng-style="{ background: 'url(' + vm.thumb + vm.session.user.userId + '), url({{::vm.noThumb}}) no-repeat', 'background-size': 'cover' }"
+	ng-href="/{{vm.session.user.profile}}" prevent-default
+	ng-click="vm.openBroadcasterProfile(vm.session.user.userId)">
+		<span class="ynbadge" ng-if="vm.broadcast.broadcaster.isSubscribable && !vm.swf.settingUpBroadcast">
+			<img ng-src="{{::vm.config.settings.BadgeBaseUrl}}/{{vm.broadcast.broadcaster.userId}}/1/badge@2x.png" />
+		</span>
+	</a>
+	<!-- viewer view -->
+	<div class="broadcast-info transline-mid" ng-if="!vm.swf.settingUpBroadcast && !vm.swf.currentSession.isBroadcasting && vm.broadcast.broadcaster.userId != vm.session.user.userId">
+		<a
+		class="broadcaster-name ellipsify"
+		ng-href="/{{vm.broadcast.broadcaster.profile}}" prevent-default
+		ng-click="vm.openBroadcasterProfile(vm.broadcast.broadcaster.userId)">
+			<i class="ynicon ynicon-level"></i>
+			<span>{{vm.Math.floor(vm.broadcast.broadcaster.userlevel)}} {{vm.broadcast.broadcaster.username}}</span>
+		</a>
+		<div class="broadcaster-tag ellipsify transline-top" ng-if="!vm.broadcast.broadcaster.isSubscribable || !vm.session.fanStatus[vm.broadcast.broadcaster.userId]">
+			<span translate="_on"></span>
+			<a
+			ng-href="/explore/{{vm.broadcast.broadcaster.tags[0]}}" prevent-default
+			ng-click="vm.Api.goto('explore/' + vm.broadcast.broadcaster.tags[0])">
+				#{{vm.broadcast.broadcaster.tags[0]}}
+			</a>
+		</div>
+		<div class="broadcaster-buttons">
+			<div class="fan-button-placeholder" track-source="BROADCAST">
+				<div fan-button size="small" channel="vm.broadcast.broadcaster.user"></div>
+			</div>
+			<div class="fan-button-placeholder subscribe-button-placeholder" track-source="BROADCAST">
+				<div subscribe-button size="small" channel="vm.broadcast.broadcaster.user"></div>
+			</div>
+		</div>
+		<div class="broadcaster-description line-clamp transline-top">
+			<!-- <a
+			class="description-tag ellipsify"
+			ng-if="vm.broadcast.broadcaster.isSubscribable && vm.session.fanStatus[vm.broadcast.broadcaster.userId]"
+			style="max-width:160px;"
+			ng-href="/explore/{{vm.broadcast.broadcaster.tags[0]}}" prevent-default
+			ng-click="vm.Api.goto('explore/' + vm.broadcast.broadcaster.tags[0])">
+				{{ '_on' | translate }} #{{vm.broadcast.broadcaster.tags[0]}}
+			</a>  -->
+			<span ng-bind-html="vm.broadcast.broadcaster.user.description">
+			</span>
+		</div>
+
+	</div>
+	<div class="broadcast-info" ng-if="(vm.broadcast.broadcaster.userId==vm.session.user.userId) && !vm.swf.settingUpBroadcast">
+		<!-- mode -->
+		<div class="broadcast-info submode" ng-if="vm.broadcast.broadcaster.isSubscribable && !vm.newRank">
+			<div class="top">
+				<span class="stitle" translate="golive_chatmode"></span>
+				<span class="switch s{{ vm.broadcast.chatMode==1 ? 'on' : 'off' }}" ng-click="vm.chatModeToggle()">
+					<span class="sknob"></span>
+				</span>
+				<span class="sinfo">{{ (vm.broadcast.chatMode==1 ? 'turn_on' : 'turn_off') | translate }}</span>
+			</div>
+			<div class="bot">
+				({{ vm.swf.broadcast.subscribersCount }} {{ (vm.swf.broadcast.subscribersCount!=1 ? 'subscribers' : 'subscriber') | translate }})
+			</div>
+		</div>
+		<!-- rank -->
+		<div class="broadcaster-setup-description" ng-if="(!vm.broadcast.broadcaster.isSubscribable || vm.newRank)">
+			<div class="short-text">{{vm.session.user.fullName}}</div>
+			<span class="short-text">,</span>
+			<span class="short-text user-rank">{{'_you_are' | translate }} {{vm.broadcast.broadcaster.tagRank}} </span>
+			<span class="broadcaster-tags short-text"> {{'_on' | translate }} </span>
+			<a
+			class="broadcaster-tags short-text"
+			ng-href="/explore/{{vm.broadcast.broadcaster.tags[0]}}" prevent-default
+			ng-click="vm.Api.goto('explore/' + vm.broadcast.broadcaster.tags[0])">
+				#{{vm.broadcast.broadcaster.tags[0]}}
+			</a>
+		</div>
+		
+		
+	</div>
+	<!-- END broadcaster view pre-EOB -->
+
+
+	<!-- broadcaster setup -->
+	<div class="broadcast-info" ng-if="vm.swf.settingUpBroadcast">
+		<div class="broadcaster-setup-description">
+			<div class="short-text">{{vm.session.user.fullName}}</div>
+			<span class="setup-copy short-text">, {{'player_get_ready_for_your_broadcast' | translate }}</span>
+		</div>
+	</div>
+</div>

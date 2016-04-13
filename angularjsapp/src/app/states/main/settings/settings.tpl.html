@@ -1,0 +1,784 @@
+<div class="settings-page">
+	<div class="settings-for" ng-if="session.administrator">
+		ADMIN: Adjust settings for: <input type="text" ng-model="onbehalf.userId" ng-blur="onbehalf.update()"> 
+		<a href="#" ng-if="onbehalf.userId!=session.user.userId && onbehalf.userId!=0" ng-click="onbehalf.reset()">Reset (back to my settings)</a>
+	</div>
+	<div class="navigation">
+		<div class="tab-header" ng-class="{'active': page=='info'}" ng-click="switchTab('info')" translate="settings_tab_information"></div>
+		<div class="tab-header" ng-class="{'active': page=='notifications'}" ng-click="switchTab('notifications')" translate="settings_tab_notifications"></div>
+		<div class="tab-header" ng-class="{'active': page=='accounts'}" ng-click="switchTab('accounts')" translate="settings_tab_connected_accounts"></div>
+		<div class="tab-header" ng-class="{'active': page=='privacy'}" ng-click="switchTab('privacy')" translate="settings_tab_privacy"></div>
+		<div class="tab-header" ng-class="{'active': page=='subscriptions'}" ng-click="switchTab('subscriptions')" translate="settings_tab_subscriptions"></div>
+	</div>
+	<div class="pages" ng-show="settings">
+		<div class="info-page" ng-show="page=='info'" ng-class="{'edit-mode':editing}">
+			<form novalidate name="infoForm">
+				<div class="form-horizontal">
+					<a class="pull-right" ng-click="startEdit()" href="javascript:void(0)" translate="_edit"></a>
+					<div class="control-group control-nickname">
+						<label class="control-label pull-left" translate="settings_nickname"></label>
+						<div class="controls pull-left">
+							<div class="username editable">
+								<span class="edit-hide profileUrlString">{{settings.user.profile}}</span>
+								<div class="edit-field">
+									<input placeholder="{{::('settings_nickname') | translate}}"
+										type="text"
+										maxlength="25"
+										class="form-control"
+										ng-model="settings.user.profile"
+										ng-change="toEdit('profileUrlString', settings.user.profile)">
+								</div>
+							</div>
+							<div class="url">
+								<a ng-href="{{::config.settings.ServerLocalBaseUrl}}/{{settings.user.profile}}">{{::config.settings.ServerLocalBaseUrl}}/{{settings.user.profile}}</a>
+							</div>
+							<div class="nickname-warning">								
+								{{ 'settings_nickname_warning' | translate }}
+							</div>
+							<div class="checkbox">
+								<input type="checkbox"
+									ng-model="settings.user.useprofile"
+									ng-change="toEdit('useprofile', settings.user.useprofile)"
+									ng-true-value="1"
+									ng-false-value="0"
+									ng-checked="settings.user.useprofile===1"
+								>
+								{{ 'settings_nickname_tooltip' | translate }}
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_email"></label>
+						<div class="controls pull-left">
+							<div class="username editable">
+								<span class="edit-hide emailAddress">{{settings.user.email}}</span>
+								<div class="edit-field">
+									<input placeholder="{{::('settings_email') | translate}}"
+										name="info.email"
+										class="form-control"
+										type="text"
+										ng-model="settings.user.email"
+										ng-change="toEdit('emailAddress', settings.user.email)"
+										ng-pattern="emailRegex"
+										tooltip="Invalid email"
+										tooltip-trigger="show"
+										tooltip-append-to-body="true"
+										tooltip-placement="top error"
+										yn-valid>
+								</div>
+							</div>
+						</div>
+						<i class="ynicon ynicon-icon-check isEmailConfirmed" ng-if="session.user.isEmailConfirmed==1"></i>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_mailing_address"></label>
+						<div class="controls pull-left">
+							<div class="address editable">
+								<span class="edit-hide address1">{{settings.user.mailAddress1}}</span>
+								<br class="edit-hide">
+								<span class="edit-hide address2">{{settings.user.mailAddress2}}</span>
+								<div class="edit-field">
+									<input placeholder="{{::('settings_mailing_address_placeholder1') | translate}}"
+										name="info.adress1"
+										class="form-control"
+										type="text"
+										ng-model="settings.user.mailAddress1"
+										ng-change="toEdit('mailAddress1', settings.user.mailAddress1)"
+										ng-maxlength="50"
+										tooltip="Invalid address"
+										tooltip-trigger="show"
+										tooltip-append-to-body="true"
+										tooltip-position="top error"
+										yn-valid><br>
+									<input placeholder="{{::('settings_mailing_address_placeholder2') | translate}}"
+										name="info.address2"
+										class="form-control"
+										type="text"
+										ng-model="settings.user.mailAddress2"
+										ng-change="toEdit('mailAddress2', settings.user.mailAddress2)"
+										ng-maxlength="50"
+										tooltip="Invalid address"
+										tooltip-trigger="show"
+										tooltip-append-to-body="true"
+										tooltip-position="top error"
+										yn-valid></div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_city"></label>
+						<div class="controls pull-left">
+							<div class="city editable">
+								<span class="edit-hide city">{{settings.user.mailCity}}</span>
+								<div class="edit-field">
+									<input placeholder="{{::('settings_city') | translate}}"
+										name="info.city"
+										type="text"
+										class="form-control"
+										ng-model="settings.user.mailCity"
+										ng-change="toEdit('mailCity', settings.user.mailCity)"
+										ng-pattern="'^[^!-&(-,.-@\[-`{-~]*$'"
+										ng-maxlength="25"
+										tooltip="Invalid city"
+										tooltip-trigger="show"
+										tooltip-append-to-body="true"
+										tooltip-position="top error"
+										yn-valid>
+								</div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_state"></label>
+						<div class="controls pull-left">
+							<div class="state editable">
+								<span class="edit-hide stateCode">{{select.state[settings.user.mailState]}}</span>
+								<div class="edit-field">
+									<select id="stateCode"
+										class="form-control"
+										ng-model="settings.user.mailState"
+										ng-change="toEdit('mailState', settings.user.mailState)"
+										ng-options="option.code as option.name for option in state">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_country"></label>
+						<div class="controls pull-left">
+							<div class="country editable">
+								<span class="edit-hide countryCode">{{select.country[settings.user.mailCountry]}}</span>
+								<div class="edit-field">
+									<select id="countryCode"
+										class="form-control"
+										ng-model="settings.user.mailCountry"
+										ng-change="toEdit('mailCountry', settings.user.mailCountry)"
+										ng-options="option.code as option.name for option in country">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_locale"></label>
+						<div class="controls pull-left">
+							<div class="locales editable">
+								<span class="edit-hide localName">{{select.locale[settings.user.locale]}}</span>
+								<div class="edit-field">
+									<select id="locale"
+										class="form-control"
+										ng-model="settings.user.locale"
+										ng-change="toEdit('locale', settings.user.locale)"
+										ng-options="option.code as option.name for option in locale">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group" ng-if="(settings.user.disabledGoodies!=undefined)">
+						<label class="control-label pull-left" translate="settings_gift_management"></label>
+						<div class="controls">
+							<div class="checkbox">
+								<input type="checkbox"
+									ng-model="settings.user.disabledGoodies.TIP"
+									ng-change="toEditGoodies('TIP', settings.user.disabledGoodies.TIP)"
+									ng-true-value="false"
+									ng-false-value="true"
+									ng-checked="!settings.user.disabledGoodies.TIP"
+									>
+									<span translate="settings_enable_tips"></span>
+								</div>
+							<div class="text-muted" translate="settings_enable_tips_info">
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_tshirt_size"></label>
+						<div class="controls pull-left">
+							<t-shirt-size class="editable">
+								<span class="edit-hide tshirt">{{select.tshirt[settings.user.tshirt]}}</span>
+								<div class="edit-field">
+									<select id="tshirt"
+										class="form-control"
+										ng-model="settings.user.tshirt"
+										ng-change="toEdit('tshirt', settings.user.tshirt)"
+										ng-options="option.code as option.name for option in tshirt">
+									</select>
+								</div>
+							</t-shirt-size>
+							<div class="text-muted" translate="settings_tshirt_size_tooltip">
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left" translate="settings_gender"></label>
+						<div class="controls pull-left">
+							<div class="editable">
+								<span class="edit-hide gender">{{select.gender[settings.user.gender]}}</span>
+								<div class="edit-field">
+									<select id="gender"
+										class="form-control"
+										ng-model="settings.user.gender"
+										ng-change="toEdit('gender', settings.user.gender)"
+										ng-options="option.code as option.name for option in gender">
+									</select>
+								</div>
+							</div>
+							<div class="text-muted" translate="settings_gender_tooltip">
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left">Stream URL</label>
+						<div class="controls pull-left">
+							<div class="editable">
+								<span class="streamurl">
+									{{settings.directStreaming.url}}
+								</span>
+							</div>							
+							<div class="text-muted">
+								You can broadcast directly to YouNow using 3rd party video mixers and broadcasting tools like <a href="https://obsproject.com/" target="_blank">OBS</a>. Click <a href="https://younow.zendesk.com/hc/en-us/articles/206439166-External-Streaming-Settings" target="_blank">here</a> for advanced instructions. 
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label pull-left">Stream Key</label>
+						<div class="controls pull-left">
+							<div class="editable">
+								<div class="streamkey">
+									{{settings.directStreaming.stream}} - <a href="#" ng-click="resetStreamKey()">Reset</a>
+								</div>
+							</div>
+							<div class="text-muted">
+								Use this unique key to log into 3rd party tools like OBS.
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="edit-actions">
+						<button class="btn btn-primary" type="button" ng-click="saveChanges()" translate="_save"></button>
+						<button class="btn btn-cancel" type="button" ng-click="cancelEdit()" translate="_cancel"></button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="notifications-page" ng-show="page=='notifications'" ng-class="{'edit-mode':editing}">
+			<div class="form-horizontal" ng-if="pushEnabled">
+				<fieldset class="parent-fieldset">					
+					<div class="push-settings">
+						<legend translate="settings_desktop_push_heading"></legend>
+						<div>
+							<input type="checkbox"
+								ng-model="pushSubscribed"
+								ng-change="togglePushSubscribed(pushSubscribed)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="pushSubscribed===1">
+								<span translate="settings_desktop_push_description"></span>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="form-horizontal">
+				<fieldset class="parent-fieldset">
+					<div>
+						<legend translate="settings_notify_me_when"></legend>
+						<div class="icons">
+							<img class="push pull-right" ng-src="{{::config.settings.ServerCDNBaseUrl}}/images/settings/icon_set_notify_push.png">
+							<img class="inapp pull-right" ng-src="{{::config.settings.ServerCDNBaseUrl}}/images/settings/icon_set_notify_yn.png">
+							<img class="email pull-right" ng-src="{{::config.settings.ServerCDNBaseUrl}}/images/settings/icon_set_notify_email.png">
+						</div>
+						<div class="icons-legend">
+							<span class="push pull-right" translate="settings_push"></span>
+							<span class="inapp pull-right" translate="settings_onyounow"></span>
+							<span class="email pull-right" translate="settings_email"></span>
+						</div>
+					</div>
+					<fieldset class="form-group" ng-repeat="notification in settings.notifications">
+						<span class="control-label">{{notification.description}}</span>
+						<div class="controls">
+							<input ng-repeat="type in ['push','inapp','email']"
+								type="checkbox"
+								ng-class="type"
+								ng-model="notification[type]"
+								ng-change="toEdit('option_'+notification[type+'_value'], notification[type])"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="notification[type]===1"
+								ng-disabled="notification[type]===-1">
+					</fieldset>
+					<fieldset class="form-group">
+						<span class="control-label">{{settings.getUpdates.optionName}}</span>
+						<div class="controls">
+							<input type="checkbox" class="email"
+								ng-model="settings.getUpdates.state"
+								ng-change="toEdit('option_'+settings.getUpdates.optionValue, settings.getUpdates.state)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="settings.getUpdates.state===1"></div>
+					</fieldset>
+				</fieldset>
+				<div class="edit-actions">
+					<button class="btn btn-primary" type="button" ng-click="saveChanges()" translate="_save"></button>
+					<button class="btn btn-cancel" type="button" ng-click="cancelEdit()" translate="_cancel"></button>
+				</div>
+			</div>
+		</div>
+		<div class="connected-accounts-page" ng-show="page=='accounts'" ng-class="{'edit-mode':editing}">
+			<div class="form-horizontal">
+				<fieldset class="control-group">
+					<div class="facebook-not-connected" ng-hide="settings.user.facebookId">
+						<div class="top">
+							<div class="fb-logo logo not-connected pull-left"><i class="ynicon ynicon-social-fb"></i></div>
+							<legend class="pull-left">Facebook</legend>
+						</div>
+						<div class="instructions" translate="settings_connect_your_facebook">
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('facebook','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i><span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="facebook-connected" ng-show="settings.user.facebookId">
+						<div class="top">
+							<div class="fb-logo logo connected pull-left"><i class="ynicon ynicon-social-fb"></i></div>
+							<legend class="pull-left">
+								Facebook
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.firstName+' '+settings.user.lastName"></span>
+									<span class="facebook-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('facebook')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+						<fieldset class="extra-fb pull-left">
+							<div class="control-group fb-pages">
+								<div class="control-label pull-left"><span translate="settings_facebook_page" class="inline"></span>:</div>
+								<div class="controls pull-left">
+									<a href class="fb-pages-cta pull-left" ng-click="loadFbPages()" ng-if="settings.user.facebookPageTitle.length === 0 && !fbPages.editing" translate="settings_facebook_page_add"></a>
+									<a class="pull-left" ng-href="{{settings.user.websiteUrl}}" ng-if="settings.user.facebookPageTitle.length > 0 && !fbPages.editing" target="_blank">{{settings.user.facebookPageTitle}}</a>
+									<select class="form-control pull-left"
+											ng-model="fbPages.fbPageSelected"
+											ng-change="updateFbPage()"
+											ng-options="page.name for page in fbPages.pages"
+											ng-if="fbPages.editing && fbPages.hasPages">
+									</select>
+									<span ng-if="!fbPages.hasPages && fbPages.editing" class="pull-left text-muted" translate="settings_no_facebook_pages"></span>
+									<span class="disconnect pull-left" ng-if="settings.user.facebookPageTitle.length > 0 || fbPages.editing">
+										( <a href="javascript:void(0)" ng-if="fbPages.editing" ng-click="changeFbState('cancel')" translate="_cancel"></a>
+										  <a href="javascript:void(0)" ng-if="settings.user.facebookPageTitle.length > 0 && !fbPages.editing" ng-click="loadFbPages()" translate="_change"></a>
+										  <span class="text-muted" ng-if="settings.user.facebookPageTitle.length > 0 && !fbPages.editing"> | </span>
+										  <a href="javascript:void(0)" ng-if="settings.user.facebookPageTitle.length > 0 && !fbPages.editing" ng-click="changeFbState('disconnect')" translate="_disconnect"></a> )
+									</span>
+								</div>
+							</div>
+							<div class="fb-connected" ng-if="settings.user.facebookPageTitle.length > 0">
+								<div class="checkbox">
+									<input type="checkbox"
+										ng-model="settings.pubFacebook.state"
+										ng-change="toEdit('option_'+settings.pubFacebook.optionValue, settings.pubFacebook.state)"
+										ng-true-value="1"
+										ng-false-value="0"
+										ng-checked="settings.pubFacebook.state===1"
+										>
+									<span translate="settings_share_on_my_page"></span>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</fieldset>
+				<fieldset class="control-group twitter">
+					<div class="twitter-not-connected" ng-hide="settings.user.twitterId">
+						<div class="top">
+							<div class="twitter-logo logo not-connected pull-left"><i class="ynicon ynicon-social-tw"></i></div>
+							<legend class="pull-left" translate="">Twitter</legend>
+						</div>
+						<div class="instructions" translate="settings_connect_your_twitter">
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('twitter','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i>
+								<span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="twitter-connected" ng-show="settings.user.twitterId">
+						<div class="top ">
+							<div class="twitter-logo logo connected pull-left"><i class="ynicon ynicon-social-tw"></i></div>
+							<legend class="pull-left">
+								<span translate="">Twitter</span>
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.twitterHandle"></span>
+									<span class="twitter-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('twitter')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+						<div class="checkbox">
+							<input type="checkbox"
+								ng-model="settings.pubTwitter.state"
+								ng-change="toEdit('option_'+settings.pubTwitter.optionValue, settings.pubTwitter.state)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="settings.pubTwitter.state===1"
+								>
+								<span translate="settings_notify_my_followers"></span>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<div class="instagram-not-connected" ng-hide="settings.user.instagramId">
+						<div class="top ">
+							<div class="instagram-logo logo not-connected pull-left"><i class="ynicon ynicon-social-insta"></i></div>
+							<legend class="pull-left" translate="">Instagram</legend>
+						</div>
+						<div class="instructions " translate="settings_connect_your_instagram">
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('instagram','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i>
+								<span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="instagram-connected" ng-show="settings.user.instagramId">
+						<div class="top ">
+							<div class="instagram-logo logo connected pull-left"><i class="ynicon ynicon-social-insta"></i></div>
+							<legend class="pull-left">
+								<span translate="">Instagram</span>
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.instagramHandle"></span>
+									<span class="instagram-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('instagram')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<div class="google-not-connected" ng-hide="settings.user.googleId">
+						<div class="top ">
+							<div class="google-logo logo not-connected pull-left"><i class="ynicon ynicon-social-gp"></i></div>
+							<legend class="pull-left" translate="">Google+</legend>
+						</div>
+						<div class="instructions " translate="settings_connect_your_google">
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('google','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i>
+								<span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="google-connected" ng-show="settings.user.googleId">
+						<div class="top ">
+							<div class="google-logo logo connected pull-left"><i class="ynicon ynicon-social-gp"></i></div>
+							<legend class="pull-left">
+								<span translate="">Google+</span>
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.googleHandle"></span>
+									<span class="google-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('google')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<div class="youtube-not-connected" ng-hide="settings.user.youTubeUserName">
+						<div class="top">
+							<div class="youtube-logo logo not-connected pull-left">
+								<img ng-src="{{config.settings.ServerCDNBaseUrl}}/images/settings/icon_set_yt.png"></div>
+							<legend class="pull-left" translate="">YouTube Channel</legend>
+						</div>
+						<div class="instructions" translate="settings_connect_your_youtube">
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('youtube','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i>
+								<span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="youtube-connected" ng-show="settings.user.youTubeUserName">
+						<div class="top ">
+							<div class="youtube-logo logo connected pull-left">
+								<img ng-src="{{config.settings.ServerCDNBaseUrl}}/images/settings/icon_set_yt.png"></div>
+							<legend class="pull-left">
+								<span translate="">YouTube</span>
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.youTubeTitle"></span>
+									<span class="youtube-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('youtube')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+						<div class="checkbox" style="margin-left: 65px;" ng-show="session.administrator || session.user.partner==1 || session.user.youTubeSubscriberCount>100000">
+							<input type="checkbox"
+								ng-model="settings.youtubeAnnotations.state"
+								ng-change="toEdit('option_'+settings.youtubeAnnotations.optionValue, settings.youtubeAnnotations.state)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="settings.youtubeAnnotations.state===1"
+								>
+								<span translate="settings_connect_youtube_info"></span>
+						</div>
+						<div class="checkbox" style="margin-left: 65px;">
+							<input type="checkbox"
+								ng-model="settings.youtubeSimulcast.state"
+								ng-change="checkYoutube(settings.youtubeSimulcast.state); toEdit('option_'+settings.youtubeSimulcast.optionValue, settings.youtubeSimulcast.state)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="settings.youtubeSimulcast.state===1"
+								>
+								<span translate="settings_connect_youtube_simulcast"></span>
+						</div>
+						<div ng-hide="settings.youtubeSimulcast.state===0">
+							<div class="checkbox" style="margin-left: 65px;">
+								<input type="checkbox"
+									ng-model="settings.keepYoutube.state"
+									ng-change="toEdit('option_'+settings.keepYoutube.optionValue, settings.keepYoutube.state)"
+									ng-true-value="1"
+									ng-false-value="0"
+									ng-checked="settings.keepYoutube.state===1"
+									>
+									<span translate="settings_connect_youtube_keep"></span>
+									<select id="youtubeLivePrivacyStatus"
+										class="form-control youtube-privacy"
+										ng-model="settings.user.youtubeLivePrivacyStatus"
+										ng-change="toEdit('youtubeLivePrivacyStatus', settings.user.youtubeLivePrivacyStatus)"
+										ng-options="option.code as option.name for option in youtubePrivacy">
+									</select>
+							</div>
+							<div class="contentid-disclaimer">
+								Please note, YouTube Content ID copyright will apply if simulcast replays are saved to your channel.
+							</div>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="control-group">
+					<div class="tumblr-not-connected" ng-hide="settings.user.tumblrId">
+						<div class="top ">
+							<div class="tumblr-logo logo not-connected pull-left"><i class="ynicon ynicon-social-tm"></i></div>
+							<legend class="pull-left" translate="">Tumblr</legend>
+						</div>
+						<div class="instructions ">
+							Connect your Tumblr account to gain new followers and notify them when you go live.
+						</div>
+						<div class="connect">
+							<button class="btn btn-cancel" ng-click="session.connect('tumblr','SETTINGS', session.user.userId)">
+								<i class="ynicon ynicon-refresh"></i>
+								<span translate="_connect"></span>
+							</button>
+						</div>
+					</div>
+					<div class="tumblr-connected" ng-show="settings.user.tumblrId">
+						<div class="top ">
+							<div class="tumblr-logo logo connected pull-left"><i class="ynicon ynicon-social-tm"></i></div>
+							<legend class="pull-left">
+								<span translate="">Tumblr</span>
+								<div class="pull-right">
+									<span class="identity pull-left" ng-bind="settings.user.tumblrId"></span>
+									<span class="tumblr-disconnect disconnect pull-left">
+										(
+										<a href="javascript:void(0)" ng-click="disconnect('tumblr')" translate="_disconnect"></a>
+										)
+									</span>
+								</div>
+							</legend>
+						</div>
+						<div class="checkbox">
+							<input type="checkbox"
+								ng-model="settings.pubTumblr.state"
+								ng-change="toEdit('option_'+settings.pubTumblr.optionValue, settings.pubTumblr.state)"
+								ng-true-value="1"
+								ng-false-value="0"
+								ng-checked="settings.pubTumblr.state===1"
+								>
+								<span translate="settings_notify_my_followers"></span>
+						</div>
+					</div>
+				</fieldset>
+				<div class="notice">
+					<span translate="settings_to_terminate_visit"></span>
+					<a href="javascript:void(0)" ng-click="page='privacy'" translate="settings_privacy_setting"></a>
+				</div>
+				<div class="edit-actions">
+					<button class="btn btn-primary" type="button" ng-click="saveChanges()" translate="_save"></button>
+					<button class="btn btn-cancel" type="button" ng-click="cancelEdit()" translate="_cancel"></button>
+				</div>
+			</div>
+		</div>
+		<div class="privacy-page" ng-show="page=='privacy'" ng-class="{'edit-mode':editing}">
+			<div class="form-horizontal">
+				<fieldset>
+					<legend translate="settings_control_how_others_see_you"></legend>
+					<div class="hide-my-city  control-group">
+						<div class="control-label pull-left">
+							<input type="checkbox"
+										ng-model="settings.hideCity.state"
+										ng-change="toEdit('option_'+settings.hideCity.optionValue, settings.hideCity.state)"
+										ng-true-value="1"
+										ng-false-value="0"
+										ng-checked="settings.hideCity.state===1"></div>
+						<div class="controls pull-left">
+							<div translate="settings_hide_my_city"></div>
+							<div class="text-muted" translate="settings_when_selected_your_city_will_not_display">
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="all-broadcasts-private control-group hidden">
+						<div class="control-label">
+							<input name="option_broadcastsPrivate" type="checkbox"></div>
+						<div class="controls">
+							<span translate="settings_mark_all_broadcasts_private"></span>
+							<span class="note" translate="settings_means_broadcasts_only_viewed_by_you"></span>
+						</div>
+					</div>
+					<div class="status-offline  control-group hidden">
+						<div class="control-label">
+							<input name="option_statusOffline" type="checkbox"></div>
+						<div class="controls">
+							<span class="" translate="settings_display_my_status_as_offline"></span>
+							<span class="note " translate="settings_when_offline_selected">
+							</span>
+						</div>
+					</div>
+					<div class="controls">
+						<div class="deactivate">
+							<button class="btn btn-important" ng-click="terminating = true; editing = false;" ng-hide="terminating">
+								<span translate="settings_terminate_account"></span>
+							</button>
+							<div ng-show="terminating">
+								<span class="instructions  pull-left" translate="settings_confirm_terminate_forever">
+								</span>
+								<snap class="note  pull-left" translate="settings_this_will_delete_everything">
+								</snap>
+								<div class="pull-left">
+									<btn-group>
+										<button class="btn btn-important" ng-click="disconnect('deactivation')"><span translate="settings_yes_terminate"></span></button>
+										<button class="btn btn-cancel" ng-click="terminating=false"><span translate="_cancel"></span></button>
+									</btn-group>
+								</div>
+								<input name="deactivation" type="hidden" value=""></div>
+						</div>
+						<div class="edit-actions">
+							<button class="btn btn-primary" type="button" ng-click="saveChanges()" translate="_save"></button>
+							<button class="btn btn-cancel" type="button" ng-click="cancelEdit()" translate="_cancel"></button>
+						</div>
+					</div>
+				</fieldset>
+				<div class="reactivate" ng-show="terminated">
+					<div class="instructions ">
+						<span translate="settings_your_account_has_been_closed"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="subscriptions-page" ng-show="page=='subscriptions'" ng-class="{'edit-mode':editing}">
+			<div class="form-horizontal">
+
+				<div class="nos" ng-if="!subscriptions[0]">
+					<div class="sthumbs">
+						<img class="sthumbs_image" ng-src="{{::cdn.base}}/angularjsapp/src/assets/images/subscriptions/settings_thumbs.png" />
+					</div>
+					<div class="stitle" translate="settings_subscription_title"></div>
+					<div class="stext">
+						<b translate="settings_subscription_subtitle"></b>
+						<ul>
+							<li translate="settings_subscription_li1"></li>
+							<li translate="settings_subscription_li2"></li>
+							<li translate="settings_subscription_li3"></li>
+							<li translate="settings_subscription_li4"></li>
+							<li translate="settings_subscription_li5"></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="subscriptions" ng-if="subscriptions">
+					<div class="sub" ng-repeat="sub in subscriptions">
+
+						<div class="sleft">
+							<div class="thumb circle-thumb" ng-style="{'background-image':'url('+sub.channelThumb+'),url('+sub.channelNoThumb+')'}">
+								<img class="ynbadge" ng-src="{{ sub.channelBadge }}" />
+							</div>
+						</div>
+
+						<div class="sright {{ sub.subscriptionState }}">
+							
+							<span class="spay pay-profile">{{ sub.channelName }}</span>
+
+							<span ng-if="session.subStatus[ sub.channelId ] && sub.subscriptionState=='SUBSCRIPTION_ACTIVE'" class="spay pay-due" translate="settings_subscription_paidthrough" translate-values="{date:sub.paidThroughDate}">
+							</span>
+
+							<span ng-if="session.subStatus[ sub.channelId ] && sub.subscriptionState=='SUBSCRIPTION_PAST_DUE'" class="spay pay-due">
+								<span translate="settings_subscription_paidthrough" translate-values="{date:sub.paidThroughDate}"></span> 
+								<span class="spay pay-warn" translate="settings_subscription_pastdue"></span>
+							</span>
+							<span ng-if="session.subStatus[ sub.channelId ]===false || ( session.subStatus[ sub.channelId ]===undefined && sub.subscriptionState=='SUBSCRIPTION_ACTIVE_TO_CANCEL' )" class="spay pay-due pay-warn">
+								<span translate="settings_subscription_cancelled"></span> 
+								<span class="spay pay-warn" translate="settings_subscription_paidthrough" translate-values="{date:sub.paidThroughDate}"></span>
+							</span>
+
+							<span ng-if="session.subStatus[ sub.channelId ]===undefined && sub.subscriptionState=='SUBSCRIPTION_CANCELLED'" class="spay pay-due pay-warn" translate="settings_subscription_ended">
+								<span class="spay pay-warn" translate="settings_subscription_paidthrough" translate-values="{date:sub.paidThroughDate}"></span>
+							</span>
+							<span class="spay pay-price" translate="subscribe_monthly" translate-values="{value:'$'+sub.subscriptionPrice}"></span> 
+
+
+							<span ng-if="session.subStatus[ sub.channelId ] && sub.subscriptionState=='SUBSCRIPTION_ACTIVE'" class="spay pay-modify">
+								<span class="btn btn-small btn-modify" ng-click="cancelSubscription( sub.channelId, sub );" translate="settings_subscription_modify"></span>
+								<span class="btn btn-small btn-modify btn-cancel" ng-click="modifySubscription( sub.channelId, sub );" translate="settings_subscription_edit"></span>
+							</span>
+
+							<span ng-if="session.subStatus[ sub.channelId ] && sub.subscriptionState=='SUBSCRIPTION_PAST_DUE'" class="spay pay-modify">
+								<span class="btn btn-small btn-modify" ng-click="cancelSubscription( sub.channelId, sub );" translate="settings_subscription_modify"></span>
+								<span class="btn btn-small btn-modify btn-cancel pay-warn" ng-click="modifySubscription( sub.channelId, sub );" translate="settings_subscription_edit"></span>
+							</span>
+
+							<span ng-if="!session.subStatus[ sub.channelId ]" class="spay pay-modify">
+								<span class="btn btn-small btn-confirm" ng-click="newSubscription( sub.channelId );">
+									<i class="ynicon ynicon-icon-subscribe"></i>
+									<span translate="_resubscribe"></span>
+								</span>
+							</span>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+	</div>
+</div>

@@ -1,0 +1,25 @@
+<ul ng-if="::post.media.type=='5'" class="archived-broadcasts" ng-attr-id="post_{{::post.media.broadcast.broadcastId}}">
+	<li class="broadcast">
+		<div class="pull-left">
+			<div ng-class="::{'no-cursor': post.media.broadcast.videoAvailable === 0}" 
+				 ng-disabled="::(disabled = post.media.broadcast.videoAvailable === 0)" 
+				 ng-click="disabled || showMedia(post.media.broadcast.broadcastId, {source:'FEED',start:0}, post.media.broadcast)" 
+				 class="broadcast-thumb"
+				 ng-style="::{background: 'url('+cdn.broadcast+post.media.broadcast.broadcastId+') no-repeat', 'background-size': 'cover'}">
+				<img class="play-button" ng-if="::(post.media.broadcast.videoAvailable === 1)" ng-src="{{::cdn.base}}/images/profile/new/icon_play.png">
+				<span class="broadcast-length">{{ ::post.media.broadcast.broadcastLengthString }}</span>
+			</div>
+		</div>
+		<div class="pull-left broadcast-summary">
+			<div class="title">#{{::post.media.broadcast.tags}}</div>
+			<div class="stats">
+				<div ng-if="::(post.media.broadcast.totalViewers && post.media.broadcast.totalViewers!=0)"><i class="ynicon ynicon-viewers"></i><span>{{ ::post.media.broadcast.totalViewers | number }}</span></div>
+				<div ng-if="::(post.media.broadcast.totalChats && post.media.broadcast.totalChats!=0)"><i class="ynicon ynicon-chat"></i><span>{{ ::post.media.broadcast.totalChats | number }}</span></div>
+				<div ng-if="::(post.media.broadcast.totalLikes && post.media.broadcast.totalLikes!=0)"><i class="ynicon ynicon-thumb"></i><span>{{ ::post.media.broadcast.totalLikes | number }}</span></div>
+				<div ng-if="::(post.media.broadcast.giftNum && post.media.broadcast.totalGifts!=0)"><i class="ynicon ynicon-gift"></i><span>{{ ::post.media.broadcast.totalGifts | number }}</span></div>
+				<div ng-if="::(post.media.broadcast.shares && post.media.broadcast.shares!=0)"><i class="ynicon ynicon-btn-bc-share-android"></i><span>{{ ::post.media.broadcast.shares | number }}</span></div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</li>
+</ul>

@@ -1,0 +1,55 @@
+<div class="modal-body">
+	<button aria-hidden="true" class="pull-right close" ng-click="$dismiss()" type="button">
+		<i class="ynicon ynicon-close"></i>
+	</button>
+	<div class="cover-photo " ng-attr-style="{{::background(user.userId,'Cover')}}">
+		<div class="little-fade"></div>
+	</div>
+	<div class="bottom-cont ">
+		<div class="top-half">
+			<div class="left pull-left">
+				<a href="javascript:void(0)" style="display: inline-block; cursor: default;">
+					<div class="thumb circle-thumb">
+						<div class="thumb-image" ng-style="{background:'url('+nothumb+') no-repeat'}">
+							<div class="thumb-image-wide">
+								<img class="thumb-image-img" ng-src="{{ thumbPath + user.userId }}" ng-alt="{{::user.profile}}" />
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="right pull-left">
+				<div class="top pull-left">
+					<div class="level pull-left">
+						<div class="star pull-left" ng-style="::{ background: 'url(/images/groups/icon_pro_levelsm.png) no-repeat'}"></div>
+						<div class="level-num pull-left">
+							<span>{{user.level}}</span>
+						</div>
+					</div>
+					<div class="channel-name-cont pull-left">
+						<span class="channel-name short-text">{{(user.profile || user.profileUrlString)}}</span>
+					</div>
+				</div>
+				<div class="bottom pull-left">
+					<div>
+						<span class="heading">{{heading}}</span>
+					</div>
+					<div ng-show="subheading">
+						<span class="subheading">{{subheading}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="bottom-half">
+			<div class="call-to-action">
+				<div ng-if="fanTrap" class="fan-button-placeholder" track-source="{{(source?source:'trap-modal')}}">
+					<div fan-button channel="user" callback="$close"></div>
+				</div>
+				<button ng-if="loginTrap" ng-click="showLoginModal('',(source?source:'trap-modal'))" class="btn btn-confirm" translate="signin_to_younow"></button>
+				<div class="no-thanks pull-right" ng-click="$dismiss()">
+					<span translate="no_thanks"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

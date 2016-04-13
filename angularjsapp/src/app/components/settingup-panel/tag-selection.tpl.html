@@ -1,0 +1,4 @@
+<div class="divider" ng-if="!match.model.tag"></div>
+<div class="pull-left" ng-if="match.model.tag" ng-class="{'ep-tag': match.model.isEp, 'tag': !match.model.isEp}">
+	<i ng-if="match.model.isEp"class="ynicon ynicon-level"></i>{{match.model.tag}}
+</div>

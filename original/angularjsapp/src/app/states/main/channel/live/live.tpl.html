@@ -1,0 +1,101 @@
+<div class="fullscreen-{{fullscreenAspect}}" ng-class="{ 'fullscreen': swf.fullscreenActive,'fullscreen-in': swf.fullscreenIn,'fullscreen-out': swf.fullscreenOut }">
+	<div class="fullscreen-overlay"></div>
+	<div class="main-player">
+		<div class="player-header" player-header></div>
+		<div class="player-overlay" player-overlay></div>
+		<mini-overlay ng-if="guestService.guest && !swf.settingUpBroadcast" type="broadcaster"></mini-overlay>
+		<mini-overlay ng-if="(guestService.guest || guestService.pendingGuest) && !swf.settingUpBroadcast" type="guest"></mini-overlay>
+		<selfies-overlay></selfies-overlay>
+		<div class="player-main">
+			<div class="player-error" ng-if="show_noflash_message && !swf.ready && !config.mcu && guestService.state == 'ready'">
+				<img class="error-image" ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/player/flash_player_icon_999.png" />
+				<div class="error-title">Adobe Flash Player</div>
+				<div class="error-subtitle" translate="flashplayer_is_not_installed"></div>
+				<a class="error-link" target="_blank" href="https://get2.adobe.com/flashplayer/"><span translate="flashplayer_click_to_install_from"></span> <br /><b>get2.adobe.com/flashplayer/</b></a>
+			</div>
+			<div ng-if="(isViewer() || isFlashBroadcast()) && !externalStreaming.streaming && !externalStreaming.active">
+				<div id="flashObj1" style="width:592px;height:444px;" swfstudio></div>
+			</div>
+			<div ng-if="!isViewer() && isWebrtcBroadcast()" class="webrtcVideo">
+				<div ng-if="::(!config.bootstrap.supportsCanvasStream)">
+					<div ng-class="{'left-video-container': guestService.state != 'ready' && guestService.state != 'loading'}">
+						<video id='bcVideo' camera-valid on-valid="validCamera()" on-invalid="invalidCamera()" broadcast-stream class="bcVideo"></video>
+					</div>
+					<div ng-class="{'right-video-container': guestService.state != 'ready' && guestService.state != 'loading'}">
+						<video id='guestVideo' guest-stream class="guestVideo"></video>
+					</div>
+				</div>
+				<div ng-if="::(config.bootstrap.supportsCanvasStream)" ng-class="::{'guest-stream': swf.broadcast.userId != session.user.userId && !swf.settingUpBroadcast}" class="canvas-streaming">
+					<div ng-class="{'left-video-container': guestService.state != 'ready' && guestService.state != 'loading'}">
+						<canvas id="bcCanvas" height="444" width="592" class="bcCanvas"></canvas>
+						<video id='bcVideo' camera-valid on-valid="validCamera()" on-invalid="invalidCamera()" broadcast-stream class="bcVideo"></video>
+					</div>
+					<div ng-class="{'right-video-container': guestService.state != 'ready' && guestService.state != 'loading'}">
+						<canvas id="guestCanvas" height="444" width="592"  class="guestCanvas"></canvas>
+						<video id="guestVideo" guest-stream class="guestVideo"></video>
+					</div>
+				</div>
+			</div>
+			<div class="external-stream-info" ng-class="{'page-1': externalStreaming.active, 'added': externalStreaming.added, 'page-2': externalStreaming.streaming }">
+				<div class="info-page-1">
+					<div class="info-title">You can broadcast directly to YouNow using 3rd party video mixers and broadcasting tools.</div>
+					<ol>
+						<li>Download and install OBS (<a href="https://obsproject.com/" target="_blank">free download</a>) or another tool</li>
+						<li>Set the video size to 640x480 (4:3) for best performance <br>(HD settings are supported, but may increase lag / buffering)</li>
+						<li>Input your stream key into the tool as a "Custom Streaming Server"</li>
+						<label for="streamUrl">Url:</label>
+						<input ng-model="externalStreaming.streamUrl" name="streamUrl" type="text" autocomplete="off" class="form-control">
+						<label for="streamKey">Key:</label>
+						<input ng-model="externalStreaming.streamKey" name="streamKey" type="text" autocomplete="off" class="form-control">
+						<li>Pick a tag and description, then click "Prepare Broadcast"</li>
+						<li class="laststep">Start streaming from your tool!
+							<div class="loader-light"></div>
+							<span class="loading-text">Checking...</span>
+						</li>
+					</ol>
+					<div>Click <a href="https://younow.zendesk.com/hc/en-us/articles/206439166-External-Streaming-Settings" target="_blank">here</a> for advanced instructions.</div>
+				</div>
+				<div class="info-page-2" style="text-align: center;">
+					<div class="info-title">Your broadcast has begun!</div>
+					<div>Click <a ng-href="https://www.younow.com/{{::session.user.profile}}" target="_blank">here</a> to view it in a new tab (note: watching your own broadcast from the same computer can cause lag or echoing)</div>
+					<div class="externally-broadcasting animate-flicker"><div></div></div>
+				</div>
+			</div>
+		</div>
+		<div class="player-footer" player-footer></div>
+	</div>
+	<div class="main-chat" channel-chat></div>
+	<div class="main-tags">
+		<div id="tag-queue" ng-if="swf.queue.length && !swf.settingUpBroadcast">
+			<div class="title">
+				#<span translate="livebroadcast_of_broadcasters_on" translate-values="{ count: broadcasterService.bcQueuePos, total: swf.queue.length, who: (swf.queue.length===1 ? 'broadcaster' : 'broadcasters') }"></span>
+				<a
+					class="clickable"
+					ng-href="/tag/{{broadcasterService.broadcaster.tags[0]}}" prevent-default
+					ng-click="goIfNotBroadcasting(goto, 'explore/'+broadcasterService.broadcaster.tags[0])">
+					#{{broadcasterService.broadcaster.tags[0]}}
+				</a>
+			</div>
+			<a class="queue-item thumb clickable"
+				ng-repeat="person in swf.queue"
+				ng-href="/{{person.profile}}" prevent-default
+				ng-click="goIfNotBroadcasting(loadChannel, person.userId);trackBroadcaster();"
+				tooltip-trigger="mouseenter" tooltip-html-unsafe="{{::person.tooltip}}">
+					<img class="thumb-image"
+						ng-src="{{::person.thumb}}"
+     					fallback-src="{{::person.thumb_backup}}" />
+					<div ng-if="::(broadcasterService.broadcaster.userId==person.userId||broadcasterService.broadcaster.userId==session.user.userId)" class="thumb-label">
+						<span ng-if="::(broadcasterService.broadcaster.userId==person.userId && person.userId!=session.user.userId)" translate="_watching"></span>
+						<span ng-if="::(person.userId==session.user.userId && swf.currentSession.isBroadcasting)" translate="_you"></span>
+					</div>
+			</a>
+		</div>
+		<!-- limited time Ad - use http://www.epochconverter.com/ to get timestamp in milliseconds - ng-if="config.UILocale=='en' && timestamp<1434211199999" -->
+		<div class="under-chat" ng-if="::(config.UILocale == 'tr')">
+			<a href="/ferhatgocer" ng-click="adclick('ferhat_banner')" target="_blank" rel="nofollow">
+				<img ng-src="{{::config.settings.ServerCDNBaseUrl}}/angularjsapp/src/assets/images/promo/ferhat_banner.jpg">
+			</a>
+		</div>
+	</div>
+
+</div>
